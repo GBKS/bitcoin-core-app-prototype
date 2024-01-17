@@ -8,7 +8,7 @@ const props = defineProps([
   'state'
 ])
 
-const snapshotStatus = ref(null)
+const snapshotStatus = ref('init')
 const progress = ref(0)
 let timer = null
 
@@ -52,35 +52,58 @@ const progressStyle = computed(() => {
         :buttonLeftLabel="state.back.label"
         buttonLeftIcon="caretLeft"
         :buttonLeftTo="state.back.to"
-        :title="state.title"
       />
-      <KitHeader
-        icon="file"
-        :description="state.description"
-      />
-      <KitProgressBar
-        class="progress"
-        :progress="progress"
-        :style="progressStyle"
-      />
-      <div class="bottom">
-        <KitButton
-          v-if="!snapshotStatus"
-          label="Create snapshot"
-          @click="createSnapshot"
-        />
-        <KitButton
-          v-if="snapshotStatus == 'busy'"
-          label="Creating snapshot"
-          :disabled="true"
-          @click="createSnapshot"
-        />
-        <KitButton
-          v-if="snapshotStatus == 'done'"
-          label="Download snapshot"
-          @click="createSnapshot"
-        />
-      </div>
+      <Transition mode="out-in" name="fade">
+        <div class="content" v-if="snapshotStatus == 'init'">
+          <KitHeader
+            icon="file"
+            iconColor="blue"
+            title="Snapshot"
+            :description="state.description"
+          />
+          <KitProgressBar
+            class="progress"
+            :progress="progress"
+            :style="progressStyle"
+          />
+          <div class="bottom">
+            <KitButton
+              label="Choose snapshot file"
+              @click="createSnapshot"
+            />
+          </div>
+        </div>
+        <div class="content" v-else-if="snapshotStatus == 'busy'">
+          <KitHeader
+            icon="file"
+            iconColor="blue"
+            title="Loading snapshot"
+          />
+          <KitProgressBar
+            class="progress"
+            :progress="progress"
+            :style="progressStyle"
+          />
+        </div>
+        <div class="content" v-else-if="snapshotStatus == 'done'">
+          <KitHeader
+            icon="check"
+            title="Snapshot loaded"
+            description="It contains data up to January 12, 2024.<br/><br/>You will be able to use your node and wallet much more quickly. The accuracy of the data in the snapshot will be verified in the background."
+          />
+          <KitProgressBar
+            class="progress"
+            :progress="progress"
+            :style="progressStyle"
+          />
+          <div class="bottom">
+            <KitButton
+              label="Done"
+              to="/screen/settings?t=slide-right"
+            />
+          </div>
+        </div>
+      </Transition>
     </template>
   </KitScreen>
 </template>
@@ -90,6 +113,14 @@ const progressStyle = computed(() => {
 .snapshot {
   .progress {
     margin-top: 15px;
+    max-width: 200px;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
   }
 }
 

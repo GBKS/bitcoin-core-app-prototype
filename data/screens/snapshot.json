@@ -4,7 +4,7 @@
 		"default": {
 			"name": "Default",
 			"title": "Generate snapshot",
-			"description": "A snapshot captures the current state of the blockchain. It can be imported into other bitcoin applications to speed up initial setup.",
+			"description": "A snapshot captures the current state of the blockchain. It can be imported into other bitcoin applications to speed up initial setup.<br/><br/>Make sure your snapshot file is from a trusted source.",
 			"back": {
 				"label": "Back",
 				"to": "/screen/settings?t=slide-right"
