@@ -1,0 +1,19 @@
+{
+	"name": "Cover",
+	"states": {
+		"default": {
+			"name": "Default",
+			"title": "Bitcoin Core App",
+			"description": "Be part of the Bitcoin network.",
+			"note": "100% open-source & open-design",
+			"button": {
+				"label": "Start",
+				"to": "/screen/strengthen-bitcoin?t=slide-left"
+			}
+		},
+		"testnet": {
+			"name": "Testnet",
+			"testnet": true
+		}
+	}
+}

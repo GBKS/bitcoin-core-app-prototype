@@ -1,0 +1,9 @@
+{
+	"name": "Storage settings",
+	"states": {
+		"default": {
+			"name": "Default",
+			"title": "Storage settings"
+		}
+	}
+}

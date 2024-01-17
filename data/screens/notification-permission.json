@@ -1,0 +1,14 @@
+{
+	"name": "Notification permission",
+	"states": {
+		"default": {
+			"name": "Default",
+			"title": "Enable notifications",
+			"description": "Allow the application to continue to to load and verify transactions, even when you are not actively using it.<br/><br/>Quickly see the status in a permanent system notification.",
+			"button": {
+				"label": "Next",
+				"to": "/screen/activity?t=slide-left"
+			}
+		}
+	}
+}

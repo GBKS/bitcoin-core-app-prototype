@@ -1,0 +1,9 @@
+{
+	"name": "Developer options",
+	"states": {
+		"default": {
+			"name": "Default",
+			"title": "Developer options"
+		}
+	}
+}

@@ -1,0 +1,18 @@
+{
+	"name": "Storage amount",
+	"states": {
+		"default": {
+			"name": "Default",
+			"title": "Storage amount",
+			"description": "Data retrieved from the Bitcoin network is stored on your device.<br/><br/>You have 261GB of storage available.",
+			"buttonOne": {
+				"label": "Next",
+				"to": "/screen/initial-download?t=slide-left"
+			},
+			"buttonTwo": {
+				"label": "Detailed settings",
+				"to": "/screen/storage-amount-options?t=slide-up"
+			}
+		}
+	}
+}

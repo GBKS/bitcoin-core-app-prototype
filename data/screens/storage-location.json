@@ -1,0 +1,18 @@
+{
+	"name": "Storage location",
+	"states": {
+		"default": {
+			"name": "Default",
+			"title": "Storage location",
+			"description": "Where do you want to store the downloaded block data?<br/><br/>You need a minimum of 1GB of storage.",
+			"button": {
+				"label": "Next",
+				"to": "/screen/storage-amount?t=slide-left"
+			}
+		},
+		"custom": {
+			"name": "Custom",
+			"folder": "~/Library/Application/Support/Bitcoin"
+		}
+	}
+}

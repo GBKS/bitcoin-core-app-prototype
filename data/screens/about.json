@@ -1,0 +1,10 @@
+{
+	"name": "About",
+	"states": {
+		"default": {
+			"name": "Default",
+			"title": "About",
+			"description": "Bitcoin Core is an open source project. If you find it useful, please contribute.<br/><br/>This is experimental software."
+		}
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"name": "Proxy settings",
+	"states": {
+		"default": {
+			"name": "Default",
+			"title": "Proxy settings"
+		}
+	}
+}

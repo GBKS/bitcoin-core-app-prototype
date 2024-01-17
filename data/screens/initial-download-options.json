@@ -1,0 +1,13 @@
+{
+	"name": "Initial download options",
+	"states": {
+		"default": {
+			"name": "Default",
+			"title": "Connection settings",
+			"back": {
+				"label": "Done",
+				"to": "/screen/initial-download?t=slide-down"
+			}
+		}
+	}
+}

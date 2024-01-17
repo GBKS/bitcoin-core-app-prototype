@@ -1,0 +1,9 @@
+{
+	"name": "Receive",
+	"states": {
+		"default": {
+			
+		}
+	},
+	"nav": true
+}

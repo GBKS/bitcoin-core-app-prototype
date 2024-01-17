@@ -1,0 +1,14 @@
+{
+	"name": "Activity",
+	"states": {
+		"default": {
+			"name": "Filled",
+			"title": "Activity"
+		},
+		"empty": {
+			"name": "Empty",
+			"empty": true
+		}
+	},
+	"nav": true
+}

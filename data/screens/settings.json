@@ -1,0 +1,9 @@
+{
+	"name": "Settings",
+	"states": {
+		"default": {
+			
+		}
+	},
+	"nav": true
+}
