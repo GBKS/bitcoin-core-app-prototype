@@ -88,6 +88,22 @@ const classObject = computed(() => {
     display: flex;
     flex-direction: column;
   }
+
+  @include media-query(small) {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    &.-expanded {
+      width: 100vw;
+      height: 100dvh;
+      overflow-y: scoll;
+    }
+  }
+
+  @include media-query(medium-up) {
+
+  }
 }
 
 </style>

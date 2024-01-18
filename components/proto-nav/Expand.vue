@@ -27,7 +27,6 @@ button {
   align-items: center;
   color: var(--neutral-9);
   transition: all 100ms $ease;
-  padding: 5px;
   cursor: pointer;
 
   &:hover {
@@ -42,6 +41,20 @@ button {
     width: 12px;
     height: 12px;
     transition: all 100ms $ease;
+  }
+
+  @include media-query(small) {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    padding: 10px;
+    background-color: var(--neutral-9);
+    border-radius: 100px;
+    color: var(--neutral-0);
+  }
+
+  @include media-query(medium-up) {
+    padding: 5px;
   }
 }
 

@@ -119,6 +119,13 @@ import Icons from '@/helpers/icons.js'
     padding-right: 20px;
   }
 
+  @include media-query(small) {
+    .top,
+    .home-indicator {
+      display: none;
+    }
+  }
+
   @include container(small) {
     ::v-deep(.bottom) {
       position: relative;
