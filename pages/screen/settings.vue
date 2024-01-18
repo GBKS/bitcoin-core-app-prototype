@@ -12,9 +12,18 @@ const props = defineProps([
 <template>
   <KitScreen class="settings">
     <template v-if="stateId == 'settings' && state">
-      <KitHeader
-        :title="state.title"
-      />
+      <div class="top-mobile">
+        <KitTopBar
+          buttonLeftIcon="caretLeft"
+          :title="state.title"
+          buttonLeftTo="/screen/activity?t=slide-right"
+        />
+      </div>
+      <div class="top-desktop">
+        <KitHeader
+          title="Settings"
+        />
+      </div>
       <div class="list">
         <KitItemFrame>
           <KitItemLeft
@@ -89,6 +98,24 @@ const props = defineProps([
     max-width: 600px;
     padding-left: 20px;
     padding-right: 20px;
+  }
+  .top-mobile {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  @include media-query(medium-up) {
+    .top-mobile {
+      display: none;
+    }
+  }
+
+  @include media-query(small) {
+    .top-desktop {
+      display: none;
+    }
   }
 }
 

@@ -18,11 +18,6 @@ const info = {
     name: 'Receive',
     icon: 'roundedArrowDown',
     to: '/screen/receive'
-  },
-  settings: {
-    name: 'Settings',
-    icon: 'gearFilled',
-    to: '/screen/settings'
   }
 }
 </script>

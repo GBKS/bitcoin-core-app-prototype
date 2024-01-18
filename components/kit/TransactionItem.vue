@@ -4,7 +4,8 @@ const props = defineProps([
   'description',
   'amount',
   'amountTwo',
-  'active'
+  'active',
+  'to'
 ])
 
 const classObject = computed(() => {
@@ -21,7 +22,7 @@ const classObject = computed(() => {
 </script>
 
 <template>
-  <button :class="classObject">
+  <NuxtLink :class="classObject" :to="to">
     <div class="left">
       <p class="-body-5">{{ title }}</p>
       <p class="-body-6" v-if="description">{{ description }}</p>
@@ -30,7 +31,7 @@ const classObject = computed(() => {
       <p class="-body-5" v-if="amount">{{ amount }}</p>
       <p class="-body-6" v-if="amountTwo">{{ amountTwo }}</p>
     </div>
-  </button>
+  </NuxtLink>
 </template>
 
 <style scoped lang="scss">
@@ -42,6 +43,7 @@ const classObject = computed(() => {
   padding: 15px 0;
   text-align: left;
   cursor: pointer;
+  text-decoration: none;
 
   .left,
   .right {

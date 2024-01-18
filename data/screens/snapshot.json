@@ -10,5 +10,6 @@
 				"to": "/screen/settings?t=slide-right"
 			}
 		}
-	}
+	},
+	"nav": "desktop"
 }

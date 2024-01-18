@@ -19,6 +19,7 @@ import ReceiveScreen from '@/data/screens/receive.json'
 import SettingsScreen from '@/data/screens/settings.json'
 import BlockClockScreen from '@/data/screens/block-clock.json'
 import SnapshotScreen from '@/data/screens/snapshot.json'
+import TransactionScreen from '@/data/screens/transaction.json'
 
 const Screens = {
   "cover": CoverScreen,
@@ -34,6 +35,7 @@ const Screens = {
   "notification-permission": NotificationPermissionScreen,
   "proxy-settings": ProxySettingsScreen,
   "activity": ActivityScreen,
+  "transaction": TransactionScreen,
   "send": SendScreen,
   "receive": ReceiveScreen,
   "settings": SettingsScreen,
@@ -216,7 +218,8 @@ const showPage = computed(() => {
     />
     <div :class="contentClass">
       <div class="content">
-        <NavDesktopTop v-if="contentState && contentState.nav" />
+        <NavDesktopTop v-if="contentState && (contentState.nav === true || contentState.nav === 'desktop')" />
+        <div class="page-wrap">
         <NuxtLayout>
           <NuxtPage
             v-if="showPage"
@@ -224,7 +227,8 @@ const showPage = computed(() => {
             :state="preparedContentState"
           />
         </NuxtLayout>
-        <NavMobileTabs v-if="contentState && contentState.nav" />
+        </div>
+        <NavMobileTabs v-if="contentState && (contentState.nav === true || contentState.nav === 'mobile')" />
       </div>
     </div>
   </div>
@@ -255,6 +259,17 @@ const showPage = computed(() => {
       flex-grow: 1;
       width: 100%;
       container-type: size;
+
+      .page-wrap {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        flex-grow: 1;
+        width: 100%;
+      }
     }
   }
 

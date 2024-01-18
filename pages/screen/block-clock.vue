@@ -12,6 +12,12 @@ const props = defineProps([
 <template>
   <KitScreen class="block-clock">
     <template v-if="stateId == 'block-clock' && state">
+      <div class="top">
+        <KitTopBar
+          buttonRightIcon="caretRight"
+          buttonRightTo="/screen/activity?t=slide-left"
+        />
+      </div>
       <h1>Block clock</h1>
     </template>
   </KitScreen>
@@ -25,6 +31,15 @@ const props = defineProps([
     padding: 50px 0px;
     color: var(--neutral-5);
   } 
+  .top {
+    width: 100%;
+  }
+
+  @include media-query(medium-up) {
+    .top {
+      display: none;
+    }
+  }
 }
 
 </style>

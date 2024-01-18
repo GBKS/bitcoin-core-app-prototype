@@ -18,10 +18,25 @@ const balanceContent = computed(() => {
     v-if="stateId == 'activity'"
     class="activity"
   >
-    <KitHeader
-      class="-align-left"
-      :title="state.title"
-    />
+    <div class="top-mobile">
+      <NavMobileBlockClock
+      />
+      <NavDesktopWallet
+        :activeId="activeId"
+      />
+      <KitButton
+        icon="gear"
+        size="big"
+        theme="free"
+        to="/screen/settings?t=slide-left"
+      />
+    </div>
+    <div class="top-desktop">
+      <KitHeader
+        class="-align-left"
+        title="Activity"
+      />
+    </div>
     <div class="list -dividers">
       <template v-if="state.empty">
         <p>No transactions yet</p>
@@ -32,28 +47,28 @@ const balanceContent = computed(() => {
           description="4 min ago"
           amount="-21,736 sats"
           amountTwo="-12.75 €"
+          to="/screen/transaction?t=slide-left"
         />
         <KitTransactionItem
           title="Yum Yum Foods"
           description="Yesterday"
           amount="-128,021 sats"
           amountTwo="-75.00 €"
+          to="/screen/transaction?t=slide-left"
         />
         <KitTransactionItem
           title="Priya Lee"
           description="April 12, 2023"
           amount="+1,706,950 sats"
           amountTwo="1.000,00 €"
-        />
-        <KitTransactionMeta
-          description="Web design work for ACME Inc. Invoice BDC01"
-          :tags="['Business']"
+          to="/screen/transaction?t=slide-left"
         />
         <KitTransactionItem
           title="Winston Park"
           description="April 6, 2023"
           amount="+73,398 sats"
           amountTwo="-43.00 €"
+          to="/screen/transaction?t=slide-left"
         />
       </template>
     </div>
@@ -64,15 +79,20 @@ const balanceContent = computed(() => {
 <style scoped lang="scss">
 
 .activity {
-  .top {
-    padding-top: 25px;
-    padding-bottom: 25px;
-    max-width: 600px;
+  .top-mobile {
+    display: flex;
+    justify-content: space-between;
     width: 100%;
-    align-self: center;
+    padding: 0 10px;
 
-    h1 {
-      text-align: left;
+    @include media-query(medium-up) {
+      display: none;
+    }
+  }
+
+  .top-desktop {
+    @include media-query(small) {
+      display: none;
     }
   }
 

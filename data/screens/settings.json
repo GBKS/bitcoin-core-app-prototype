@@ -2,8 +2,8 @@
 	"name": "Settings",
 	"states": {
 		"default": {
-			
+			"title": "Settings"
 		}
 	},
-	"nav": true
+	"nav": "desktop"
 }

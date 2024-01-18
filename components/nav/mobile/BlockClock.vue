@@ -1,5 +1,7 @@
 <script setup>
 const canvas = ref('canvas')
+const size = 45
+const lineWidth = 3
 
 function draw() {
   const startAngle = -90
@@ -9,12 +11,54 @@ function draw() {
 
   const context = canvas.value.getContext('2d')
   context.strokeStyle = "#F9CD21"
-  context.lineWidth = 3
+  context.lineWidth = lineWidth
   context.lineCap = "round"
   context.beginPath()
-  context.arc(18, 18, 16.5, startRadians, endRadians)
+  context.arc(size/2, size/2, (size-lineWidth)/2, startRadians, endRadians)
   context.stroke()
 }
+
+const wrapStyle = computed(() => {
+  return {
+    gap: lineWidth/2 + 'px'
+  }
+})
+
+const outlineStyle = computed(() => {
+  return {
+    width: size + 'px',
+    height: size + 'px',
+    boxShadow: 'inset 0px 0px 0px '+size/12+'px var(--neutral-2)'
+  }
+})
+
+const dotStyle = computed(() => {
+  return {
+    width: size/18 + 'px',
+    height: size/18 + 'px'
+  }
+})
+
+const lineOneStyle = computed(() => {
+  return {
+    width: size*0.222 + 'px',
+    height: lineWidth/2 + 'px'
+  }
+})
+
+const lineTwoStyle = computed(() => {
+  return {
+    width: size*0.111 + 'px',
+    height: lineWidth/2 + 'px'
+  }
+})
+
+const canvasStyle = computed(() => {
+  return {
+    width: size/2 + 'px',
+    height: size/2 + 'px'
+  }
+})
 
 onMounted(() => {
   draw()
@@ -24,16 +68,18 @@ onMounted(() => {
 <template>
   <NuxtLink
     class="block-clock"
-    to="/screen/block-clock"
+    to="/screen/block-clock?t=slide-right"
   >
-    <div class="wrap">
-      <div class="dot" />
-      <div class="line" />
-      <div class="line" />
+    <div class="wrap" :style="wrapStyle">
+      <div class="outline" :style="outlineStyle" />
+      <div class="dot" :style="dotStyle" />
+      <div class="line" :style="lineOneStyle" />
+      <div class="line" :style="lineTwoStyle" />
       <canvas
         ref="canvas"
-        width="36"
-        height="36"
+        :style="canvasStyle"
+        :width="size"
+        :height="size"
       />
     </div>
   </NuxtLink>
@@ -47,19 +93,8 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   align-self: stretch;
-  width: 34px;
-
-  &:before {
-    display: block;
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background-color: var(--primary);
-    opacity: 0;
-  }
+  width: 60px;
+  height: 60px;
 
   .wrap {
     position: relative;
@@ -74,38 +109,25 @@ onMounted(() => {
       z-index: 1;
       top: 50%;
       left: 50%;
-      width: 18px;
-      height: 18px;
       transform: translate(-50%, -50%);
     }
 
-    &:before {
+    .outline {
       position: absolute;
       display: block;
       content: '';
       border-radius: 100px;
-      width: 36px;
-      height: 36px;
       transform: scale(0.5);
-      box-shadow: inset 0px 0px 0px 3px var(--neutral-2);
     }
 
     .dot {
-      width: 2px;
-      height: 2px;
       border-radius: 100px;
       background-color: var(--neutral-9);
     }
 
     .line {
-      width: 8px;
-      height: 1.5px;
       border-radius: 100px;
       background-color: var(--neutral-9);
-
-      &:last-of-type {
-        width: 4px;
-      }
     }
   }
 
