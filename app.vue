@@ -112,10 +112,13 @@ function toggleTheme(value) {
 }
 
 function updateTheme() {
+  const themeColorMeta = document.getElementById('themeColorMeta')
   if(theme.value == 'dark') {
     document.body.classList.add('--theme-dark')
+    themeColorMeta.content = '#000000'
   } else {
     document.body.classList.remove('--theme-dark')
+    themeColorMeta.content = '#FFFFFF'
   }
 }
 

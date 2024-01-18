@@ -13,7 +13,7 @@ export default defineNuxtConfig({
         { name: 'description', content: 'For quick iteration and testing of designs.' },
         { name: 'msapplication-TileColor', content: '#ffffff' },
         { name: 'msapplication-TileImage', content: '/ms-icon-144x144.png' },
-        { name: 'theme-color"', content: '#ffffff' }
+        { name: 'theme-color', content: '#ffffff', id: 'themeColorMeta' }
       ],
       link: [
         { rel: 'apple-touch-icon', sizes: '57x57', href: '/images/apple-icon-57x57.png' },
