@@ -45,7 +45,7 @@ button {
 
   @include media-query(small) {
     position: fixed;
-    bottom: 10px;
+    bottom: 30px;
     left: 10px;
     padding: 10px;
     background-color: var(--neutral-9);

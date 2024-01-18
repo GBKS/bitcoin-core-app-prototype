@@ -11,7 +11,7 @@ const isActive = computed(() => {
 })
 
 const classObject = computed(() => {
-  const c = ['item', '-body-8']
+  const c = ['item']
 
   if(isActive.value) {
     c.push('-active')
@@ -43,6 +43,7 @@ const classObject = computed(() => {
   transition: all 100ms $ease;
   color: var(--neutral-9);
   text-decoration: none;
+  font-size: 12px;
 
   &:hover {
     background-color: var(--neutral-1);
@@ -54,6 +55,10 @@ const classObject = computed(() => {
 
   &.-indent {
     padding-left: 30px;
+  }
+
+  @include media-query(small) {
+    font-size: 15px;
   }
 }
 

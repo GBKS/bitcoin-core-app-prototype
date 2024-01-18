@@ -47,6 +47,10 @@ button {
     height: 16px;
     transition: all 100ms $ease;
   }
+
+  @include media-query(small) {
+    display: none;
+  }
 }
 
 </style>

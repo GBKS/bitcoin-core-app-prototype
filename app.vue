@@ -241,7 +241,6 @@ const showPage = computed(() => {
     justify-content: center;
     flex-grow: 1;
     width: 100%;
-    border-left: 1px solid var(--neutral-4);
 
     > .content {
       background-color: var(--neutral-0);
@@ -259,6 +258,7 @@ const showPage = computed(() => {
   @include media-query(medium-up) {
     > .content-wrap {
       background-color: var(--neutral-2);
+      border-left: 1px solid var(--neutral-4);
 
       &.-mobile {
         > .content {
