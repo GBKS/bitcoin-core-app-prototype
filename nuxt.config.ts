@@ -30,7 +30,8 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/png', sizes: '96x96', href: '/images/favicon-96x96.png' },
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/images/favicon-16x16.png' },
         { rel: 'preconnect', href: 'https://rsms.me/' },
-        { rel: 'stylesheet', href: 'https://rsms.me/inter/inter.css' }
+        { rel: 'stylesheet', href: 'https://rsms.me/inter/inter.css' },
+        { rel: 'manifest' href:'manifest.json' }
       ]
     }
   },
