@@ -32,6 +32,7 @@ import Icons from '@/helpers/icons.js'
   align-items: stretch;
   box-sizing: border-box;  
   width: 100%;
+  overflow: hidden;
 
   .wrap {
     // position: relative;

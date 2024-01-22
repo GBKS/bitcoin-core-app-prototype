@@ -21,6 +21,7 @@ import SettingsScreen from '@/data/screens/settings.json'
 import BlockClockScreen from '@/data/screens/block-clock.json'
 import SnapshotScreen from '@/data/screens/snapshot.json'
 import TransactionScreen from '@/data/screens/transaction.json'
+import AddWalletScreen from '@/data/screens/add-wallet.json'
 
 const Screens = {
   "cover": CoverScreen,
@@ -42,7 +43,8 @@ const Screens = {
   "receive": ReceiveScreen,
   "settings": SettingsScreen,
   "block-clock": BlockClockScreen,
-  "snapshot": SnapshotScreen
+  "snapshot": SnapshotScreen,
+  "add-wallet": AddWalletScreen
 }
 
 const route = useRoute()
@@ -55,6 +57,8 @@ const preparedContentState = ref(null)
 const theme = ref(null)
 const showProtoNav = ref(true)
 const mobileOnDesktop = ref(false)
+const screenSize = ref('desktop')
+const pageWrap = ref(null)
 
 function prepScreens() {
   let i, k
@@ -126,6 +130,34 @@ function updateTheme() {
   }
 }
 
+function updateScreenSize() {
+  if(pageWrap.value) {
+    const sizes = [
+      'huge',
+      'large',
+      'medium',
+      'small'
+    ]
+
+    const widths = [
+      1600,
+      1280,
+      1024,
+      640
+    ]
+
+    const width = pageWrap.value.offsetWidth
+
+    let result = 'huge'
+    for(let i=0; i<sizes.length; i++) {
+      if(width < widths[i]) {
+        result = sizes[i]
+      }
+    }
+    screenSize.value = result
+  }
+}
+
 onBeforeMount(() => {
   
 })
@@ -135,6 +167,9 @@ onMounted(() => {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', detectTheme)
 
     detectTheme()
+
+    window.addEventListener('resize', updateScreenSize)
+    updateScreenSize()
   }
 
   const emitter = mitt()
@@ -221,12 +256,13 @@ const showPage = computed(() => {
     <div :class="contentClass">
       <div class="content">
         <NavDesktopTop v-if="contentState && (contentState.nav === true || contentState.nav === 'desktop')" />
-        <div class="page-wrap">
+        <div class="page-wrap" ref="pageWrap">
         <NuxtLayout>
           <NuxtPage
             v-if="showPage"
             :stateId="activeProtoNavId"
             :state="preparedContentState"
+            :screenSize="screenSize"
           />
         </NuxtLayout>
         </div>

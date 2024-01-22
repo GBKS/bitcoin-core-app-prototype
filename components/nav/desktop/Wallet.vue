@@ -1,13 +1,14 @@
 <script setup>
+import { useStateStore } from "@/stores/state.js"
+
 import Icons from '@/helpers/icons.js'
 
 const props = defineProps([
   'activeId'
 ])
 
+const stateStore = useStateStore()
 const active = ref(false)
-const showModal = ref(false)
-const activeWalletId = ref('savings')
 
 const classObject = computed(() => {
   const c = []
@@ -24,34 +25,18 @@ const icon = computed(() => {
 })
 
 function toggleModal() {
-  showModal.value = !showModal.value
+  stateStore.toggleWalletModal()
 }
 
 function changeActiveWalletId(value) {
-  activeWalletId.value = value
+  stateStore.activeWalletId = value
+
+  stateStore.showWalletModal = false
 }
 
 const walletData = computed(() => {
-  return wallets[activeWalletId.value]
+  return stateStore.wallets[stateStore.activeWalletId]
 })
-
-const wallets = {
-  savings: {
-    name: 'Savings',
-    balance: 0.00167930,
-    icon: 'keyFilled'
-  },
-  family: {
-    name: 'Family',
-    balance: 0.03421765,
-    icon: 'twoKeys'
-  },
-  cold: {
-    name: 'Cold storage',
-    balance: 0.17000000,
-    icon: 'eye'
-  }
-}
 </script>
 
 <template>
@@ -72,10 +57,7 @@ const wallets = {
     </div>
   </div>
   <UiWalletModal
-    v-if="showModal"
-    :info="wallets"
-    :activeId="activeWalletId"
-    @change="changeActiveWalletId"
+    v-if="stateStore.showWalletModal"
   />
 </template>
 

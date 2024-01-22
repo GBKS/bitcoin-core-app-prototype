@@ -1,18 +1,19 @@
 <script setup>
+import { useStateStore } from "@/stores/state.js"
+
 import Icons from '@/helpers/icons.js'
 
 const props = defineProps([
   'activeId'
 ])
 
+const stateStore = useStateStore()
 const active = ref(false)
-const showModal = ref(false)
-const activeWalletId = ref('savings')
 
 const classObject = computed(() => {
   const c = ['wallet']
 
-  if(showModal.value) {
+  if(stateStore.showWalletModal) {
     c.push('-modal-active')
   }
 
@@ -24,34 +25,18 @@ const icon = computed(() => {
 })
 
 function toggleModal() {
-  showModal.value = !showModal.value
+  stateStore.toggleWalletModal()
 }
 
 function changeActiveWalletId(value) {
-  activeWalletId.value = value
+  stateStore.activeWalletId = value
+
+  stateStore.showWalletModal = false
 }
 
 const walletData = computed(() => {
-  return wallets[activeWalletId.value]
+  return stateStore.wallets[stateStore.activeWalletId]
 })
-
-const wallets = {
-  savings: {
-    name: 'Savings',
-    balance: 0.00167930,
-    icon: 'keyFilled'
-  },
-  family: {
-    name: 'Family',
-    balance: 0.03421765,
-    icon: 'twoKeys'
-  },
-  cold: {
-    name: 'Cold storage',
-    balance: 0.17000000,
-    icon: 'eye'
-  }
-}
 </script>
 
 <template>
@@ -72,9 +57,9 @@ const wallets = {
     />
   </div>
   <UiWalletModal
-    :active="showModal"
-    :info="wallets"
-    :activeId="activeWalletId"
+    :active="stateStore.showWalletModal"
+    :info="stateStore.wallets"
+    :activeId="stateStore.activeWalletId"
     @change="changeActiveWalletId"
   />
 </template>
@@ -128,33 +113,6 @@ const wallets = {
 
   &.-active {
 
-  }
-
-  @include container(small) {
-    position: relative;
-
-    &:before {
-      display: block;
-      content: '';
-      position: fixed;
-      left: 0;
-      top: 0;
-      width: 0;
-      height: 0;
-      background-color: var(--neutral-9);
-      transition: opacity 400ms $ease;
-      opacity: 0;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    &.-modal-active {
-      &:before {
-        width: 100%;
-        height: 100%;
-        opacity: 0.5;
-      }
-    }
   }
 }
 

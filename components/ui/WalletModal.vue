@@ -1,20 +1,22 @@
 <script setup>
-const props = defineProps([
-  'active',
-  'info',
-  'activeId'
-])
+import { useStateStore } from "@/stores/state.js"
 
-const emit = defineEmits(['change'])
+const stateStore = useStateStore()
 
 function setActiveWalletId(value) {
-  emit('change', value)
+  stateStore.activeWalletId = value
+
+  stateStore.showWalletModal = false
+}
+
+function closeModal() {
+  stateStore.showWalletModal = false
 }
 
 const classObject = computed(() => {
   const c = ['wallet-modal']
 
-  if(props.active) c.push('-active')
+  if(stateStore.showWalletModal) c.push('-active')
 
   return c.join(' ')
 })
@@ -27,11 +29,11 @@ const classObject = computed(() => {
       <h5>Wallets</h5>
       <div class="list">
         <UiWalletModalItem
-          v-for="(item, id) in info"
+          v-for="(item, id) in stateStore.wallets"
           :key="id"
           :id="id"
           :info="item"
-          :activeId="activeId"
+          :activeId="stateStore.activeWalletId"
           @click="setActiveWalletId(id)"
         />
       </div>
@@ -41,6 +43,7 @@ const classObject = computed(() => {
         label="Add wallet"
         theme="free"
         size="small"
+        to="/screen/add-wallet?t=slide-up"
       />
     </div>
   </div>
@@ -84,6 +87,7 @@ const classObject = computed(() => {
       margin-top: 10px;
       flex-basis: 100%;
       gap: 10px;
+      padding-bottom: 30px;
 
       .drag-indicator {
         width: 50px;
@@ -114,7 +118,7 @@ const classObject = computed(() => {
     border-radius: var(--corner-radius);
     border: 1px solid var(--neutral-4);
 
-    .content {
+    .content {      
       .drag-indicator,
       h5 {
         display: none;

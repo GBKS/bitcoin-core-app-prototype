@@ -1,4 +1,5 @@
 <script setup>
+import { useStateStore } from "@/stores/state.js"
 import transition from '@/helpers/transition.js'
 
 definePageMeta(transition)
@@ -8,9 +9,29 @@ const props = defineProps([
   'state'
 ])
 
+const stateStore = useStateStore()
+
 const balanceContent = computed(() => {
   return props.state.title
 })
+
+const wallets = {
+  savings: {
+    name: 'Savings',
+    balance: 0.00167930,
+    icon: 'keyFilled'
+  },
+  family: {
+    name: 'Family',
+    balance: 0.03421765,
+    icon: 'twoKeys'
+  },
+  cold: {
+    name: 'Cold storage',
+    balance: 0.17000000,
+    icon: 'eye'
+  }
+}
 
 const transactions = [
   {
@@ -39,19 +60,42 @@ const transactions = [
     amount: -363000
   }
 ]
+
+const classObject = computed(() => {
+  const c = ['activity']
+
+  if(stateStore.showWalletModal) {
+    c.push('-modal-active')
+  }
+
+  return c.join(' ')
+})
+
+function toggleModal() {
+  stateStore.showWalletModal = !stateStore.showWalletModal
+}
+
+function setActiveWalletId(value) {
+  stateStore.activeWalletId = value
+
+  stateStore.showWalletModal = false
+}
+
+onBeforeUnmount(() => {
+  stateStore.showWalletModal = false
+})
 </script>
 
 <template>
   <KitScreen
     v-if="stateId == 'activity'"
-    class="activity"
+    :class="classObject"
   >
+    <div class="cover" @click="toggleModal" />
     <div class="top-mobile">
       <NavMobileBlockClock
       />
-      <NavMobileWallet
-        :activeId="activeId"
-      />
+      <NavMobileWallet />
       <KitButton
         icon="gear"
         size="big"
@@ -135,7 +179,32 @@ const transactions = [
   }
 
   @include container(small) {
-    
+    position: relative;
+
+    .cover {
+      display: block;
+      content: '';
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 0;
+      height: 0;
+      background-color: var(--neutral-9);
+      transition: opacity 400ms $ease;
+      opacity: 0;
+      z-index: 1;
+      cursor: pointer;
+      // pointer-events: none;
+    }
+
+    &.-modal-active {
+      .cover {
+        width: 100%;
+        height: 100%;
+        opacity: 0.5;
+        pointer-events: auto;
+      }
+    }
   }
 
   @include container(medium-up) {
