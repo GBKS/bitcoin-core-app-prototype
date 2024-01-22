@@ -15,6 +15,7 @@ import NotificationPermissionScreen from '@/data/screens/notification-permission
 import ProxySettingsScreen from '@/data/screens/proxy-settings.json'
 import ActivityScreen from '@/data/screens/activity.json'
 import SendScreen from '@/data/screens/send.json'
+import SendReviewScreen from '@/data/screens/send-review.json'
 import ReceiveScreen from '@/data/screens/receive.json'
 import SettingsScreen from '@/data/screens/settings.json'
 import BlockClockScreen from '@/data/screens/block-clock.json'
@@ -37,6 +38,7 @@ const Screens = {
   "activity": ActivityScreen,
   "transaction": TransactionScreen,
   "send": SendScreen,
+  "send-review": SendReviewScreen,
   "receive": ReceiveScreen,
   "settings": SettingsScreen,
   "block-clock": BlockClockScreen,
@@ -228,7 +230,7 @@ const showPage = computed(() => {
           />
         </NuxtLayout>
         </div>
-        <NavMobileTabs v-if="contentState && (contentState.nav === true || contentState.nav === 'mobile')" />
+        <NavMobileTabs v-if="false && contentState && (contentState.nav === true || contentState.nav === 'mobile')" />
       </div>
     </div>
   </div>

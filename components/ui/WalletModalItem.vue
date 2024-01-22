@@ -37,9 +37,9 @@ const icon = computed(() => {
       v-html="icon"
     />
     <div class="copy">
-      <h4 class="-title-7">{{ info.name }}</h4>
+      <h4 class="-title-7 -title-5-mobile">{{ info.name }}</h4>
       <KitBalance
-        class="-body-7"
+        class="-body-7 -body-5-mobile"
         :amount="info.balance"
       />
     </div>
@@ -79,6 +79,8 @@ const icon = computed(() => {
     }
 
     p {
+      text-align: left;
+      
       ::v-deep(.-nz) {
         color: var(--neutral-7);
       }

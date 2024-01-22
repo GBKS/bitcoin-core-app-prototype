@@ -19,6 +19,17 @@ h6, .-title-6 { font-size: 15px; }
 .-title-7 { font-size: 13px; }
 .-title-8 { font-size: 12px; }
 
+@include container(small) {
+  .-title-1-mobile { font-size: 36px; }
+  .-title-2-mobile { font-size: 28px; }
+  .-title-3-mobile { font-size: 24px; }
+  .-title-4-mobile { font-size: 21px; }
+  .-title-5-mobile { font-size: 18px; }
+  .-title-6-mobile { font-size: 15px; }
+  .-title-7-mobile { font-size: 13px; }
+  .-title-8-mobile { font-size: 12px; }
+}
+
 .-body-1,
 .-body-2,
 .-body-3,
@@ -41,6 +52,17 @@ h6, .-title-6 { font-size: 15px; }
 p, .-body-6 { font-size: 15px; }
 .-body-7 { font-size: 13px; }
 .-body-8 { font-size: 12px; }
+
+@include container(small) {
+  .-body-1-mobile { font-size: 36px; }
+  .-body-2-mobile { font-size: 27px; }
+  .-body-3-mobile { font-size: 24px; }
+  .-body-4-mobile { font-size: 21px; }
+  .-body-5-mobile { font-size: 18px; }
+  .-body-6-mobile { font-size: 15px; }
+  .-body-7-mobile { font-size: 13px; }
+  .-body-8-mobile { font-size: 12px; }
+}
 
 h1, h2, h3, h4, h5, h6 {
   color: var(--neutral-9);

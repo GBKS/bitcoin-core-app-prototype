@@ -106,13 +106,13 @@ const props = defineProps([
     padding: 0 10px;
   }
 
-  @include media-query(medium-up) {
+  @include container(medium-up) {
     .top-mobile {
       display: none;
     }
   }
 
-  @include media-query(small) {
+  @include container(small) {
     .top-desktop {
       display: none;
     }

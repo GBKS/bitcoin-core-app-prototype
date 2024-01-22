@@ -11,6 +11,34 @@ const props = defineProps([
 const balanceContent = computed(() => {
   return props.state.title
 })
+
+const transactions = [
+  {
+    title: "Luigi's pizza",
+    description: "4 min ago",
+    amount: 21736,
+  },
+  {
+    title: "Yum Yum Foods",
+    description: "Yesterday",
+    amount: -128021
+  },
+  {
+    title: "Priya Lee",
+    description: "April 12, 2023",
+    amount: 1706950
+  },
+  {
+    title: "Winston Park",
+    description: "April 6, 2023",
+    amount: 73398
+  },
+  {
+    title: "19M12s...35Xj8Q",
+    description: "April 1, 2023",
+    amount: -363000
+  }
+]
 </script>
 
 <template>
@@ -21,7 +49,7 @@ const balanceContent = computed(() => {
     <div class="top-mobile">
       <NavMobileBlockClock
       />
-      <NavDesktopWallet
+      <NavMobileWallet
         :activeId="activeId"
       />
       <KitButton
@@ -31,10 +59,16 @@ const balanceContent = computed(() => {
         to="/screen/settings?t=slide-left"
       />
     </div>
-    <div class="top-desktop">
-      <KitHeader
-        class="-align-left"
-        title="Activity"
+    <ScreensActivityButtons
+      icon="roundedArrowUp"
+      label="Send"
+      to="/screen/send?t=slide-up"
+    />
+    <div class="list-header">
+      <h5 class="-title-5">Activity</h5>
+      <KitButton
+        icon="search"
+        theme="free"
       />
     </div>
     <div class="list -dividers">
@@ -43,31 +77,11 @@ const balanceContent = computed(() => {
       </template>
       <template v-if="!state.empty">
         <KitTransactionItem
-          title="Luigi's pizza"
-          description="4 min ago"
-          amount="-21,736 sats"
-          amountTwo="-12.75 €"
-          to="/screen/transaction?t=slide-left"
-        />
-        <KitTransactionItem
-          title="Yum Yum Foods"
-          description="Yesterday"
-          amount="-128,021 sats"
-          amountTwo="-75.00 €"
-          to="/screen/transaction?t=slide-left"
-        />
-        <KitTransactionItem
-          title="Priya Lee"
-          description="April 12, 2023"
-          amount="+1,706,950 sats"
-          amountTwo="1.000,00 €"
-          to="/screen/transaction?t=slide-left"
-        />
-        <KitTransactionItem
-          title="Winston Park"
-          description="April 6, 2023"
-          amount="+73,398 sats"
-          amountTwo="-43.00 €"
+          v-for="(item, index) in transactions"
+          :key="index"
+          :title="item.title"
+          :description="item.description"
+          :amount="item.amount"
           to="/screen/transaction?t=slide-left"
         />
       </template>
@@ -84,16 +98,17 @@ const balanceContent = computed(() => {
     justify-content: space-between;
     width: 100%;
     padding: 0 10px;
-
-    @include media-query(medium-up) {
-      display: none;
-    }
   }
 
-  .top-desktop {
-    @include media-query(small) {
-      display: none;
-    }
+  .list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 5px;
+    max-width: 600px;
   }
 
   .list {
@@ -107,6 +122,7 @@ const balanceContent = computed(() => {
     padding-right: 20px;
 
     > * {
+      border-top: 1px solid var(--neutral-2);
       width: 100%;
       max-width: 600px;
     }
@@ -114,6 +130,24 @@ const balanceContent = computed(() => {
     &.-dividers {
       > * + * {
         border-top: 1px solid var(--neutral-2);
+      }
+    }
+  }
+
+  @include container(small) {
+    
+  }
+
+  @include container(medium-up) {
+    .top-mobile {
+      display: none;
+    }
+
+    .list-header {
+      padding-top: 30px;
+
+      h5 {
+        font-size: 21px;
       }
     }
   }

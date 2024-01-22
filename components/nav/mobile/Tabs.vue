@@ -4,20 +4,20 @@ const props = defineProps([
 ])
 
 const info = {
-  activity: {
-    name: 'Activity',
-    icon: 'home',
-    to: '/screen/activity'
-  },
+  // activity: {
+  //   name: 'Activity',
+  //   icon: 'home',
+  //   to: '/screen/activity'
+  // },
   send: {
     name: 'Send',
     icon: 'roundedArrowUp',
-    to: '/screen/send'
+    to: '/screen/send?t=slide-up'
   },
   receive: {
     name: 'Receive',
     icon: 'roundedArrowDown',
-    to: '/screen/receive'
+    to: '/screen/receive?t=slide-up'
   }
 }
 </script>

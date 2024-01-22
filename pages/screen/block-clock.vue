@@ -30,12 +30,13 @@ const props = defineProps([
     text-align: center;
     padding: 50px 0px;
     color: var(--neutral-5);
-  } 
+  }
+  
   .top {
     width: 100%;
   }
 
-  @include media-query(medium-up) {
+  @include container(medium-up) {
     .top {
       display: none;
     }
