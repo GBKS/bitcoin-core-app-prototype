@@ -87,49 +87,48 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <KitScreen
-    v-if="stateId == 'activity'"
-    :class="classObject"
-  >
-    <div class="cover" @click="toggleModal" />
-    <div class="top-mobile">
-      <NavMobileBlockClock
-      />
-      <NavMobileWallet />
-      <KitButton
-        icon="gear"
-        size="big"
-        theme="free"
-        to="/screen/settings?t=slide-left"
-      />
-    </div>
-    <ScreensActivityButtons
-      icon="roundedArrowUp"
-      label="Send"
-      to="/screen/send?t=slide-up"
-    />
-    <div class="list-header">
-      <h5 class="-title-5">Activity</h5>
-      <KitButton
-        icon="search"
-        theme="free"
-      />
-    </div>
-    <div class="list -dividers">
-      <template v-if="state.empty">
-        <p>No transactions yet</p>
-      </template>
-      <template v-if="!state.empty">
-        <KitTransactionItem
-          v-for="(item, index) in transactions"
-          :key="index"
-          :title="item.title"
-          :description="item.description"
-          :amount="item.amount"
-          to="/screen/transaction?t=slide-left"
+  <KitScreen :class="classObject">
+    <template v-if="stateId == 'activity'">
+      <div class="cover" @click="toggleModal" />
+      <div class="top-mobile">
+        <NavMobileBlockClock
         />
-      </template>
-    </div>
+        <NavMobileWallet />
+        <KitButton
+          icon="gear"
+          size="big"
+          theme="free"
+          to="/screen/settings?t=slide-left"
+        />
+      </div>
+      <ScreensActivityButtons
+        icon="roundedArrowUp"
+        label="Send"
+        to="/screen/send?t=slide-up"
+      />
+      <div class="list-header">
+        <h5 class="-title-5">Activity</h5>
+        <KitButton
+          icon="search"
+          theme="free"
+        />
+      </div>
+      <div class="list -dividers">
+        <template v-if="state.empty">
+          <p>No transactions yet</p>
+        </template>
+        <template v-if="!state.empty">
+          <KitTransactionItem
+            v-for="(item, index) in transactions"
+            :key="index"
+            :title="item.title"
+            :description="item.description"
+            :amount="item.amount"
+            to="/screen/transaction?t=slide-left"
+          />
+        </template>
+      </div>
+    </template>
   </KitScreen>
 </template>
 

@@ -21,6 +21,8 @@ definePageMeta(transition)
   gap: 10px;
   text-align: center;
   max-width: 600px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 </style>
