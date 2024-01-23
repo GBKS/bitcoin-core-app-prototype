@@ -21,7 +21,7 @@ const classObject = computed(() => {
 })
 
 const icon = computed(() => {
-  return Icons.keyFilled
+  return Icons[walletData.value.icon]
 })
 
 function toggleModal() {

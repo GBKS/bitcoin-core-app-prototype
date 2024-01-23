@@ -12,8 +12,8 @@ const recentBlocksActive = ref(false)
 </script>
 
 <template>
-  <KitScreen class="storage-amount-options">
-    <template v-if="stateId == 'storage-amount-options' && state">
+  <KitScreen class="storage-settings">
+    <template v-if="stateId == 'storage-settings' && state">
       <KitTopBar
         buttonRightLabel="Done"
         buttonRightTo="/screen/storage-amount?t=slide-down"
@@ -47,7 +47,7 @@ const recentBlocksActive = ref(false)
 
 <style scoped lang="scss">
 
-.storage-amount-options {
+.storage-settings {
   .list {
     margin-top: 30px;
     display: flex;

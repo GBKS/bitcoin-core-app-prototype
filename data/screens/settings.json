@@ -1,9 +1,10 @@
 {
 	"name": "Settings",
+	"category": "Settings",
+	"nav": "desktop",
 	"states": {
 		"default": {
 			"title": "Settings"
 		}
-	},
-	"nav": "desktop"
+	}
 }

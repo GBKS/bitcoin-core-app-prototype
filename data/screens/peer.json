@@ -1,0 +1,9 @@
+{
+	"name": "Peer",
+	"states": {
+		"default": {
+			"name": "Default",
+			"title": "Peer"
+		}
+	}
+}

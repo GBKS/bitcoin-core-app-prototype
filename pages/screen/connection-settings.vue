@@ -15,8 +15,8 @@ const rpcActive = ref(false)
 </script>
 
 <template>
-  <KitScreen class="initial-download-options">
-    <template v-if="stateId == 'initial-download-options' && state">
+  <KitScreen class="connection-settings">
+    <template v-if="stateId == 'connection-settings' && state">
       <KitTopBar
         :buttonRightLabel="state.back.label"
         :buttonRightTo="state.back.to"
@@ -77,7 +77,7 @@ const rpcActive = ref(false)
 
 <style scoped lang="scss">
 
-.initial-download-options {
+.connection-settings {
   .list {
     margin-top: 30px;
     display: flex;

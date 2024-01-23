@@ -106,27 +106,25 @@ onBeforeUnmount(() => {
         label="Send"
         to="/screen/send?t=slide-up"
       />
-      <div class="list-header">
+      <div class="list-header" v-if="!state.empty">
         <h5 class="-title-5">Activity</h5>
         <KitButton
           icon="search"
           theme="free"
         />
       </div>
-      <div class="list -dividers">
-        <template v-if="state.empty">
-          <p>No transactions yet</p>
-        </template>
-        <template v-if="!state.empty">
-          <KitTransactionItem
-            v-for="(item, index) in transactions"
-            :key="index"
-            :title="item.title"
-            :description="item.description"
-            :amount="item.amount"
-            to="/screen/transaction?t=slide-left"
-          />
-        </template>
+      <template v-if="state.empty">
+        <p class="empty-note -body-5">Your transactions will show up here once you start sending and receiving.</p>
+      </template>
+      <div class="list -dividers" v-if="!state.empty">
+        <KitTransactionItem
+          v-for="(item, index) in transactions"
+          :key="index"
+          :title="item.title"
+          :description="item.description"
+          :amount="item.amount"
+          to="/screen/transaction?t=slide-left"
+        />
       </div>
     </template>
   </KitScreen>
@@ -175,6 +173,11 @@ onBeforeUnmount(() => {
         border-top: 1px solid var(--neutral-2);
       }
     }
+  }
+
+  p.empty-note {
+    text-align: center;
+    padding: 40px 20px;
   }
 
   @include container(small) {

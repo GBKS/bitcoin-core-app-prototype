@@ -11,7 +11,7 @@
 			},
 			"buttonTwo": {
 				"label": "Detailed settings",
-				"to": "/screen/storage-amount-options?t=slide-up"
+				"to": "/screen/storage-settings?t=slide-up&state=onboarding"
 			}
 		}
 	}

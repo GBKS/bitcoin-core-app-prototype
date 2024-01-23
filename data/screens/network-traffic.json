@@ -1,0 +1,9 @@
+{
+	"name": "Network traffic",
+	"states": {
+		"default": {
+			"name": "Default",
+			"title": "Network traffic"
+		}
+	}
+}

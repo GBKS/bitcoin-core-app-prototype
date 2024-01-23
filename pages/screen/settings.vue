@@ -57,7 +57,7 @@ const props = defineProps([
             icon="caretRight"
           />
         </KitItemFrame>
-        <KitItemFrame>
+        <KitItemFrame to="/screen/peers?t=slide-left">
           <KitItemLeft
             title="Peers"
           />
@@ -65,7 +65,7 @@ const props = defineProps([
             icon="caretRight"
           />
         </KitItemFrame>
-        <KitItemFrame>
+        <KitItemFrame to="/screen/network-traffic?t=slide-left">
           <KitItemLeft
             title="Network traffic"
           />

@@ -1,5 +1,11 @@
 <script setup>
+import { useStateStore } from "@/stores/state.js"
 
+const stateStore = useStateStore()
+
+const walletData = computed(() => {
+  return stateStore.wallets[stateStore.activeWalletId]
+})
 </script>
 
 <template>
@@ -8,6 +14,7 @@
       icon="roundedArrowUp"
       label="Send"
       to="/screen/send?t=slide-up"
+      :disabled="walletData.type == 'view-only'"
     />
     <ScreensActivityButton
       icon="roundedArrowDown"

@@ -1,5 +1,5 @@
 {
-	"name": "Initial download options",
+	"name": "Connection settings",
 	"states": {
 		"default": {
 			"name": "Default",
@@ -8,6 +8,10 @@
 				"label": "Done",
 				"to": "/screen/initial-download?t=slide-down"
 			}
+		},
+		"onboarding": {
+			"name": "Onboarding",
+			"onboarding": true
 		}
 	}
 }

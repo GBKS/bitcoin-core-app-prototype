@@ -1,9 +1,9 @@
 {
 	"name": "Block clock",
+	"nav": "desktop",
 	"states": {
 		"default": {
 			
 		}
-	},
-	"nav": "desktop"
+	}
 }

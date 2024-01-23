@@ -19,6 +19,12 @@ const props = defineProps([
         />
       </div>
       <h1>Receive</h1>
+      <div class="bottom">
+        <KitButton
+          label="Create payment request"
+          to="/screen/payment-request?t=slide-left"
+        />
+      </div>
     </template>
   </KitScreen>
 </template>

@@ -1,5 +1,6 @@
 {
 	"name": "Add wallet",
+	"category": "Add wallet",
 	"states": {
 		"default": {
 			

@@ -4,6 +4,7 @@ import Icons from '@/helpers/icons.js'
 const props = defineProps([
   'icon',
   'label',
+  'disabled',
   'to'
 ])
 
@@ -12,11 +13,20 @@ const emit = defineEmits(['click'])
 const icon = computed(() => {
   return Icons[props.icon]
 })
+
+const classObject = computed(() => {
+  const c = ['activity-button']
+
+  if(props.disabled) c.push('-disabled')
+
+  return c.join(' ')
+})
 </script>
 
 <template>
   <NuxtLink
-    class="activity-button"
+    v-if="!props.disabled"
+    :class="classObject"
     :to="to"
   >
     <div
@@ -25,6 +35,17 @@ const icon = computed(() => {
     />
     <p>{{ label }}</p>
   </NuxtLink>
+  <div
+    v-if="props.disabled"
+    :class="classObject"
+    title="You cannot send from a view-only wallet"
+  >
+    <div
+      class="icon"
+      v-html="icon"
+    />
+    <p>{{ label }}</p>
+  </div>
 </template>
 
 <style scoped lang="scss">
@@ -63,15 +84,21 @@ const icon = computed(() => {
     transition: all 100ms $ease;
   }
 
-  &:hover {
-    color: var(--primary);
+  &.-disabled {
+    opacity: 0.25;
+  }
 
-    .icon {
-      border-color: var(--primary);
-    }
-
-    p {
+  &:not(.-disabled) {
+    &:hover {
       color: var(--primary);
+
+      .icon {
+        border-color: var(--primary);
+      }
+
+      p {
+        color: var(--primary);
+      }
     }
   }
 }

@@ -21,6 +21,10 @@ const classObject = computed(() => {
     c.push('-indent')
   }
 
+  if(props.info.divider) {
+    c.push('-divider')
+  }
+
   return c.join(' ')
 })
 </script>
@@ -55,6 +59,10 @@ const classObject = computed(() => {
 
   &.-indent {
     padding-left: 30px;
+  }
+
+  &.-divider {
+    border-top: 1px solid var(--neutral-4);
   }
 
   @include media-query(small) {

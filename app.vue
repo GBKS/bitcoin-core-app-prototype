@@ -8,20 +8,24 @@ import StrengthenBitcoinScreen from '@/data/screens/strengthen-bitcoin.json'
 import BlockClockIntroScreen from '@/data/screens/block-clock-intro.json'
 import StorageLocationScreen from '@/data/screens/storage-location.json'
 import StorageAmountScreen from '@/data/screens/storage-amount.json'
-import StorageAmountOptionsScreen from '@/data/screens/storage-amount-options.json'
+import StorageSettingsScreen from '@/data/screens/storage-settings.json'
 import InitialDownloadScreen from '@/data/screens/initial-download.json'
-import InitialDownloadOptionsScreen from '@/data/screens/initial-download-options.json'
+import ConnectionSettingsScreen from '@/data/screens/connection-settings.json'
 import NotificationPermissionScreen from '@/data/screens/notification-permission.json'
 import ProxySettingsScreen from '@/data/screens/proxy-settings.json'
 import ActivityScreen from '@/data/screens/activity.json'
 import SendScreen from '@/data/screens/send.json'
 import SendReviewScreen from '@/data/screens/send-review.json'
 import ReceiveScreen from '@/data/screens/receive.json'
+import PaymentRequestScreen from '@/data/screens/payment-request.json'
 import SettingsScreen from '@/data/screens/settings.json'
 import BlockClockScreen from '@/data/screens/block-clock.json'
 import SnapshotScreen from '@/data/screens/snapshot.json'
 import TransactionScreen from '@/data/screens/transaction.json'
 import AddWalletScreen from '@/data/screens/add-wallet.json'
+import NetworkTrafficScreen from '@/data/screens/network-traffic.json'
+import PeersScreen from '@/data/screens/peers.json'
+import PeerScreen from '@/data/screens/peer.json'
 
 const Screens = {
   "cover": CoverScreen,
@@ -31,19 +35,23 @@ const Screens = {
   "block-clock-intro": BlockClockIntroScreen,
   "storage-location": StorageLocationScreen,
   "storage-amount": StorageAmountScreen,
-  "storage-amount-options": StorageAmountOptionsScreen,
   "initial-download": InitialDownloadScreen,
-  "initial-download-options": InitialDownloadOptionsScreen,
   "notification-permission": NotificationPermissionScreen,
-  "proxy-settings": ProxySettingsScreen,
   "activity": ActivityScreen,
   "transaction": TransactionScreen,
   "send": SendScreen,
   "send-review": SendReviewScreen,
   "receive": ReceiveScreen,
-  "settings": SettingsScreen,
+  "payment-request": PaymentRequestScreen,
   "block-clock": BlockClockScreen,
+  "settings": SettingsScreen,
   "snapshot": SnapshotScreen,
+  "network-traffic": NetworkTrafficScreen,
+  "proxy-settings": ProxySettingsScreen,
+  "connection-settings": ConnectionSettingsScreen,
+  "storage-settings": StorageSettingsScreen,
+  "peers": PeersScreen,
+  "peer": PeerScreen,
   "add-wallet": AddWalletScreen
 }
 

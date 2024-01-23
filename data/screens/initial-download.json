@@ -7,7 +7,7 @@
 			"description": "The application will connect to the Bitcoin network and start downloading and verifying transactions.<br/><br/>This may take several hours, or even days, based on your connection. ",
 			"buttonOne": {
 				"label": "Connection settings",
-				"to": "/screen/initial-download-options?t=slide-up"
+				"to": "/screen/connection-settings?t=slide-up&state=onboarding"
 			},
 			"buttonTwo": {
 				"label": "Next",

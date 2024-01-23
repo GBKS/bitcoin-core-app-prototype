@@ -1,0 +1,10 @@
+{
+	"name": "Peers",
+	"nav": "desktop",
+	"states": {
+		"default": {
+			"name": "Default",
+			"title": "Peers"
+		}
+	}
+}
