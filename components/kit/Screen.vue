@@ -33,6 +33,7 @@ import Icons from '@/helpers/icons.js'
   box-sizing: border-box;  
   width: 100%;
   overflow: hidden;
+  overflow-y: scroll; // Testing
 
   .wrap {
     // position: relative;

@@ -1,0 +1,9 @@
+{
+	"name": "Display settings",
+	"states": {
+		"default": {
+			"name": "Default",
+			"title": "Display settings"
+		}
+	}
+}

@@ -124,6 +124,10 @@ const classObject = computed(() => {
         display: none;
       }
 
+      .list {
+        margin-bottom: 5px;
+      }
+
       &:after {
         display: block;
         content: '';

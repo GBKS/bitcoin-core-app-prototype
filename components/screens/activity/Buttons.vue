@@ -30,7 +30,7 @@ const walletData = computed(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 50px;
   padding: 35px 0;
 
   @include container(medium-up) {

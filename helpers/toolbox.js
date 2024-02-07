@@ -1,0 +1,117 @@
+/*
+
+Some random utility functions.
+
+ */
+
+export default {
+
+  formatRelativeDate: function(dateString, includeAgo) {
+    const d = new Date(parseInt(dateString)*1000)
+    const now = new Date()
+
+    const delta = now - d
+
+    const units = {
+      minute: 1000*60,
+      hour: 1000*60*60,
+      day: 1000*60*60*24
+    }
+
+    if(delta < units.minute) {
+      return Math.round(delta/1000) + 's' + (includeAgo ? ' ago' : '')
+    } else if(delta < units.hour) {
+      return Math.round(delta/1000/60) + 'm' + (includeAgo ? ' ago' : '')
+    } else if(delta < units.day) {
+      return Math.round(delta/1000/60/60) + 'h' + (includeAgo ? ' ago' : '')
+    } else {
+      // Check if it's the same year
+      if(d.getFullYear() == now.getFullYear()) {
+        const options = { 
+          month: 'short', 
+          day: 'numeric'
+        }
+        return d.toLocaleDateString(undefined, options)
+      } else {
+        const options = { 
+          year: 'numeric', 
+          month: 'short', 
+          day: 'numeric'
+        }
+        return d.toLocaleDateString(undefined, options)
+      }
+    }
+  },
+
+  trim(text, maxLength, position) {
+    let result = text
+
+    if(result && result.length > maxLength) {
+      if(position == 'end') {
+        result = result.substr(0, maxLength-2) + '...'
+      } else {
+        const cutOff = Math.ceil(maxLength/2-2)
+        result = result.substr(0, cutOff) + '...' + result.substr(result.length - cutOff)
+      }
+    }
+    
+    return result
+  },
+
+  dig(object, path, fallback, requireLength) {
+    let result = null
+
+    if(object) {
+      result = object
+
+      const bits = path.split('.')
+      let i=0, key
+      for(; i<bits.length; i++) {
+        key = bits[i]
+
+        if(result[key]) {
+          result = result[key]
+        } else {
+          result = null
+          break
+        }
+      }
+    }
+
+    if(result !== null && requireLength && result.length == 0) {
+      result = null
+    }
+
+    if(result == null && fallback) {
+      result = fallback
+    }
+
+    return result
+  },
+
+  digDeep(object, paths, fallback, requireLength) {
+    let result = fallback || null
+
+    if(object) {
+      for(let i=0; i<paths.length; i++) {
+        result = this.dig(object, paths[i], null, requireLength)
+
+        if(result !== null) {
+          break
+        }
+      }
+    }
+
+    return result
+  },
+
+  shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+    }
+    return array
+  }
+}

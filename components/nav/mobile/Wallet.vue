@@ -28,6 +28,19 @@ function toggleModal() {
   stateStore.toggleWalletModal()
 }
 
+function toggleBalanceMode() {
+  let mode = 'bitcoin'
+  switch(stateStore.balanceDisplayMode) {
+    case 'bitcoin':
+      mode = 'satoshi'
+      break
+    case 'satoshi':
+      mode = 'hide'
+      break
+  }
+  stateStore.balanceDisplayMode = mode
+}
+
 function changeActiveWalletId(value) {
   stateStore.activeWalletId = value
 
@@ -42,9 +55,8 @@ const walletData = computed(() => {
 <template>
   <div
     :class="classObject"
-    @click="toggleModal"
   >
-    <div class="top">
+    <div class="top" @click="toggleModal">
       <div
         class="icon"
         v-html="icon"
@@ -54,6 +66,9 @@ const walletData = computed(() => {
     <KitBalance
       class="balance -body-3"
       :amount="walletData.balance"
+      :unit="stateStore.balanceDisplayMode"
+      theme="dark"
+      @click="toggleBalanceMode"
     />
   </div>
   <UiWalletModal
@@ -69,6 +84,7 @@ const walletData = computed(() => {
 .wallet {
   display: flex;
   flex-direction: column;
+  gap: 2px;
   align-items: center;
   cursor: pointer;
   margin: 50px 5px 5px 5px;
@@ -78,6 +94,9 @@ const walletData = computed(() => {
   .top {
     display: flex;
     align-items: center;
+    cursor: pointer;
+    padding: 3px 15px 3px 6px;
+    border-radius: 100px;
 
     .icon {
       display: flex;
@@ -92,22 +111,18 @@ const walletData = computed(() => {
         height: 20px;
       }
     }
-  }
 
-  .balance {
-    ::v-deep(.-nz) {
-      color: var(--neutral-7);
+    &:hover {
+      background-color: var(--neutral-2);
     }
   }
 
-  &:hover {
-    background-color: var(--neutral-2);
-    border-radius: var(--corner-radius);
+  .balance {
+    border-radius: 100px;
+    padding: 5px 15px;
 
-    p,
-    p ::v-deep(.-nz),
-    .icon {
-      color: var(--primary);
+    &:hover {
+      background-color: var(--neutral-2);
     }
   }
 

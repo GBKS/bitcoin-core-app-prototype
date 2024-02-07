@@ -1,9 +1,15 @@
 <script setup>
+import { useStateStore } from "@/stores/state.js"
+import Toolbox from '@/helpers/toolbox.js'
+import Icons from '@/helpers/icons.js'
+
+const stateStore = useStateStore()
+
 const props = defineProps([
   'title',
   'description',
+  'address',
   'amount',
-  'amountTwo',
   'active',
   'to'
 ])
@@ -20,104 +26,56 @@ const classObject = computed(() => {
   return c.join(' ')
 })
 
-const formattedAmount = computed(() => {
-  let result = ''
-
-  const notation = 'standard'
-  const locale = 'de'
-
-  let amountBit = props.amount;
-  let minimumFractionDigits = 0
-  let unit = 'bitcoin'
-
-  switch(unit) {
-    case 'bitcoin':
-      unit = '₿'
-      minimumFractionDigits = 8
-      break
-    case 'satoshi':
-      unit = 'sats'
-      break
-  }
-
-  const format = Intl.NumberFormat(locale, {
-    style: 'currency',
-    notation: notation,
-    compactDisplay: "long",
-    currency: 'BTC',
-    minimumFractionDigits: minimumFractionDigits
-  })
-
-  const parts = format.formatToParts(amountBit / 100000000)
-
-  result = parts.reduce((acc, part) => {
-    if(part.type == 'currency') {
-      return '<span class="' + part.type + '">' + acc + unit + '</span>'
-    } else {
-      var partBits = part.value.toString().split('')
-      var partBitHTML = ''
-      var partClasses, bit
-      var nonZeroFound = false
-
-      for(let i=0; i<partBits.length; i++) {
-        bit = partBits[i]
-        if(!nonZeroFound && bit != 0) nonZeroFound = true
-        
-        partClasses = ['char', '-v'+bit]
-        if(!nonZeroFound) partClasses.push('-nz')
-        
-        partBitHTML += '<span class="' + partClasses.join(' ') + '">' + bit + '</span>'
-      }
-
-      const bits = [
-        '<span class="',
-        part.type,
-        '">',
-        acc,
-        partBitHTML,
-        '</span>'
-      ]
-
-      return bits.join('')
-    }
-  }, '')
-
-  return result
+const icon = computed(() => {
+  return props.amount < 0 ? Icons.roundedArrowDown : Icons.roundedArrowUp
 })
 
-const amountTwo = computed(() => {
-  const bitcoinEuroPrice = 37000
-  const amount = Math.round(props.amount / 100000000 * bitcoinEuroPrice)
+const formattedTitle = computed(() => {
+  let result = props.title
 
-  const format = Intl.NumberFormat('de', {
-    style: 'currency',
-    notation: 'standard',
-    compactDisplay: "long",
-    currency: 'EUR',
-    minimumFractionDigits: 2
-  })
+  if(!result) {
+    result = Toolbox.trim(props.address, 16)
+  }
 
-  return format.format(amount)
+  return result
 })
 </script>
 
 <template>
   <NuxtLink :class="classObject" :to="to">
-    <div class="left">
-      <p class="-body-5">{{ title }}</p>
-      <p class="-body-6" v-if="description">{{ description }}</p>
+    <div class="content -mobile">
+      <div
+        class="icon"
+        v-html="icon"
+      />
+      <div class="left">
+        <p class="-body-6">{{ formattedTitle }}</p>
+        <p class="-body-6" v-if="description">{{ description }}</p>
+      </div>
+      <div class="right">
+        <KitBalance
+          class="-body-6" 
+          :amount="props.amount"
+          :unit="stateStore.balanceDisplayMode"
+        />
+      </div>
     </div>
-    <div class="right" v-if="formattedAmount || amountTwo">
-      <p 
-        class="-body-5" 
-        v-if="formattedAmount" 
-        v-html="formattedAmount"
+    <div class="content -not-mobile">
+      <div
+        class="icon"
+        v-html="icon"
       />
-      <p 
-        class="-body-6" 
-        v-if="amountTwo" 
-        v-html="amountTwo"
-      />
+      <div class="left">
+        <p class="-body-6">{{ formattedTitle }}</p>
+      </div>
+      <div class="right" v-if="props.amount">
+        <p class="-body-6" v-if="description">{{ description }}</p>
+        <KitBalance
+          class="-body-6" 
+          :amount="props.amount"
+          :unit="stateStore.balanceDisplayMode"
+        />
+      </div>
     </div>
   </NuxtLink>
 </template>
@@ -125,18 +83,30 @@ const amountTwo = computed(() => {
 <style scoped lang="scss">
 
 .transaction-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 15px 0;
   text-align: left;
   cursor: pointer;
   text-decoration: none;
 
+  .content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 0;
+  }
+
+  .icon {
+    color: var(--orange);
+    padding-right: 3px;
+
+    ::v-deep(svg) {
+      width: 10px;
+      height: 10px;
+    }
+  }
+
   .left,
   .right {
     display: flex;
-    flex-direction: column;
     gap: 0;
 
     p {
@@ -152,55 +122,47 @@ const amountTwo = computed(() => {
 
   .left {
     flex-grow: 1;
+
+    p:first-child {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      -webkit-line-clamp: 1;
+      line-clamp: 1;
+      -webkit-box-orient: vertical;
+      display: -webkit-box;
+    }
   }
 
   .right {
     align-items: flex-end;
-
-    p {
-      &:first-child {
-        ::v-deep(.fraction) {
-          > .char {
-            &:nth-child(4),
-            &:nth-child(7) { padding-left: 0.3em; }
-          }
-        }
-      }
-    }
   }
 
   &.-positive {
-    .right {
-      p {
-        &:first-child {
-          color: var(--green);
-
-          ::v-deep(.fraction) {
-            .char {
-              &.-nz {
-                opacity: 0.75;
-              }
-            }
-          }
-        }
-      }
+    .icon {
+      color: var(--green);
     }
   }
 
-  &:not(.-positive) {
-    .right {
-      p {
-        &:first-child {
-          color: var(--neutral-9);
+  @include media-query(small) {
+    .-not-mobile {
+      display: none;
+    }
 
-          ::v-deep(.fraction) {
-            .char {
-              &.-nz {
-                color: var(--neutral-7);
-              }
-            }
-          }
-        }
+    .content .left {
+      flex-direction: column;
+    }
+  }
+
+  @include media-query(medium-up) {
+    .-mobile {
+      display: none;
+    }
+
+    .content .right {
+      gap: 20px;
+
+      p {
+        white-space: nowrap;
       }
     }
   }

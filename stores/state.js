@@ -8,26 +8,28 @@ export const useStateStore = defineStore({
     return {
       showWalletModal: ref(false),
       activeWalletId: ref('savings'),
+      balanceDisplayMode: ref('bitcoin'), // bitcoin, satoshi, hide
       wallets: {
         savings: {
           name: 'Savings',
-          balance: 0.00167930,
+          balance: 0,
           icon: 'keyFilled',
           type: 'single-key'
         },
         family: {
           name: 'Family',
-          balance: 0.03421765,
+          balance: 0,
           icon: 'twoKeys',
           type: 'multi-key'
         },
         cold: {
           name: 'Cold storage',
-          balance: 0.17000000,
+          balance: 0,
           icon: 'eye',
           type: 'view-only'
         }
-      }
+      },
+      transactions: ref(null)
     }
   },
 

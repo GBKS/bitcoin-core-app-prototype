@@ -41,6 +41,7 @@ const icon = computed(() => {
       <KitBalance
         class="-body-7 -body-5-mobile"
         :amount="info.balance"
+        theme="dark"
       />
     </div>
   </button>

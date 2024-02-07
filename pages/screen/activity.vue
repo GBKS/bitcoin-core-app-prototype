@@ -15,51 +15,13 @@ const balanceContent = computed(() => {
   return props.state.title
 })
 
-const wallets = {
-  savings: {
-    name: 'Savings',
-    balance: 0.00167930,
-    icon: 'keyFilled'
-  },
-  family: {
-    name: 'Family',
-    balance: 0.03421765,
-    icon: 'twoKeys'
-  },
-  cold: {
-    name: 'Cold storage',
-    balance: 0.17000000,
-    icon: 'eye'
-  }
-}
+const wallets = computed(() => {
+  return stateStore.wallets
+})
 
-const transactions = [
-  {
-    title: "Luigi's pizza",
-    description: "4 min ago",
-    amount: 21736,
-  },
-  {
-    title: "Yum Yum Foods",
-    description: "Yesterday",
-    amount: -128021
-  },
-  {
-    title: "Priya Lee",
-    description: "April 12, 2023",
-    amount: 1706950
-  },
-  {
-    title: "Winston Park",
-    description: "April 6, 2023",
-    amount: 73398
-  },
-  {
-    title: "19M12s...35Xj8Q",
-    description: "April 1, 2023",
-    amount: -363000
-  }
-]
+const transactions = computed(() => {
+  return stateStore.transactions[stateStore.activeWalletId]
+})
 
 const classObject = computed(() => {
   const c = ['activity']
@@ -123,6 +85,7 @@ onBeforeUnmount(() => {
           :title="item.title"
           :description="item.description"
           :amount="item.amount"
+          :address="item.address"
           to="/screen/transaction?t=slide-left"
         />
       </div>
@@ -149,7 +112,7 @@ onBeforeUnmount(() => {
     padding-left: 20px;
     padding-right: 20px;
     padding-bottom: 5px;
-    max-width: 600px;
+    max-width: 640px;
   }
 
   .list {
@@ -158,7 +121,7 @@ onBeforeUnmount(() => {
     align-items: center;
     flex-grow: 1;
     width: 100%;
-    max-width: 600px;
+    max-width: 640px;
     padding-left: 20px;
     padding-right: 20px;
 

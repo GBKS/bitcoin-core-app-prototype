@@ -1,6 +1,8 @@
 <script setup>
 import mitt from 'mitt'
 
+import StateHelper from '@/helpers/state-helper.js'
+
 import CoverScreen from '@/data/screens/cover.json'
 import AboutScreen from '@/data/screens/about.json'
 import DeveloperOptionsScreen from '@/data/screens/developer-options.json'
@@ -12,6 +14,7 @@ import StorageSettingsScreen from '@/data/screens/storage-settings.json'
 import InitialDownloadScreen from '@/data/screens/initial-download.json'
 import ConnectionSettingsScreen from '@/data/screens/connection-settings.json'
 import NotificationPermissionScreen from '@/data/screens/notification-permission.json'
+import DisplaySettingsScreen from '@/data/screens/display-settings.json'
 import ProxySettingsScreen from '@/data/screens/proxy-settings.json'
 import ActivityScreen from '@/data/screens/activity.json'
 import SendScreen from '@/data/screens/send.json'
@@ -45,6 +48,7 @@ const Screens = {
   "payment-request": PaymentRequestScreen,
   "block-clock": BlockClockScreen,
   "settings": SettingsScreen,
+  "display-settings": DisplaySettingsScreen,
   "snapshot": SnapshotScreen,
   "network-traffic": NetworkTrafficScreen,
   "proxy-settings": ProxySettingsScreen,
@@ -167,7 +171,7 @@ function updateScreenSize() {
 }
 
 onBeforeMount(() => {
-  
+  StateHelper.init()
 })
 
 onMounted(() => {
@@ -315,6 +319,7 @@ const showPage = computed(() => {
         position: relative;
         flex-grow: 1;
         width: 100%;
+        overflow-y: scroll;
       }
     }
   }

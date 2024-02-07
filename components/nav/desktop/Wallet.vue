@@ -24,6 +24,26 @@ const icon = computed(() => {
   return Icons[walletData.value.icon]
 })
 
+function click(event) {
+  if(event.shiftKey) {
+    let mode = 'bitcoin'
+    switch(stateStore.balanceDisplayMode) {
+      case 'bitcoin':
+        mode = 'satoshi'
+        break
+      case 'satoshi':
+        mode = 'hide'
+        break
+    }
+    stateStore.balanceDisplayMode = mode
+    
+    event.preventDefault()
+    event.stopPropagation()
+  } else {
+    stateStore.toggleWalletModal()
+  }
+}
+
 function toggleModal() {
   stateStore.toggleWalletModal()
 }
@@ -42,7 +62,7 @@ const walletData = computed(() => {
 <template>
   <div
     class="wallet"
-    @click="toggleModal"
+    @click="click"
   >
     <div
       class="icon"
@@ -52,7 +72,9 @@ const walletData = computed(() => {
       <p class="-title-7">{{ walletData.name }}</p>
       <KitBalance
         class="-body-5"
+        :unit="stateStore.balanceDisplayMode"
         :amount="walletData.balance"
+        theme="dark"
       />
     </div>
   </div>

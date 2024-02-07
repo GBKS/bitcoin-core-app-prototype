@@ -25,7 +25,7 @@ const props = defineProps([
         />
       </div>
       <div class="list">
-        <KitItemFrame>
+        <KitItemFrame to="/screen/about?t=slide-left">
           <KitItemLeft
             title="About"
           />
@@ -33,7 +33,7 @@ const props = defineProps([
             icon="caretRight"
           />
         </KitItemFrame>
-        <KitItemFrame>
+        <KitItemFrame to="/screen/display-settings?t=slide-left">
           <KitItemLeft
             title="Display"
           />
@@ -41,7 +41,7 @@ const props = defineProps([
             icon="caretRight"
           />
         </KitItemFrame>
-        <KitItemFrame>
+        <KitItemFrame to="/screen/storage-settings?t=slide-left">
           <KitItemLeft
             title="Storage"
           />
@@ -49,7 +49,7 @@ const props = defineProps([
             icon="caretRight"
           />
         </KitItemFrame>
-        <KitItemFrame>
+        <KitItemFrame to="/screen/connection-settings?t=slide-left">
           <KitItemLeft
             title="Connection"
           />
