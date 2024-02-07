@@ -143,7 +143,7 @@ const formattedTitle = computed(() => {
     }
   }
 
-  @include media-query(small) {
+  @include container(small) {
     .-not-mobile {
       display: none;
     }
@@ -153,7 +153,7 @@ const formattedTitle = computed(() => {
     }
   }
 
-  @include media-query(medium-up) {
+  @include container(medium-up) {
     .-mobile {
       display: none;
     }
