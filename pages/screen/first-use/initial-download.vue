@@ -10,12 +10,12 @@ const props = defineProps([
 </script>
 
 <template>
-  <KitScreen class="add-wallet">
-    <template v-if="stateId == 'add-wallet' && state">
+  <KitScreen class="initial-download">
+    <template v-if="stateId == 'first-use/initial-download' && state">
       <KitTopBar
         buttonLeftLabel="Back"
         buttonLeftIcon="caretLeft"
-        buttonLeftTo="/screen/cover?t=slide-right"
+        buttonLeftTo="/screen/first-use/storage-amount?t=slide-right"
       />
       <div class="illustration" />
       <KitHeader
@@ -26,11 +26,11 @@ const props = defineProps([
         <KitButton
           :label="state.buttonOne.label"
           :to="state.buttonOne.to"
+          theme="free"
         />
         <KitButton
           :label="state.buttonTwo.label"
           :to="state.buttonTwo.to"
-          theme="outline"
         />
       </div>
     </template>
@@ -39,15 +39,15 @@ const props = defineProps([
 
 <style scoped lang="scss">
 
-.add-wallet {
+.initial-download {
   .illustration {
     width: 200px;
     aspect-ratio: 1;
-    background-image: var(--wallet-illustration);
+    background-image: var(--initial-download-illustration);
     background-size: cover;
 
     @include retina() {
-      background-image: var(--wallet-illustration-2x);
+      background-image: var(--initial-download-illustration-2x);
     }
   }
 }

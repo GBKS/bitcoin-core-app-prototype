@@ -1,0 +1,16 @@
+{
+	"name": "Backup",
+	"states": {
+		"default": {
+			"title": "Let’s back up your walllet",
+			"description": "To prevent accidental loss, it is recommended you keep a copy of your wallet in a secure place, like a dedicated USB Drive.",
+			"buttonOne": {
+				"label": "Save wallet file"
+			},
+			"buttonTwo": {
+				"label": "Next",
+				"to": "/screen/create/success?t=slide-left"
+			}
+		}
+	}
+}

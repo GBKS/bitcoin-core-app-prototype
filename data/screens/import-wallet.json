@@ -1,0 +1,17 @@
+{
+	"name": "Import wallet",
+	"states": {
+		"default": {
+			"title": "Import a wallet",
+			"description": "Enter an extended public key (XPUB) or an address for view-only wallets. Enter a wallet descriptor for a full wallet.",
+			"buttonOne": {
+				"label": "Choose a wallet file",
+				"to": "/"
+			},
+			"buttonTwo": {
+				"label": "Next",
+				"to": "/"
+			}
+		}
+	}
+}

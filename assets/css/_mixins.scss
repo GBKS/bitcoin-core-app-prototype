@@ -10,6 +10,14 @@
   }
 }
 
+// Retina
+
+@mixin retina() {
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    @content;
+  }
+}
+
 // Media queries
 
 @mixin media-query($media-query) {

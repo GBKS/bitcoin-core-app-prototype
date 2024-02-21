@@ -2,6 +2,7 @@
 import Icons from '@/helpers/icons.js'
 
 const props = defineProps([
+  'class',
   'icon',
   'iconPosition', // left, right
   'label',
@@ -28,7 +29,11 @@ const classObject = computed(() => {
     c.push('-' + (props.iconPosition || 'right'))
   }
 
-  return c.join(' ')
+  let result = c.join(' ')
+
+  if(props.class) result += ' ' + props.class
+
+  return result
 })
 
 const type = computed(() => {

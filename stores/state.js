@@ -1,11 +1,11 @@
-import { defineStore } from 'pinia'
-import { useStorage, useLocalStorage } from '@vueuse/core'
+import { defineStore, skipHydrate } from 'pinia'
+import { useLocalStorage } from '@vueuse/core'
 
-export const useStateStore = defineStore({
-  id: 'state',
-
+export const useStateStore = defineStore('state', {
   state: () => {
     return {
+      showNav: useLocalStorage('showNav', true),
+      theme: useLocalStorage('theme', null),
       showWalletModal: ref(false),
       activeWalletId: ref('savings'),
       balanceDisplayMode: ref('bitcoin'), // bitcoin, satoshi, hide
@@ -33,13 +33,8 @@ export const useStateStore = defineStore({
     }
   },
 
-  getters: {
-    
-  },
-
-  actions: {
-    toggleWalletModal() {
-      this.showWalletModal = !this.showWalletModal
-    }
+  hydrate(state, initialState) {
+    state.showNav = useLocalStorage('showNav', true)
+    state.theme = useLocalStorage('theme', null)
   }
 })

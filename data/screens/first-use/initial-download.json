@@ -11,7 +11,7 @@
 			},
 			"buttonTwo": {
 				"label": "Next",
-				"to": "/screen/notification-permission?t=slide-left"
+				"to": "/screen/first-use/notification-permission?t=slide-left"
 			}
 		}
 	}

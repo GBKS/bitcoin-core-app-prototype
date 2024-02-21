@@ -10,12 +10,12 @@ const props = defineProps([
 </script>
 
 <template>
-  <KitScreen class="initial-download">
-    <template v-if="stateId == 'initial-download' && state">
+  <KitScreen class="block-clock-intro">
+    <template v-if="stateId == 'first-use/block-clock-intro' && state">
       <KitTopBar
         buttonLeftLabel="Back"
         buttonLeftIcon="caretLeft"
-        buttonLeftTo="/screen/storage-amount?t=slide-right"
+        buttonLeftTo="/screen/first-use/strengthen-bitcoin?t=slide-right"
       />
       <div class="illustration" />
       <KitHeader
@@ -24,13 +24,8 @@ const props = defineProps([
       />
       <div class="bottom">
         <KitButton
-          :label="state.buttonOne.label"
-          :to="state.buttonOne.to"
-          theme="free"
-        />
-        <KitButton
-          :label="state.buttonTwo.label"
-          :to="state.buttonTwo.to"
+          :label="state.button.label"
+          :to="state.button.to"
         />
       </div>
     </template>
@@ -39,12 +34,16 @@ const props = defineProps([
 
 <style scoped lang="scss">
 
-.initial-download {
+.block-clock-intro {
   .illustration {
     width: 200px;
     aspect-ratio: 1;
-    background-image: var(--initial-download-illustration);
+    background-image: var(--block-clock-illustration);
     background-size: cover;
+
+    @include retina() {
+      background-image: var(--block-clock-illustration-2x);
+    }
   }
 }
 

@@ -1,45 +1,56 @@
 <script setup>
 import mitt from 'mitt'
-
+import { storeToRefs } from 'pinia'
 import StateHelper from '@/helpers/state-helper.js'
+import { useStateStore } from "@/stores/state.js"
 
-import CoverScreen from '@/data/screens/cover.json'
+// First use
+import CoverScreen from '@/data/screens/first-use/cover.json'
+import StrengthenBitcoinScreen from '@/data/screens/first-use/strengthen-bitcoin.json'
+import BlockClockIntroScreen from '@/data/screens/first-use/block-clock-intro.json'
+import StorageLocationScreen from '@/data/screens/first-use/storage-location.json'
+import StorageAmountScreen from '@/data/screens/first-use/storage-amount.json'
+import InitialDownloadScreen from '@/data/screens/first-use/initial-download.json'
+import NotificationPermissionScreen from '@/data/screens/first-use/notification-permission.json'
+
 import AboutScreen from '@/data/screens/about.json'
-import DeveloperOptionsScreen from '@/data/screens/developer-options.json'
-import StrengthenBitcoinScreen from '@/data/screens/strengthen-bitcoin.json'
-import BlockClockIntroScreen from '@/data/screens/block-clock-intro.json'
-import StorageLocationScreen from '@/data/screens/storage-location.json'
-import StorageAmountScreen from '@/data/screens/storage-amount.json'
 import StorageSettingsScreen from '@/data/screens/storage-settings.json'
-import InitialDownloadScreen from '@/data/screens/initial-download.json'
-import ConnectionSettingsScreen from '@/data/screens/connection-settings.json'
-import NotificationPermissionScreen from '@/data/screens/notification-permission.json'
-import DisplaySettingsScreen from '@/data/screens/display-settings.json'
-import ProxySettingsScreen from '@/data/screens/proxy-settings.json'
+import DeveloperOptionsScreen from '@/data/screens/developer-options.json'
 import ActivityScreen from '@/data/screens/activity.json'
 import SendScreen from '@/data/screens/send.json'
 import SendReviewScreen from '@/data/screens/send-review.json'
 import ReceiveScreen from '@/data/screens/receive.json'
 import PaymentRequestScreen from '@/data/screens/payment-request.json'
+
+// Settings
 import SettingsScreen from '@/data/screens/settings.json'
 import BlockClockScreen from '@/data/screens/block-clock.json'
 import SnapshotScreen from '@/data/screens/snapshot.json'
 import TransactionScreen from '@/data/screens/transaction.json'
-import AddWalletScreen from '@/data/screens/add-wallet.json'
 import NetworkTrafficScreen from '@/data/screens/network-traffic.json'
 import PeersScreen from '@/data/screens/peers.json'
 import PeerScreen from '@/data/screens/peer.json'
+import ConnectionSettingsScreen from '@/data/screens/connection-settings.json'
+import DisplaySettingsScreen from '@/data/screens/display-settings.json'
+import ProxySettingsScreen from '@/data/screens/proxy-settings.json'
+
+// Wallet creation and import
+import AddWalletScreen from '@/data/screens/add-wallet.json'
+import ImportWalletScreen from '@/data/screens/import-wallet.json'
+import CreateWalletSingleKeyInfoScreen from '@/data/screens/create/single-key-info.json'
+import CreateWalletNameScreen from '@/data/screens/create/name.json'
+import CreateWalletPasswordScreen from '@/data/screens/create/password.json'
+import CreateWalletBackupScreen from '@/data/screens/create/backup.json'
+import CreateWalletSuccessScreen from '@/data/screens/create/success.json'
 
 const Screens = {
-  "cover": CoverScreen,
-  "about": AboutScreen,
-  "developer-options": DeveloperOptionsScreen,
-  "strengthen-bitcoin": StrengthenBitcoinScreen,
-  "block-clock-intro": BlockClockIntroScreen,
-  "storage-location": StorageLocationScreen,
-  "storage-amount": StorageAmountScreen,
-  "initial-download": InitialDownloadScreen,
-  "notification-permission": NotificationPermissionScreen,
+  "first-use/cover": CoverScreen,
+  "first-use/strengthen-bitcoin": StrengthenBitcoinScreen,
+  "first-use/block-clock-intro": BlockClockIntroScreen,
+  "first-use/storage-location": StorageLocationScreen,
+  "first-use/storage-amount": StorageAmountScreen,
+  "first-use/initial-download": InitialDownloadScreen,
+  "first-use/notification-permission": NotificationPermissionScreen,
   "activity": ActivityScreen,
   "transaction": TransactionScreen,
   "send": SendScreen,
@@ -56,18 +67,25 @@ const Screens = {
   "storage-settings": StorageSettingsScreen,
   "peers": PeersScreen,
   "peer": PeerScreen,
-  "add-wallet": AddWalletScreen
+  "about": AboutScreen,
+  "developer-options": DeveloperOptionsScreen,
+  "add-wallet": AddWalletScreen,
+  "import-wallet": ImportWalletScreen,
+  "create/single-key-info": CreateWalletSingleKeyInfoScreen,
+  "create/name": CreateWalletNameScreen,
+  "create/password": CreateWalletPasswordScreen,
+  "create/backup": CreateWalletBackupScreen,
+  "create/success": CreateWalletSuccessScreen
 }
 
+const state = useStateStore()
 const route = useRoute()
 const activeProtoNavTab = ref('screens')
 const activeProtoNavId = ref(null)
 const activeContentStateId = ref(null)
-const showNav = ref(false)
+const { showNav, theme } = storeToRefs(state)
 const contentState = ref(null)
 const preparedContentState = ref(null)
-const theme = ref(null)
-const showProtoNav = ref(true)
 const mobileOnDesktop = ref(false)
 const screenSize = ref('desktop')
 const pageWrap = ref(null)
@@ -85,23 +103,26 @@ function prepScreens() {
 prepScreens()
 
 function updateFromRoute() {
-  showNav.value = route.path !== '/'
+  // showNav.value = route.path !== '/'
 
   const bits = route.path.substr(1).split('/')
 
+  const screenId = bits.length > 1 ? bits.slice(1).join('/') : null
+
   if(bits[0] == 'screen') {
     activeProtoNavTab.value = 'screens'
-    contentState.value = Screens[bits[1]]
+    // contentState.value = Screens[bits[1]]
+    contentState.value = Screens[screenId]
 
-    prepContentState(Screens[bits[1]], route.query.state)
+    prepContentState(Screens[screenId], route.query.state)
   }
 
   activeContentStateId.value = route.query.state || 'default'
 
-  activeProtoNavId.value = bits.length > 1 ? bits[1] : null
+  activeProtoNavId.value = screenId
 
   if(route.query.theme) {
-    theme.value = route.query.theme
+    state.theme = route.query.theme
     updateTheme()
   }
 }
@@ -114,26 +135,28 @@ const navInfo = computed(() => {
 })
 
 function detectTheme() {
-  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-  
-  if(prefersDark) {
-    theme.value = 'dark'
-  } else {
-    theme.value = 'light'
+  if(!state.theme) {
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+    
+    if(prefersDark) {
+      state.theme = 'dark'
+    } else {
+      state.theme = 'light'
+    }
   }
-
+  
   updateTheme()
 }
 
 function toggleTheme(value) { 
-  theme.value = theme.value == 'light' ? 'dark' : 'light'
+  state.theme = state.theme == 'light' ? 'dark' : 'light'
   
   updateTheme()
 }
 
 function updateTheme() {
   const themeColorMeta = document.getElementById('themeColorMeta')
-  if(theme.value == 'dark') {
+  if(state.theme == 'dark') {
     document.body.classList.add('--theme-dark')
     themeColorMeta.content = '#000000'
   } else {
@@ -200,8 +223,8 @@ function changeActiveProtoNavTab(value) {
   activeProtoNavTab.value = value
 }
 
-function toggleProtoNav() { 
-  showProtoNav.value = !showProtoNav.value
+function toggleProtoNav() {
+  state.showNav = !state.showNav
 }
 
 function prepContentState(base, stateId) {
@@ -251,20 +274,22 @@ const showPage = computed(() => {
 
 <template>
   <div id="app">
-    <ProtoNavMain
-      :activeTab="activeProtoNavTab"
-      :activeId="activeProtoNavId"
-      :activeStateId="activeContentStateId"
-      :info="navInfo"
-      :state="contentState"
-      :theme="theme"
-      :showNav="showProtoNav"
-      :isMobile="mobileOnDesktop"
-      @changeTab="changeActiveProtoNavTab"
-      @toggleTheme="toggleTheme"
-      @toggleNav="toggleProtoNav"
-      @toggleMobile="mobileOnDesktop = !mobileOnDesktop"
-    />
+    <client-only>
+      <ProtoNavMain
+        :activeTab="activeProtoNavTab"
+        :activeId="activeProtoNavId"
+        :activeStateId="activeContentStateId"
+        :info="navInfo"
+        :state="contentState"
+        :theme="theme"
+        :showNav="showNav"
+        :isMobile="mobileOnDesktop"
+        @changeTab="changeActiveProtoNavTab"
+        @toggleTheme="toggleTheme"
+        @toggleNav="toggleProtoNav"
+        @toggleMobile="mobileOnDesktop = !mobileOnDesktop"
+      />
+    </client-only>
     <div :class="contentClass">
       <div class="content">
         <NavDesktopTop v-if="contentState && (contentState.nav === true || contentState.nav === 'desktop')" />
@@ -288,7 +313,7 @@ const showPage = computed(() => {
 
 #app {
   display: flex;
-  min-height: 100vh;
+  min-height: 100dvh;
   position: relative;
 
   > .content-wrap {

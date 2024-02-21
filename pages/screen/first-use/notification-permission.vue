@@ -10,12 +10,12 @@ const props = defineProps([
 </script>
 
 <template>
-  <KitScreen class="strengthen-bitcoin">
-    <template v-if="stateId == 'strengthen-bitcoin' && state">
+  <KitScreen class="notification-permission">
+    <template v-if="stateId == 'first-use/notification-permission' && state">
       <KitTopBar
         buttonLeftLabel="Back"
         buttonLeftIcon="caretLeft"
-        buttonLeftTo="/screen/cover?t=slide-right"
+        buttonLeftTo="/screen/first-use/initial-download?t=slide-right"
       />
       <div class="illustration" />
       <KitHeader
@@ -34,12 +34,16 @@ const props = defineProps([
 
 <style scoped lang="scss">
 
-.strengthen-bitcoin {
+.notification-permission {
   .illustration {
     width: 200px;
     aspect-ratio: 1;
-    background-image: var(--network-illustration);
+    background-image: var(--notification-illustration);
     background-size: cover;
+
+    @include retina() {
+      background-image: var(--notification-illustration-2x);
+    }
   }
 }
 

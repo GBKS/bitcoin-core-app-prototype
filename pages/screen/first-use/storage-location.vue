@@ -13,11 +13,11 @@ const activeId = ref('default')
 
 <template>
   <KitScreen class="storage-location">
-    <template v-if="stateId == 'storage-location' && state">
+    <template v-if="stateId == 'first-use/storage-location' && state">
       <KitTopBar
         buttonLeftLabel="Back"
         buttonLeftIcon="caretLeft"
-        buttonLeftTo="/screen/block-clock-intro?t=slide-right"
+        buttonLeftTo="/screen/first-use/block-clock-intro?t=slide-right"
       />
       <KitHeader
         :title="state.title"

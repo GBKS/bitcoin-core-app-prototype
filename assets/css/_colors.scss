@@ -32,9 +32,15 @@
   --screen-side-padding: 20px;
 
   --network-illustration: url('/assets/images/network-light.png');
+  --network-illustration-2x: url('/assets/images/network-light@2x.png');
   --block-clock-illustration: url('/assets/images/block-clock-light.png');
+  --block-clock-illustration-2x: url('/assets/images/block-clock-light@2x.png');
   --initial-download-illustration: url('/assets/images/initial-download-light.png');
+  --initial-download-illustration-2x: url('/assets/images/initial-download-light@2x.png');
   --notification-illustration: url('/assets/images/notifications-light.png');
+  --notification-illustration-2x: url('/assets/images/notifications-light@2x.png');
+  --wallet-illustration: url('/assets/images/wallet-light.png');
+  --wallet-illustration-2x: url('/assets/images/wallet-light@2x.png');
 }
 
 .-primary { color: var(--primary); }
@@ -77,7 +83,13 @@
   --brown: #A68151;
 
   --network-illustration: url('/assets/images/network-dark.png');
+  --network-illustration-2x: url('/assets/images/network-dark@2x.png');
   --block-clock-illustration: url('/assets/images/block-clock-dark.png');
+  --block-clock-illustration-2x: url('/assets/images/block-clock-dark@2x.png');
   --initial-download-illustration: url('/assets/images/initial-download-dark.png');
+  --initial-download-illustration-2x: url('/assets/images/initial-download-dark@2x.png');
   --notification-illustration: url('/assets/images/notifications-dark.png');
+  --notification-illustration-2x: url('/assets/images/notifications-dark@2x.png');
+  --wallet-illustration: url('/assets/images/wallet-dark.png');
+  --wallet-illustration-2x: url('/assets/images/wallet-dark@2x.png');
 }

@@ -6,6 +6,9 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'netlify'
   },
+  server: {
+    host: '0.0.0.0'
+  },
   app: {
     head: {
       title: 'Bitcoin Core App Prototype',

@@ -1,0 +1,13 @@
+{
+	"name": "Name",
+	"states": {
+		"default": {
+			"title": "Wallet name",
+			"description": "The wallet file on your hard drive will also use this name.",
+			"button": {
+				"label": "Next",
+				"to": "/screen/create/password?t=slide-left"
+			}
+		}
+	}
+}

@@ -7,7 +7,7 @@
 			"description": "Bitcoin Core runs a full Bitcoin node which verifies the rules of the network are being followed.<br/><br/>Users running nodes is what makes bitcoin so resilient and trustworthy.",
 			"button": {
 				"label": "Next",
-				"to": "/screen/block-clock-intro?t=slide-left"
+				"to": "/screen/first-use/block-clock-intro?t=slide-left"
 			}
 		}
 	}

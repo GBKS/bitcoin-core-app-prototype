@@ -1,0 +1,12 @@
+{
+	"name": "Single key info",
+	"states": {
+		"default": {
+			"title": "You are about to create a single-key bitcoin wallet",
+			"button": {
+				"label": "Continue",
+				"to": "/screen/create/name?t=slide-left"
+			}
+		}
+	}
+}

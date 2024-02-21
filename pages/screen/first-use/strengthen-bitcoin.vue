@@ -10,12 +10,12 @@ const props = defineProps([
 </script>
 
 <template>
-  <KitScreen class="block-clock-intro">
-    <template v-if="stateId == 'block-clock-intro' && state">
+  <KitScreen class="strengthen-bitcoin">
+    <template v-if="stateId == 'first-use/strengthen-bitcoin' && state">
       <KitTopBar
         buttonLeftLabel="Back"
         buttonLeftIcon="caretLeft"
-        buttonLeftTo="/screen/strengthen-bitcoin?t=slide-right"
+        buttonLeftTo="/screen/first-use/cover?t=slide-right"
       />
       <div class="illustration" />
       <KitHeader
@@ -34,12 +34,16 @@ const props = defineProps([
 
 <style scoped lang="scss">
 
-.block-clock-intro {
+.strengthen-bitcoin {
   .illustration {
     width: 200px;
     aspect-ratio: 1;
-    background-image: var(--block-clock-illustration);
+    background-image: var(--network-illustration);
     background-size: cover;
+
+    @include retina() {
+      background-image: var(--network-illustration-2x);
+    }
   }
 }
 

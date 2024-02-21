@@ -3,7 +3,16 @@
 	"category": "Add wallet",
 	"states": {
 		"default": {
-			
+			"title": "Add a wallet",
+			"description": "In this early stage of development, only wallet.dat files are supported.",
+			"buttonOne": {
+				"label": "Create wallet",
+				"to": "/screen/create/single-key-info?t=slide-left"
+			},
+			"buttonTwo": {
+				"label": "Import wallet",
+				"to": "/screen/import-wallet?t=slide-left"
+			}
 		}
 	}
 }

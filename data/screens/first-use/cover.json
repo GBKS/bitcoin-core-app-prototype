@@ -1,6 +1,6 @@
 {
 	"name": "Cover",
-	"category": "Onboarding",
+	"category": "First use",
 	"states": {
 		"default": {
 			"name": "Default",
@@ -9,7 +9,7 @@
 			"note": "100% open-source & open-design",
 			"button": {
 				"label": "Start",
-				"to": "/screen/strengthen-bitcoin?t=slide-left"
+				"to": "/screen/first-use/strengthen-bitcoin?t=slide-left"
 			}
 		},
 		"testnet": {

@@ -11,7 +11,7 @@ const props = defineProps([
 
 <template>
   <KitScreen class="cover">
-    <template v-if="stateId == 'cover' && state">
+    <template v-if="stateId == 'first-use/cover' && state">
       <KitTopBar
         buttonRightIcon="infoCircle"
         buttonRightTo="/screen/about?t=slide-left"

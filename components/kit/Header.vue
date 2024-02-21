@@ -7,6 +7,7 @@ const props = defineProps([
   'description',
   'buttonLabel',
   'buttonIcon',
+  'buttonTo',
   'buttonClick',
   'big'
 ])
@@ -37,6 +38,7 @@ const props = defineProps([
       v-if="buttonLabel || buttonIcon"
       :label="buttonLabel"
       :icon="buttonIcon"
+      :to="buttonTo"
       @click="buttonClick"
     />
   </div>

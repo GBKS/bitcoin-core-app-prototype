@@ -15,7 +15,7 @@ const props = defineProps([
       <KitTopBar
         buttonLeftLabel="Back"
         buttonLeftIcon="caretLeft"
-        buttonLeftTo="/screen/cover?t=slide-right"
+        buttonLeftTo="/screen/first-use/cover?t=slide-right"
       />
       <KitHeader
         :title="state.title"

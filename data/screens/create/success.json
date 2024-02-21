@@ -1,0 +1,13 @@
+{
+	"name": "Success",
+	"states": {
+		"default": {
+			"title": "Your wallet was created",
+			"description": "It is good practice to make a small test transaction before you actively use this wallet for larger amounts.<br/><br/>Block download is still pending. You can already create addresses and receive bitcoin. Your balance will not be current, and you will not be able to send until completion.",
+			"button": {
+				"label": "Next",
+				"to": "/"
+			}
+		}
+	}
+}
