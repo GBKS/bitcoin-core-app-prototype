@@ -22,9 +22,10 @@ const props = defineProps([
         :description="state.description"
         :big="true"
       />
-      <p class="note -body-6">{{ state.note }}</p>
 
-      <div class="bottom">
+      <div class="info">
+        <p class="note -body-6">{{ state.note }}</p>
+
         <div v-if="state.testnet" class="testnet">
           <UiNetworkIndicator color="green" label="Test network" />
           <p>The application is using the test network. Only use for experimentation and development.</p>
@@ -34,6 +35,9 @@ const props = defineProps([
             size="small"
           />
         </div>
+      </div>
+
+      <div class="bottom">
         <KitButton
           :label="state.button.label"
           :to="state.button.to"
@@ -61,22 +65,31 @@ const props = defineProps([
     padding-top: 75px;
   }
 
-  .testnet {
+  .info {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 5px;
-    background-color: var(--neutral-2);
-    border-radius: var(--corner-radius);
-    padding: 15px;
-    width: 100%;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 450px;
+    padding: 0 20px;
 
-    p {
-      text-align: center;
-    }
+    .testnet {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      background-color: var(--neutral-2);
+      border-radius: var(--corner-radius);
+      padding: 20px 15px 15px 15px;
+      width: 100%;
 
-    @include container(medium-up) {
-      max-width: 300px;
+      p {
+        text-align: center;
+
+        &:nth-child(2) {
+          margin-top: 5px;
+        }
+      }
     }
   }
 }

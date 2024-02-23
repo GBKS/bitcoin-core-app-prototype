@@ -50,6 +50,12 @@ const props = defineProps([
     margin: 0 10px;
     padding: 15px 0 0 0;
   }
+
+  @include media-query(medium-up) {
+    flex-basis: 10%;
+    flex-grow: 1;
+    overflow-y: scroll;
+  }
 }
 
 </style>

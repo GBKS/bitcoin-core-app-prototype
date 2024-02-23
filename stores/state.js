@@ -36,5 +36,11 @@ export const useStateStore = defineStore('state', {
   hydrate(state, initialState) {
     state.showNav = useLocalStorage('showNav', true)
     state.theme = useLocalStorage('theme', null)
+  },
+
+  actions: {
+    toggleWalletModal() {
+      this.showWalletModal = !this.showWalletModal
+    }
   }
 })

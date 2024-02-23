@@ -102,7 +102,9 @@ const classObject = computed(() => {
   }
 
   @include media-query(medium-up) {
-
+    &.-expanded {
+      max-height: 100dvh;
+    }
   }
 }
 
