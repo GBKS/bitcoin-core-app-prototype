@@ -21,7 +21,7 @@ function createSnapshot() {
 
 function startTimer() {
   clearTimeout(timer)
-  setTimeout(updateProgress, 500)
+  timer = setTimeout(updateProgress, 500)
 }
 
 function updateProgress() {

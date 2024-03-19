@@ -16,7 +16,7 @@ const recentBlocksActive = ref(false)
     <template v-if="stateId == 'storage-settings' && state">
       <KitTopBar
         buttonRightLabel="Done"
-        buttonRightTo="/screen/storage-amount?t=slide-down"
+        buttonRightTo="/screen/first-use/storage-amount?t=slide-down"
       />
       <KitHeader
         :title="state.title"

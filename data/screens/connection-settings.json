@@ -6,7 +6,7 @@
 			"title": "Connection settings",
 			"back": {
 				"label": "Done",
-				"to": "/screen/initial-download?t=slide-down"
+				"to": "/screen/first-use/initial-download?t=slide-down"
 			}
 		},
 		"onboarding": {
