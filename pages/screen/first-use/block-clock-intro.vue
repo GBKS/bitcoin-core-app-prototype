@@ -11,6 +11,7 @@ const props = defineProps([
 ])
 
 const stateStore = useStateStore()
+const { theme } = storeToRefs(stateStore)
 let lottieAnimation
 const lottieCanvas = ref()
 const lottieAvailable = ref(null)
@@ -23,6 +24,10 @@ const illustrationClass = computed(() => {
   }
 
   return c.join(' ')
+})
+
+watch(theme, async() => {
+  startAnimation()
 })
 
 function lottieError() {
@@ -39,7 +44,12 @@ function startAnimation() {
   if(lottie) {
     lottieAvailable.value = true
 
-    const path = '/lottie/block-clock-' + (stateStore.theme == 'dark' ? 'light' : 'dark') + '.json'
+    if(lottieAnimation) {
+      lottieAnimation.destroy()
+      lottieAnimation = null
+    }
+
+    const path = '/lottie/block-clock-' + (stateStore.theme == 'dark' ? 'dark' : 'light') + '.json'
 
     lottieAnimation = lottie.loadAnimation({
       name: 'onboarding-block-clock',
