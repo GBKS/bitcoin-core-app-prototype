@@ -118,11 +118,6 @@ function clickTrash() {
       color: var(--neutral-7);
       border-radius: 5px;
 
-      &:hover {
-        color: var(--neutral-9);
-        background-color: var(--neutral-2);
-      }
-
       &.-remove {
         ::v-deep(svg) {
           width: 16px;
@@ -135,10 +130,6 @@ function clickTrash() {
           width: 12px;
           height: 12px;
         }
-      }
-
-      &:hover {
-        color: var(--neutral-9);
       }
 
       &:active {
@@ -166,6 +157,13 @@ function clickTrash() {
     
     .options {
       display: none;
+
+      button {
+        &:hover {
+          color: var(--neutral-9);
+          background-color: var(--neutral-2);
+        }
+      }
     }
 
     &:hover {

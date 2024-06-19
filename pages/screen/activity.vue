@@ -200,7 +200,7 @@ onBeforeUnmount(() => {
       top: 0;
       width: 0;
       height: 0;
-      background-color: var(--neutral-9);
+      background-color: var(--neutral-2);
       transition: opacity 400ms $ease;
       opacity: 0;
       z-index: 1;
@@ -212,7 +212,7 @@ onBeforeUnmount(() => {
       .cover {
         width: 100%;
         height: 100%;
-        opacity: 0.5;
+        opacity: 0.85;
         pointer-events: auto;
       }
     }

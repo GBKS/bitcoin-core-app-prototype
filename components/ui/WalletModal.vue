@@ -20,6 +20,10 @@ function removeWallet(id) {
 
   if(Object.keys(stateStore.wallets).length == 0) {
     stateStore.showWalletModal = false
+
+    // Navigate to the node page
+    const router = useRouter()
+    router.push({ path: '/screen/block-clock' })
   }
 }
 
@@ -112,9 +116,9 @@ const classObject = computed(() => {
     bottom: 0;
     left: 0;
     width: 100%;
-    border-top: 1px solid var(--neutral-4);
-    border-top-left-radius: var(--corner-radius);
-    border-top-right-radius: var(--corner-radius);
+    // border-top: 1px solid var(--neutral-4);
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
     transform: translateY(100%);
     transition: all 400ms $ease;
 

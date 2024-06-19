@@ -18,6 +18,11 @@
 				"label": "Cancel",
 				"icon": null,
 				"to": "/screen/activity?t=slide-down"
+			},
+			"buttonBackNoWallets": {
+				"label": "Cancel",
+				"icon": null,
+				"to": "/screen/block-clock?t=slide-down"
 			}
 		},
 		"onboarding": {
