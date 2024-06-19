@@ -4,17 +4,49 @@ import Toolbox from '@/helpers/toolbox.js'
 export default {
   
   init() {
-
     const state = useStateStore()
 
     this.wallets(state)
+  },
+
+  addWallet() {
+    const state = useStateStore()
+
+    const walletId = 'wallet-' + Math.random().toString(36).substr(2, 9)
+    const bases = [{
+        type: 'single-key',
+        icon: 'keyFilled'
+      }, {
+        type: 'multi-key',
+        icon: 'twoKeys'
+      }, {
+        type: 'view-only',
+        icon: 'eye'
+      }
+    ]
+
+    const transactions = this.transactions()
+    let balance = 0
+    for(let k=0; k<transactions.length; k++) {
+      balance += transactions[k].amount
+    }
+  
+    const data = bases[Math.floor(Math.random() * bases.length)]
+    data.name = 'Wallet ' + Object.keys(state.wallets).length
+    data.balance = balance
+    data.lastOpen = Date.now()
+
+    state.transactions[walletId] = transactions
+    state.wallets[walletId] = data
+
+    return walletId
   },
 
   wallets(state) {
     const result = {}
 
     let transactions, balance, k
-    for(let walletName in state.wallets) {
+    for(let walletId in state.wallets) {
       transactions = this.transactions()
 
       balance = 0
@@ -22,15 +54,15 @@ export default {
         balance += transactions[k].amount
       }
 
-      result[walletName] = transactions
+      result[walletId] = transactions
 
-      state.wallets[walletName].balance = balance
+      state.wallets[walletId].balance = balance
     }
 
     state.transactions = result
   },
 
-  transactions(walletName) {
+  transactions() {
     const result = []
     let timestamp = new Date().getTime()
 

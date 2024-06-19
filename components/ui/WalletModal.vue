@@ -1,17 +1,47 @@
 <script setup>
 import { useStateStore } from "@/stores/state.js"
+import StateHelper from '@/helpers/state-helper.js'
 
 const stateStore = useStateStore()
 
 function setActiveWalletId(value) {
   stateStore.activeWalletId = value
 
+  stateStore.wallets[value].lastOpen = Date.now()
+
   stateStore.showWalletModal = false
+}
+
+function removeWallet(id) {
+  stateStore.activeWalletId = null
+
+  delete stateStore.wallets[id]
+  delete stateStore.transactions[id]
+
+  if(Object.keys(stateStore.wallets).length == 0) {
+    stateStore.showWalletModal = false
+  }
+}
+
+function closeWallet(id) {
+  stateStore.activeWalletId = null
+
+  // stateStore.showWalletModal = false
 }
 
 function closeModal() {
   stateStore.showWalletModal = false
 }
+
+function addDummyWallet() {
+  const walletId = StateHelper.addWallet()
+}
+
+const sortedWalletIds = computed(() => {
+  return Object.keys(stateStore.wallets).sort((a, b) => {
+    return stateStore.wallets[b].lastOpen - stateStore.wallets[a].lastOpen
+  })
+})
 
 const classObject = computed(() => {
   const c = ['wallet-modal']
@@ -26,22 +56,22 @@ const classObject = computed(() => {
   <div :class="classObject">
     <div class="content">
       <div class="drag-indicator" />
-      <h5>Wallets</h5>
+      <h5 class="-title-6 -title-4-mobile" @click="addDummyWallet">Your wallets</h5>
       <div class="list">
         <UiWalletModalItem
-          v-for="(item, id) in stateStore.wallets"
+          v-for="id in sortedWalletIds"
           :key="id"
           :id="id"
-          :info="item"
-          :activeId="stateStore.activeWalletId"
-          @click="setActiveWalletId(id)"
+          @select="setActiveWalletId"
+          @remove="removeWallet"
+          @close="closeWallet"
         />
       </div>
       <KitButton
         icon="plus"
         iconPosition="left"
         label="Add wallet"
-        theme="free"
+        theme="free-subtle"
         size="small"
         to="/screen/add-wallet?t=slide-up"
       />
@@ -61,14 +91,19 @@ const classObject = computed(() => {
   .content {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     position: relative;
-    padding: 10px 15px;
+
+    h5 {
+      text-align: center;
+    }
 
     .list {
       display: flex;
       flex-direction: column;
       align-items: stretch;
+      max-height: 300px;
+      overflow-y: scroll;
     }
   }
 
@@ -87,17 +122,14 @@ const classObject = computed(() => {
       margin-top: 10px;
       flex-basis: 100%;
       gap: 10px;
-      padding-bottom: 30px;
+      padding: 10px 15px 30px 15px;
 
       .drag-indicator {
         width: 50px;
         height: 5px;
         border-radius: 5px;
         background-color: var(--neutral-3);
-      }
-
-      h5 {
-        
+        align-self: center;
       }
 
       .list {
@@ -119,12 +151,14 @@ const classObject = computed(() => {
     border: 1px solid var(--neutral-4);
 
     .content {      
-      .drag-indicator,
-      h5 {
+      padding: 15px 5px 10px 5px;
+
+      .drag-indicator {
         display: none;
       }
 
       .list {
+        margin-top: 5px;
         margin-bottom: 5px;
       }
 
@@ -132,7 +166,7 @@ const classObject = computed(() => {
         display: block;
         content: '';
         position: absolute;
-        left: 50%;
+        left: 20px;
         top: 0;
         width: 14px;
         height: 14px;

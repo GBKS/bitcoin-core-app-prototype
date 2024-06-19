@@ -54,6 +54,7 @@ const walletData = computed(() => {
 
 <template>
   <div
+     v-if="stateStore.activeWalletId"
     :class="classObject"
   >
     <div class="top" @click="toggleModal">

@@ -1,16 +1,11 @@
 <script setup>
 const props = defineProps([
   'id',
-  'info',
-  'activeId'
+  'info'
 ])
 
 const classObject = computed(() => {
   const c = ['tab', '-title-6']
-
-  if(props.id == props.activeId) {
-    c.push('-active')
-  }
 
   return c.join(' ')
 })

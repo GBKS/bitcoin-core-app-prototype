@@ -14,19 +14,22 @@ export const useStateStore = defineStore('state', {
           name: 'Savings',
           balance: 0,
           icon: 'keyFilled',
-          type: 'single-key'
+          type: 'single-key',
+          lastOpen: 2
         },
         family: {
           name: 'Family',
           balance: 0,
           icon: 'twoKeys',
-          type: 'multi-key'
+          type: 'multi-key',
+          lastOpen: 1
         },
         cold: {
           name: 'Cold storage',
           balance: 0,
           icon: 'eye',
-          type: 'view-only'
+          type: 'view-only',
+          lastOpen: 0
         }
       },
       transactions: ref(null)

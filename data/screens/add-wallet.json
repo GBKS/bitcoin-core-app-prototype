@@ -3,6 +3,7 @@
 	"category": "Add wallet",
 	"states": {
 		"default": {
+			"name": "Default",
 			"title": "Add a wallet",
 			"description": "In this early stage of development, only wallet.dat files are supported.",
 			"buttonOne": {
@@ -12,6 +13,19 @@
 			"buttonTwo": {
 				"label": "Import wallet",
 				"to": "/screen/import-wallet?t=slide-left"
+			},
+			"buttonBack": {
+				"label": "Cancel",
+				"icon": null,
+				"to": "/screen/activity?t=slide-down"
+			}
+		},
+		"onboarding": {
+			"name": "Onboarding",
+			"buttonBack": {
+				"label": "Back",
+				"icon": "caretLeft",
+				"to": "/screen/first-use/storage-location?t=slide-right"
 			}
 		}
 	}

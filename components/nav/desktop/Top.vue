@@ -1,21 +1,15 @@
 <script setup>
-const props = defineProps([
+import { useStateStore } from "@/stores/state.js"
 
-])
-
-const activeId = ref(null)
+const stateStore = useStateStore()
 </script>
 
 <template>
   <div class="top">
     <div class="left">
-      <NavDesktopWallet
-        :activeId="activeId"
-      />
+      <NavDesktopWallet />
     </div>
-    <NavDesktopTabs 
-      :activeId="activeId" 
-    />
+    <NavDesktopTabs v-if="stateStore.activeWalletId" />
     <div class="right">
       <UiNetworkIndicator
         label="Testnet"
@@ -23,9 +17,7 @@ const activeId = ref(null)
         :small="true"
       />
       <NavDesktopBlockClock />
-      <NavDesktopOptions 
-        :activeId="activeId" 
-      />
+      <NavDesktopOptions />
     </div>
   </div>
 </template>

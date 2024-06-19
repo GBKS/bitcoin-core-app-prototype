@@ -1,6 +1,6 @@
 <script setup>
 const props = defineProps([
-  'activeId'
+
 ])
 
 const info = {
@@ -19,7 +19,6 @@ const info = {
       :key="id"
       :id="id"
       :info="item"
-      :activeId="activeId"
     />
   </div>
 </template>

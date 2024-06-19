@@ -7,7 +7,7 @@
 			"description": "Where do you want to store the downloaded block data?<br/><br/>You need a minimum of 1GB of storage.",
 			"button": {
 				"label": "Next",
-				"to": "/screen/first-use/storage-amount?t=slide-left"
+				"to": "/screen/add-wallet?t=slide-left&state=onboarding"
 			}
 		},
 		"custom": {

@@ -13,9 +13,9 @@ const props = defineProps([
   <KitScreen class="add-wallet">
     <template v-if="stateId == 'add-wallet' && state">
       <KitTopBar
-        buttonLeftLabel="Back"
-        buttonLeftIcon="caretLeft"
-        buttonLeftTo="/screen/cover?t=slide-right"
+        :buttonLeftLabel="state.buttonBack.label"
+        :buttonLeftIcon="state.buttonBack.icon"
+        :buttonLeftTo="state.buttonBack.to"
       />
       <div class="illustration" />
       <KitHeader

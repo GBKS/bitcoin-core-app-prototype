@@ -3,10 +3,6 @@ import { useStateStore } from "@/stores/state.js"
 
 import Icons from '@/helpers/icons.js'
 
-const props = defineProps([
-  'activeId'
-])
-
 const stateStore = useStateStore()
 const active = ref(false)
 
@@ -21,7 +17,7 @@ const classObject = computed(() => {
 })
 
 const icon = computed(() => {
-  return Icons[walletData.value.icon]
+  return walletData.value ? Icons[walletData.value.icon] : null
 })
 
 function click(event) {
@@ -57,77 +53,69 @@ function changeActiveWalletId(value) {
 const walletData = computed(() => {
   return stateStore.wallets[stateStore.activeWalletId]
 })
+
+const hasWallets = computed(() => {
+  return Object.keys(stateStore.wallets).length > 0
+})
 </script>
 
 <template>
-  <div
-    class="wallet"
-    @click="click"
-  >
-    <div
-      class="icon"
-      v-html="icon"
+  <div class="nav-desktop-wallet">
+    <KitButton
+      v-if="!stateStore.activeWalletId && !hasWallets"
+      class="add-wallet"
+      to="/screen/add-wallet?t=slide-up"
+      icon="plus"
+      icon-position="left"
+      label="Add wallet"
+      theme="free-subtle"
+      size="small"
     />
-    <div class="copy">
-      <p class="-title-7">{{ walletData.name }}</p>
-      <KitBalance
-        class="-body-5"
-        :unit="stateStore.balanceDisplayMode"
-        :amount="walletData.balance"
-        theme="dark"
-      />
-    </div>
+
+    <KitButton
+      v-if="!stateStore.activeWalletId && hasWallets"
+      class="open-wallet"
+      icon="wallet"
+      title="Open wallet"
+      theme="free-subtle"
+      size="medium"
+      @click="toggleModal"
+    />
+    
+    <NavDesktopActiveWallet 
+      v-if="stateStore.activeWalletId && hasWallets"
+      @select="toggleModal"
+    />
+    <UiWalletModal
+      v-if="stateStore.showWalletModal"
+    />
   </div>
-  <UiWalletModal
-    v-if="stateStore.showWalletModal"
-  />
 </template>
 
 <style scoped lang="scss">
 
-.wallet {
+.nav-desktop-wallet {
   display: flex;
-  align-items: center;
-  cursor: pointer;
-  margin: 5px;
-  padding: 0 10px 0 5px;
-  transition: all 150ms $ease;
+  align-items: stretch;
+  padding: 5px;
 
-  .icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 35px;
-    height: 35px;
-    color: var(--neutral-7);
-
-    ::v-deep(svg) {
+  ::v-deep(.add-wallet) {
+    height: auto;
+    
+    svg {
       width: 22px;
       height: 22px;
     }
   }
 
-  .copy {
-    p {
-      ::v-deep(.-nz) {
-        color: var(--neutral-7);
-      }
+  ::v-deep(.open-wallet) {
+    height: auto;
+    width: 59px;
+    
+    svg {
+      width: 22px;
+      height: 22px;
     }
-  }
-
-  &:hover {
-    background-color: var(--neutral-2);
-    border-radius: var(--corner-radius);
-
-    p,
-    p ::v-deep(.-nz),
-    .icon {
-      color: var(--primary);
-    }
-  }
-
-  &.-active {
-
   }
 }
 

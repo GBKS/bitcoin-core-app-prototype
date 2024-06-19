@@ -17,7 +17,7 @@ const activeId = ref('default')
       <KitTopBar
         buttonLeftLabel="Back"
         buttonLeftIcon="caretLeft"
-        buttonLeftTo="/screen/first-use/block-clock-intro?t=slide-right"
+        buttonLeftTo="/screen/first-use/storage-amount?t=slide-right"
       />
       <KitHeader
         :title="state.title"

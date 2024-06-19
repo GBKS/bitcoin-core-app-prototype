@@ -6,10 +6,11 @@ const props = defineProps([
   'icon',
   'iconPosition', // left, right
   'label',
-  'theme', // filled, outline, free
+  'theme', // filled, outline, free, free-subtle
   'size', // small, medium, big
   'disabled',
-  'to'
+  'to',
+  'ariaLabel'
 ])
 
 const emit = defineEmits(['click'])
@@ -65,7 +66,7 @@ const content = computed(() => {
     v-if="to"
     :class="classObject"
     :disabled="disabled"
-    :aria-label="label"
+    :aria-label="ariaLabel || label"
     :to="to"
     v-html="content"
   />
@@ -73,7 +74,7 @@ const content = computed(() => {
     v-if="!to"
     :class="classObject"
     :disabled="disabled"
-    :aria-label="label"
+    :aria-label="ariaLabel || label"
     v-html="content"
     @click="emit('click')"
   />
@@ -99,6 +100,10 @@ const content = computed(() => {
     cursor: pointer;
   }
 
+  &:focus-visible {
+    outline: 2px solid var(--purple);
+  }
+
   // Styles
   &.-filled {
     background-color: var(--primary);
@@ -120,16 +125,32 @@ const content = computed(() => {
   }
 
   &.-free {
-    background-color: transparent;
     color: var(--primary);
 
     &.-icon {
       color: var(--primary);
     }
+  }
+
+  &.-free-subtle {
+    color: var(--neutral-7);
+
+    &.-icon {
+      color: var(--neutral-7);
+    }
+  }
+
+  &.-free,
+  &.-free-subtle {
+    background-color: transparent;
 
     &:hover {
       background-color: var(--neutral-2);
       color: var(--primary);
+    }
+
+    &:active {
+      background-color: var(--neutral-1);
     }
   }
 

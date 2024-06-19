@@ -1,19 +1,26 @@
 <script setup>
+import { useStateStore } from "@/stores/state.js"
 import Icons from '@/helpers/icons.js'
 
+const stateStore = useStateStore()
+
+const emit = defineEmits(['close', 'remove', 'select'])
+
 const props = defineProps([
-  'info',
-  'activeId',
   'id'
 ])
 
 const isActive = computed(() => {
-  return props.activeId == props.id
+  return stateStore.activeWalletId == props.id
+})
+
+const info = computed(() => {
+  return stateStore.wallets[props.id]
 })
 
 const classObject = computed(() => {
   const c = [
-    'wallet-modal-item'
+    '-title-6 -title-5-mobile'
   ]
 
   if(isActive.value) {
@@ -23,96 +30,147 @@ const classObject = computed(() => {
   return c.join(' ')
 })
 
-const icon = computed(() => {
-  return Icons[props.info.icon]
+const ariaLabel = computed(() => {
+  return 'Select wallet: ' + info.value.name
 })
+
+function clickSelect() {
+  emit('select', props.id)
+}
+
+function clickClose() {
+  if(confirm('Are you sure you want to close this wallet?')) {
+    emit('close', props.id)
+  }
+}
+
+function clickTrash() {
+  if(confirm('Are you sure you want to remove this wallet?')) {
+    emit('remove', props.id)
+  }
+}
 </script>
 
 <template>
-  <button
-    :class="classObject"
-  >
-    <div
-      class="icon"
-      v-html="icon"
-    />
-    <div class="copy">
-      <h4 class="-title-7 -title-5-mobile">{{ info.name }}</h4>
-      <KitBalance
-        class="-body-7 -body-5-mobile"
-        :amount="info.balance"
-        theme="dark"
+  <div class="wallet-modal-item">
+    <button
+      :class="classObject"
+      :aria-label="ariaLabel"
+      @click="clickSelect"
+    >{{ info.name }}</button>
+    <div class="options">
+      <button
+        v-if="isActive"
+        class="-close"
+        aria-label="Close wallet"
+        title="Close wallet"
+        v-html="Icons.cross"
+        @click="clickClose"
+      />
+      <button
+        v-if="!isActive"
+        class="-remove"
+        aria-label="Remove wallet"
+        title="Remove wallet"
+        v-html="Icons.trash"
+        @click="clickTrash"
       />
     </div>
-  </button>
+  </div>
 </template>
 
 <style scoped lang="scss">
 
 .wallet-modal-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  text-align: left;
-  cursor: pointer;
-  padding: 5px 5px 5px 0px;
+  position: relative;
   border-radius: var(--corner-radius);
-  color: var(--neutral-7);
 
-  .icon {
-    width: 35px;
-    height: 35px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  > button {
+    width: 100%;
+    padding: 7px 42px 7px 12px;
+    min-width: 200px;
+    color: var(--neutral-7);
+    text-align: left;
+    cursor: pointer;
+    border-radius: var(--corner-radius);
 
-    ::v-deep(svg) {
-      width: 20px;
-      height: 20px;
+    &.-active {    
+      color: var(--primary);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--purple);
     }
   }
 
-  .copy {
-    flex-grow: 1;
+  .options {
+    position: absolute;
+    right: 0;
+    top: 0;
 
-    h4 {
+    button {
+      width: 35px;
+      height: 35px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
       color: var(--neutral-7);
-    }
+      border-radius: 5px;
 
-    p {
-      text-align: left;
-      
-      ::v-deep(.-nz) {
-        color: var(--neutral-7);
+      &:hover {
+        color: var(--neutral-9);
+        background-color: var(--neutral-2);
       }
-    }
-  }
 
-  &:hover {
-    background-color: var(--neutral-1);
+      &.-remove {
+        ::v-deep(svg) {
+          width: 16px;
+          height: 16px;
+        }
+      }
 
-    .copy {
-      h4 {
+      &.-close {
+        ::v-deep(svg) {
+          width: 12px;
+          height: 12px;
+        }
+      }
+
+      &:hover {
         color: var(--neutral-9);
       }
 
-      p {
-        ::v-deep(.-nz) {
-          color: var(--neutral-9);
-        }
+      &:active {
+        color: var(--neutral-9);
+        background-color: var(--neutral-1);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--purple);
       }
     }
   }
 
-  &.-active {
-    // background-color: var(--neutral-2);
-    color: var(--primary);
+  @include container(small) {
+    
+  }
 
-    .copy {
-      h4,
-      p,
-      p ::v-deep(.-nz) {
-        color: var(--primary);
+  @include container(medium-up) {
+    > button {
+      &:hover {
+        color: var(--neutral-9);
+        background-color: var(--neutral-2);
+      }
+    }
+    
+    .options {
+      display: none;
+    }
+
+    &:hover {
+      .options {
+        display: block;
       }
     }
   }
