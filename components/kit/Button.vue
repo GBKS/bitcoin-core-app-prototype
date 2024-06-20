@@ -117,11 +117,6 @@ const content = computed(() => {
     background-color: transparent;
     border: 1px solid var(--neutral-5);
     color: var(--primary);
-
-    &:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-    }
   }
 
   &.-free {
@@ -143,11 +138,6 @@ const content = computed(() => {
   &.-free,
   &.-free-subtle {
     background-color: transparent;
-
-    &:hover {
-      background-color: var(--neutral-2);
-      color: var(--primary);
-    }
 
     &:active {
       background-color: var(--neutral-1);
@@ -215,6 +205,23 @@ const content = computed(() => {
 
     &.-icon-only {
       width: 60px;
+    }
+  }
+
+  @include container(medium-up) {
+    &.-free,
+    &.-free-subtle {
+      &:hover {
+        background-color: var(--neutral-2);
+        color: var(--primary);
+      }
+    }
+
+    &.-outline {
+      &:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
     }
   }
 }

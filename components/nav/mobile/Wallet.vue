@@ -112,23 +112,29 @@ const walletData = computed(() => {
         height: 20px;
       }
     }
-
-    &:hover {
-      background-color: var(--neutral-2);
-    }
   }
 
   .balance {
     border-radius: 100px;
     padding: 5px 15px;
-
-    &:hover {
-      background-color: var(--neutral-2);
-    }
   }
 
   &.-active {
 
+  }
+
+  @include container(medium-up) {
+    .top {
+      &:hover {
+        background-color: var(--neutral-2);
+      }
+    }
+
+    .balance {
+      &:hover {
+        background-color: var(--neutral-2);
+      }
+    }
   }
 }
 

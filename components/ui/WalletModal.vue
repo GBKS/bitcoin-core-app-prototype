@@ -72,6 +72,7 @@ const classObject = computed(() => {
         />
       </div>
       <KitButton
+        class="add-button"
         icon="plus"
         iconPosition="left"
         label="Add wallet"
@@ -139,6 +140,11 @@ const classObject = computed(() => {
       .list {
         width: 100%;
         margin-bottom: 10px;
+      }
+
+      ::v-deep(.add-button) {
+        min-height: 39px;
+        font-size: 18px;
       }
     }
 
