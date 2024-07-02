@@ -3,13 +3,13 @@ import { useStateStore } from "@/stores/state.js"
 
 import Icons from '@/helpers/icons.js'
 
+const activeWalletElement = ref(null)
 const stateStore = useStateStore()
-const active = ref(false)
 
 const classObject = computed(() => {
   const c = []
 
-  if(active.value) {
+  if(stateStore.showWalletModal) {
     c.push('-active')
   }
 
@@ -19,6 +19,11 @@ const classObject = computed(() => {
 const icon = computed(() => {
   return walletData.value ? Icons[walletData.value.icon] : null
 })
+
+function toggleModal() {
+  const element = document.getElementById('nav-open-wallet-button')
+  window.emitter.emit('toggle-wallet-modal', { element })
+}
 
 function click(event) {
   if(event.shiftKey) {
@@ -38,16 +43,6 @@ function click(event) {
   } else {
     stateStore.toggleWalletModal()
   }
-}
-
-function toggleModal() {
-  stateStore.toggleWalletModal()
-}
-
-function changeActiveWalletId(value) {
-  stateStore.activeWalletId = value
-
-  stateStore.showWalletModal = false
 }
 
 const walletData = computed(() => {
@@ -79,15 +74,13 @@ const hasWallets = computed(() => {
       title="Open wallet"
       theme="free-subtle"
       size="medium"
+      id="nav-open-wallet-button"
+      :active="stateStore.showWalletModal"
       @click="toggleModal"
     />
     
     <NavDesktopActiveWallet 
       v-if="stateStore.activeWalletId && hasWallets"
-      @select="toggleModal"
-    />
-    <UiWalletModal
-      v-if="stateStore.showWalletModal"
     />
   </div>
 </template>

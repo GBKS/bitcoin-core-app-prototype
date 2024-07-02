@@ -4,6 +4,7 @@ import Icons from '@/helpers/icons.js'
 
 const stateStore = useStateStore()
 
+const canvas = ref(null)
 const emit = defineEmits(['select'])
 
 const icon = computed(() => {
@@ -35,7 +36,8 @@ function select(event) {
   if(event.shiftKey) {
     toggleBalanceMode()
   } else {
-    emit('select')
+    // emit('select')
+    window.emitter.emit('toggle-wallet-modal', { element: canvas.value })
   }
 }
 </script>
@@ -43,6 +45,7 @@ function select(event) {
 <template>
   <button
     class="wallet"
+    ref="canvas"
     @click="select"
   >
     <div

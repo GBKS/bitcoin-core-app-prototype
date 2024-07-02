@@ -7,6 +7,7 @@ export const useStateStore = defineStore('state', {
       showNav: useLocalStorage('showNav', true),
       theme: useLocalStorage('theme', null),
       showWalletModal: ref(false),
+      showMenu: ref(false),
       activeWalletId: ref('savings'),
       balanceDisplayMode: ref('bitcoin'), // bitcoin, satoshi, hide
       wallets: {
@@ -39,11 +40,5 @@ export const useStateStore = defineStore('state', {
   hydrate(state, initialState) {
     state.showNav = useLocalStorage('showNav', true)
     state.theme = useLocalStorage('theme', null)
-  },
-
-  actions: {
-    toggleWalletModal() {
-      this.showWalletModal = !this.showWalletModal
-    }
   }
 })

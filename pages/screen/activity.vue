@@ -33,33 +33,25 @@ const classObject = computed(() => {
   return c.join(' ')
 })
 
-function toggleModal() {
-  stateStore.showWalletModal = !stateStore.showWalletModal
-}
-
 function setActiveWalletId(value) {
   stateStore.activeWalletId = value
 
-  stateStore.showWalletModal = false
+  window.emitter.emit('hide-wallet-modal')
 }
 
 function toggleWalletModal() {
-  stateStore.showWalletModal = !stateStore.showWalletModal
+  window.emitter.emit('toggle-wallet-modal')
 }
 
 const hasWallets = computed(() => {
   return Object.keys(wallets.value).length > 0
-})
-
-onBeforeUnmount(() => {
-  stateStore.showWalletModal = false
 })
 </script>
 
 <template>
   <KitScreen :class="classObject">
     <template v-if="stateId == 'activity'">
-      <div class="cover" @click="toggleModal" />
+      <div class="cover" @click="toggleWalletModal" />
       <div class="top-mobile">
         <NavMobileBlockClock />
         <NavMobileWallet />

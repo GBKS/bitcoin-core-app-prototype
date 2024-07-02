@@ -2,10 +2,13 @@
 import Icons from '@/helpers/icons.js'
 
 const props = defineProps([
+  'id',
   'class',
   'icon',
   'iconPosition', // left, right
   'label',
+  'title',
+  'active',
   'theme', // filled, outline, free, free-subtle
   'size', // small, medium, big
   'disabled',
@@ -29,6 +32,8 @@ const classObject = computed(() => {
 
     c.push('-' + (props.iconPosition || 'right'))
   }
+
+  if(props.active) c.push('-active')
 
   let result = c.join(' ')
 
@@ -64,17 +69,21 @@ const content = computed(() => {
 <template>
   <NuxtLink
     v-if="to"
+    :id="id"
     :class="classObject"
     :disabled="disabled"
     :aria-label="ariaLabel || label"
     :to="to"
+    :title="title"
     v-html="content"
   />
   <button
     v-if="!to"
+    :id="id"
     :class="classObject"
     :disabled="disabled"
     :aria-label="ariaLabel || label"
+    :title="title"
     v-html="content"
     @click="emit('click')"
   />
