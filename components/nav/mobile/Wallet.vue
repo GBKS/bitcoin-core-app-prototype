@@ -8,7 +8,6 @@ const props = defineProps([
 ])
 
 const stateStore = useStateStore()
-const active = ref(false)
 
 const classObject = computed(() => {
   const c = ['wallet']
@@ -25,7 +24,7 @@ const icon = computed(() => {
 })
 
 function toggleModal() {
-  stateStore.toggleWalletModal()
+  window.emitter.emit('toggle-wallet-modal')
 }
 
 function toggleBalanceMode() {
@@ -44,7 +43,7 @@ function toggleBalanceMode() {
 function changeActiveWalletId(value) {
   stateStore.activeWalletId = value
 
-  stateStore.showWalletModal = false
+  window.emitter.emit('hide-wallet-modal')
 }
 
 const walletData = computed(() => {
@@ -54,11 +53,12 @@ const walletData = computed(() => {
 
 <template>
   <div
-     v-if="stateStore.activeWalletId"
+    v-if="stateStore.activeWalletId"
     :class="classObject"
   >
     <div class="top" @click="toggleModal">
       <div
+        v-if="false"
         class="icon"
         v-html="icon"
       />
@@ -72,12 +72,6 @@ const walletData = computed(() => {
       @click="toggleBalanceMode"
     />
   </div>
-  <UiWalletModal
-    :active="stateStore.showWalletModal"
-    :info="stateStore.wallets"
-    :activeId="stateStore.activeWalletId"
-    @change="changeActiveWalletId"
-  />
 </template>
 
 <style scoped lang="scss">

@@ -89,6 +89,7 @@ const preparedContentState = ref(null)
 const mobileOnDesktop = ref(false)
 const screenSize = ref('desktop')
 const pageWrap = ref(null)
+const isMounted = ref(false)
 
 function prepScreens() {
   let i, k
@@ -213,6 +214,8 @@ onMounted(() => {
   updateFromRoute()
 
   window.emitter.on('update-state', onUpdateState)
+
+  isMounted.value = true
 })
 
 function onUpdateState(value) {
@@ -291,7 +294,7 @@ const showPage = computed(() => {
       />
     </client-only>
     <div :class="contentClass">
-      <div class="content">
+      <div class="content" id="prototype-container">
         <NavDesktopTop v-if="contentState && (contentState.nav === true || contentState.nav === 'desktop')" />
         <div class="page-wrap" ref="pageWrap">
         <NuxtLayout>
@@ -304,6 +307,10 @@ const showPage = computed(() => {
         </NuxtLayout>
         </div>
         <NavMobileTabs v-if="false && contentState && (contentState.nav === true || contentState.nav === 'mobile')" />
+        <template v-if="isMounted">
+          <KitContextMenu />
+          <UiWalletModal />
+        </template>
       </div>
     </div>
   </div>

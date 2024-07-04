@@ -3,42 +3,81 @@ import { useStateStore } from "@/stores/state.js"
 import StateHelper from '@/helpers/state-helper.js'
 
 const stateStore = useStateStore()
+const position = ref(null)
+const ignoreNextDocumentClick = ref(false)
+
+function show(data) {
+  if(!stateStore.showWalletModal) {
+    updatePosition(data)
+
+    stateStore.showWalletModal = true
+
+    ignoreNextDocumentClick.value = true
+    document.addEventListener('click', documentClick)
+  }
+}
+
+function hide(data) {
+  if(stateStore.showWalletModal) {
+    stateStore.showWalletModal = false
+
+    document.removeEventListener('click', documentClick)
+  }
+}
+
+function toggle(data) {
+  if(stateStore.showWalletModal) {
+    hide(data)
+  } else {
+    show(data)
+  }
+}
 
 function setActiveWalletId(value) {
+  // This logic does not quite feel right on mobile yet.
+  // Needs to be revisited.
+  const route = useRoute()
+  if(route.path == '/screen/block-clock') {
+    useRouter().push({ path: '/screen/activity' })
+  }
+
   stateStore.activeWalletId = value
 
   stateStore.wallets[value].lastOpen = Date.now()
 
-  stateStore.showWalletModal = false
+  hide()
 }
 
-function removeWallet(id) {
-  stateStore.activeWalletId = null
+function updatePosition(data) {
+  if(data && data.element) {
+    const container = document.getElementById('prototype-container')
+    const containerRectangle = container.getBoundingClientRect()
 
-  delete stateStore.wallets[id]
-  delete stateStore.transactions[id]
+    const rectangle = data.element.getBoundingClientRect()
 
-  if(Object.keys(stateStore.wallets).length == 0) {
-    stateStore.showWalletModal = false
-
-    // Navigate to the node page
-    const router = useRouter()
-    router.push({ path: '/screen/block-clock' })
+    position.value = {
+      top: rectangle.bottom + 8,
+      left: rectangle.left - containerRectangle.left
+    }
+  } else {
+    position.value = null
   }
-}
-
-function closeWallet(id) {
-  stateStore.activeWalletId = null
-
-  // stateStore.showWalletModal = false
-}
-
-function closeModal() {
-  stateStore.showWalletModal = false
 }
 
 function addDummyWallet() {
   const walletId = StateHelper.addWallet()
+}
+
+function documentClick(event) {
+  if(ignoreNextDocumentClick.value) {
+    ignoreNextDocumentClick.value = false
+  } else if(stateStore.showWalletModal && !stateStore.showMenu) {
+    const clickeModal = event.target.closest('.wallet-modal')
+    const clickedMenu = event.target.closest('.menu')
+    if(!clickeModal && !clickedMenu) {
+      hide()
+    }
+  }
 }
 
 const sortedWalletIds = computed(() => {
@@ -54,10 +93,44 @@ const classObject = computed(() => {
 
   return c.join(' ')
 })
+
+const coverClass = computed(() => {
+  const c = ['cover']
+
+  if(stateStore.showWalletModal) c.push('-active')
+
+  return c.join(' ')
+})
+
+const styleObject = computed(() => {
+  let result = null
+
+  if(position.value) {
+    result = {
+      top: position.value.top + 'px',
+      left: position.value.left + 'px'
+    }
+  }
+
+  return result
+})
+
+onMounted(() => {
+  window.emitter.on('show-wallet-modal', show)
+  window.emitter.on('hide-wallet-modal', hide)
+  window.emitter.on('toggle-wallet-modal', toggle)
+})
 </script>
 
 <template>
-  <div :class="classObject">
+  <div 
+    :class="coverClass" 
+    @click="hide"
+  />
+  <div
+    :class="classObject" 
+    :style="styleObject"
+  >
     <div class="content">
       <div class="drag-indicator" />
       <h5 class="-title-6 -title-4-mobile" @click="addDummyWallet">Your wallets</h5>
@@ -67,8 +140,6 @@ const classObject = computed(() => {
           :key="id"
           :id="id"
           @select="setActiveWalletId"
-          @remove="removeWallet"
-          @close="closeWallet"
         />
       </div>
       <KitButton
@@ -85,6 +156,31 @@ const classObject = computed(() => {
 </template>
 
 <style scoped lang="scss">
+
+@include container(small) {
+  .cover {
+    display: block;
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+    background-color: var(--neutral-2);
+    transition: opacity 400ms $ease;
+    opacity: 0;
+    z-index: 1;
+    cursor: pointer;
+    // pointer-events: none;
+
+    &.-active {
+      width: 100%;
+      height: 100%;
+      opacity: 0.85;
+      pointer-events: auto;
+    }
+  }
+}
 
 .wallet-modal {
   background-color: var(--neutral-0);
@@ -154,14 +250,13 @@ const classObject = computed(() => {
   }
 
   @include container(medium-up) {
+    display: none;
     position: absolute;
-    top: calc(100% + 3px);
-    left: 5px;
     border-radius: var(--corner-radius);
     border: 1px solid var(--neutral-4);
 
     .content {      
-      padding: 15px 5px 10px 5px;
+      padding: 15px 10px 10px 10px;
 
       .drag-indicator {
         display: none;
@@ -186,6 +281,10 @@ const classObject = computed(() => {
         border-top-right-radius: 3px;
         transform: translate(-50%, calc(-50% - 1px)) rotate(-45deg);
       }
+    }
+
+    &.-active {
+      display: block;
     }
   }
 }

@@ -8,6 +8,16 @@ const props = defineProps([
   'buttonRightIcon',
   'buttonRightTo'
 ])
+
+const emit = defineEmits(['leftClick', 'rightClick'])
+
+function leftClick() {
+  emit('leftClick')
+}
+
+function rightClick() {
+  emit('rightClick')
+}
 </script>
 
 <template>
@@ -20,6 +30,7 @@ const props = defineProps([
         :to="buttonLeftTo"
         iconPosition="left"
         theme="free"
+        @click="leftClick"
       />
     </div>
     <h2 v-if="title" class="-title-5">{{ title }}</h2>
@@ -30,6 +41,7 @@ const props = defineProps([
         :icon="buttonRightIcon"
         :to="buttonRightTo"
         theme="free"
+        @click="rightClick"
       />
     </div>
   </div>
@@ -45,8 +57,8 @@ const props = defineProps([
   position: relative;
   width: 100%;
   height: 46px;
-  margin-left: calc(-1 * var(--screen-side-padding) + 5px);
-  margin-right: calc(-1 * var(--screen-side-padding) + 5px);
+  // margin-left: calc(-1 * var(--screen-side-padding) + 5px);
+  // margin-right: calc(-1 * var(--screen-side-padding) + 5px);
 
   h2 {
     position: absolute;
