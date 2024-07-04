@@ -71,7 +71,11 @@ const menuId = computed(() => {
 })
 
 function clickOptions() {
-  window.emitter.emit('toggle-menu', {
+  toggleMenu()
+}
+
+function toggleMenu() {
+  window.emitter.emit('toggle-context-menu', {
     id: menuId.value,
     options: menuOptions.value,
     element: optionsButton.value
@@ -83,7 +87,7 @@ function renameWallet() {
   if(newName) {
     info.value.name = newName
 
-    window.emitter.on('hide-menu', menuId.value)
+    window.emitter.on('hide-context-menu', { id: menuId.value })
   }
 }
 
@@ -100,7 +104,7 @@ function doCloseWallet() {
   const router = useRouter()
   router.push({ path: '/screen/block-clock' })
 
-  window.emitter.emit('hide-menu', { id: menuId.value })
+  window.emitter.emit('hide-context-menu', { id: menuId.value })
 }
 
 function removeWallet() {
@@ -145,17 +149,17 @@ function onSelectMenuOption(data) {
 }
 
 onMounted(() => {
-  window.emitter.on('on-show-menu', onShowMenu)
-  window.emitter.on('on-hide-menu', onHideMenu)
-  window.emitter.on('on-select-menu-option', onSelectMenuOption)
+  window.emitter.on('on-show-context-menu', onShowMenu)
+  window.emitter.on('on-hide-context-menu', onHideMenu)
+  window.emitter.on('on-select-context-menu-option', onSelectMenuOption)
 })
 
 onBeforeUnmount(() => {
-  window.emitter.off('on-show-menu', onShowMenu)
-  window.emitter.off('on-hide-menu', onHideMenu)
-  window.emitter.off('on-select-menu-option', onSelectMenuOption)
+  window.emitter.off('on-show-context-menu', onShowMenu)
+  window.emitter.off('on-hide-context-menu', onHideMenu)
+  window.emitter.off('on-select-context-menu-option', onSelectMenuOption)
 
-  window.emitter.emit('hide-menu', { id: menuId.value })
+  window.emitter.emit('hide-context-menu', { id: menuId.value })
 })
 </script>
 

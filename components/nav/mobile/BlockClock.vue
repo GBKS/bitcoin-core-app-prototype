@@ -131,8 +131,10 @@ onMounted(() => {
     }
   }
 
-  &:hover {
-    background-color: var(--neutral-1);
+  @include container(medium-up) {
+    &:hover {
+      background-color: var(--neutral-1);
+    }
   }
 
   &.-active,

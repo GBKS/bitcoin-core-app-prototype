@@ -94,6 +94,14 @@ const classObject = computed(() => {
   return c.join(' ')
 })
 
+const coverClass = computed(() => {
+  const c = ['cover']
+
+  if(stateStore.showWalletModal) c.push('-active')
+
+  return c.join(' ')
+})
+
 const styleObject = computed(() => {
   let result = null
 
@@ -115,6 +123,10 @@ onMounted(() => {
 </script>
 
 <template>
+  <div 
+    :class="coverClass" 
+    @click="hide"
+  />
   <div
     :class="classObject" 
     :style="styleObject"
@@ -144,6 +156,31 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
+
+@include container(small) {
+  .cover {
+    display: block;
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+    background-color: var(--neutral-2);
+    transition: opacity 400ms $ease;
+    opacity: 0;
+    z-index: 1;
+    cursor: pointer;
+    // pointer-events: none;
+
+    &.-active {
+      width: 100%;
+      height: 100%;
+      opacity: 0.85;
+      pointer-events: auto;
+    }
+  }
+}
 
 .wallet-modal {
   background-color: var(--neutral-0);

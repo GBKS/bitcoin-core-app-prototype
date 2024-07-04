@@ -25,7 +25,7 @@ function select() {
 
 <template>
   <button 
-    class="menu-item -body-6 -body-5-mobile"
+    class="context-menu-item -body-6 -body-5-mobile"
     v-html="label"
     @click="select"
   />
@@ -33,7 +33,7 @@ function select() {
 
 <style scoped lang="scss">
 
-.menu-item {
+.context-menu-item {
   display: flex;
   gap: 7px;
   align-items: center;

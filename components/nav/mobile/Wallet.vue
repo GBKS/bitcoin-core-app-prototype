@@ -24,7 +24,6 @@ const icon = computed(() => {
 })
 
 function toggleModal() {
-  console.log('MobileWallet.toggleModal')
   window.emitter.emit('toggle-wallet-modal')
 }
 
@@ -59,6 +58,7 @@ const walletData = computed(() => {
   >
     <div class="top" @click="toggleModal">
       <div
+        v-if="false"
         class="icon"
         v-html="icon"
       />

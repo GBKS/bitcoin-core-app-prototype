@@ -5,7 +5,6 @@ const props = defineProps([
   'options'
 ])
 
-const emit = defineEmits(['selectOption'])
 const stateStore = useStateStore()
 const active = ref(false)
 const activeId = ref(null)
@@ -14,11 +13,11 @@ const position = ref(null)
 const ignoreNextDocumentClick = ref(false)
 
 function selectItem(id) {
-  window.emitter.emit('on-select-menu-option', id)
+  window.emitter.emit('on-select-context-menu-option', id)
 }
 
 function show(data) {
-  if(!active.value) {
+  if(!active.value || activeId.value != data.id) {
     activeId.value = data.id
     active.value = true
     options.value = data.options
@@ -27,7 +26,7 @@ function show(data) {
 
     updatePosition(data.element)
 
-    window.emitter.emit('on-show-menu', activeId.value)
+    window.emitter.emit('on-show-context-menu', activeId.value)
 
     ignoreNextDocumentClick.value = true
     document.addEventListener('click', documentClick)
@@ -42,7 +41,7 @@ function hide(data) {
 
     stateStore.showMenu = false
 
-    window.emitter.emit('on-hide-menu', data.id)
+    window.emitter.emit('on-hide-context-menu', data.id)
 
     document.removeEventListener('click', documentClick)
   }
@@ -61,7 +60,7 @@ function toggle(data) {
 }
 
 function selectOption(id) {
-  window.emitter.emit('on-select-menu-option', {
+  window.emitter.emit('on-select-context-menu-option', {
     menuId: activeId.value, 
     optionId: id
   })
@@ -95,7 +94,7 @@ function documentClick(event) {
   if(ignoreNextDocumentClick.value) {
     ignoreNextDocumentClick.value = false
   } else if(active.value) {
-    if(!event.target.closest('.menu')) {
+    if(!event.target.closest('.context-menu')) {
       hide({ id: activeId.value })
     }
   }
@@ -116,19 +115,19 @@ const styleObject = computed(() => {
 })
 
 onMounted(() => {
-  window.emitter.on('show-menu', show)
-  window.emitter.on('hide-menu', hide)
-  window.emitter.on('toggle-menu', toggle)
+  window.emitter.on('show-context-menu', show)
+  window.emitter.on('hide-context-menu', hide)
+  window.emitter.on('toggle-context-menu', toggle)
 })
 </script>
 
 <template>
   <div
     v-if="active"
-    class="menu" 
+    class="context-menu" 
     :style="styleObject"
   >
-    <KitMenuItem
+    <KitContextMenuItem
       v-for="(item, id) in options"
       :key="id"
       :id="id"
@@ -140,7 +139,7 @@ onMounted(() => {
 
 <style scoped lang="scss">
 
-.menu {
+.context-menu {
   position: absolute;
   z-index: 10;
   display: flex;

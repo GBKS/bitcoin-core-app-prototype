@@ -51,7 +51,7 @@ const hasWallets = computed(() => {
 <template>
   <KitScreen :class="classObject">
     <template v-if="stateId == 'activity'">
-      <div class="cover" @click="toggleWalletModal" />
+      <div class="cover" @click="toggleWalletModal" v-if="none" />
       <div class="top-mobile">
         <NavMobileBlockClock />
         <NavMobileWallet />

@@ -308,7 +308,7 @@ const showPage = computed(() => {
         </div>
         <NavMobileTabs v-if="false && contentState && (contentState.nav === true || contentState.nav === 'mobile')" />
         <template v-if="isMounted">
-          <KitMenu />
+          <KitContextMenu />
           <UiWalletModal />
         </template>
       </div>

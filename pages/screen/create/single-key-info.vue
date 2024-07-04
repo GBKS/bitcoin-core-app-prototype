@@ -22,9 +22,11 @@ const props = defineProps([
         :title="state.title"
       />
 
-      <p class="-body-5">You can fully control it in this application.</p>
-      <p class="-body-5">Wallet data will be stored locally on your hard drive.</p>
-      <p class="-body-5">You can optionally protect it with a password.</p>
+      <div class="copy">
+        <p class="-body-5">You can fully control it in this application.</p>
+        <p class="-body-5">Wallet data will be stored locally on your hard drive.</p>
+        <p class="-body-5">You can optionally protect it with a password.</p>
+      </div>
 
       <div class="bottom">
         <KitButton
@@ -40,15 +42,20 @@ const props = defineProps([
 
 .single-key-info {
   .content {
-    > p {
-      padding: 10px 0;
+    .copy {
+      padding: 0 10px;
 
-      &:first-of-type {
-        margin-top: 20px;
-      }
+      > p {
+        text-align: center;
+        padding: 10px 0;
 
-      & + p {
-        border-top: 1px solid var(--neutral-4);
+        &:first-of-type {
+          margin-top: 20px;
+        }
+
+        & + p {
+          border-top: 1px solid var(--neutral-4);
+        }
       }
     }
   }
