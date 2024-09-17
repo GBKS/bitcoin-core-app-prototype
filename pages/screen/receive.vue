@@ -80,16 +80,15 @@ function saveState() {
 }
 
 const bitcoinUrl = computed(() => {
-  return "bitcoin://" + addressValue.value + "?amount=" + amountValue.value + "&message=" + messageValue.value + "&label=" + nameValue.value
+  return "bitcoin:" + addressValue.value + "?amount=" + amountValue.value + "&message=" + messageValue.value + "&label=" + nameValue.value
 })
 
 function sharePaymentRequest() {
   const data = {
-    title: 'Payment request for ' + amountValue.value + ' ' + unitValue.value,
-    text: messageValue.value,
-    url: bitcoinUrl.value
+    title: messageValue.value,
+    text: bitcoinUrl.value
   }
-  
+  console.log('sharePaymentRequest', data)
   navigator.share(data)
 }
 
