@@ -203,15 +203,22 @@ export default {
     return result
   },
 
-  address() {
-    const addressLength = Math.floor(Math.random() * 10) + 26;
+  address(type) {
+    let addressLength, dummyAddress
+    switch(type) {
+      default:
+        addressLength = 42
+        dummyAddress = 'bc1q'
+
+    }
+
+    // const addressLength = Math.floor(Math.random() * 10) + 26;
   
     // Valid characters in a Bitcoin address
-    const validCharacters = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+    const validCharacters = '123456789abcdefghijkmnopqrstuvwxyz';
     
     // Generate a random Bitcoin address
-    let dummyAddress = '1';
-    for (let i = 1; i < addressLength; i++) {
+    for (let i = dummyAddress.length; i < addressLength; i++) {
       dummyAddress += validCharacters[Math.floor(Math.random() * validCharacters.length)];
     }
     

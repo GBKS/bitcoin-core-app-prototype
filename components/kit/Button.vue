@@ -85,7 +85,7 @@ const content = computed(() => {
     :aria-label="ariaLabel || label"
     :title="title"
     v-html="content"
-    @click="emit('click')"
+    @click="emit('click', $event)"
   />
 </template>
 
@@ -125,7 +125,7 @@ const content = computed(() => {
   &.-outline {
     background-color: transparent;
     border: 1px solid var(--neutral-5);
-    color: var(--primary);
+    color: var(--neutral-9);
   }
 
   &.-free {
