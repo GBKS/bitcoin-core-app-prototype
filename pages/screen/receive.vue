@@ -19,6 +19,7 @@ const addressGenerated = ref(false)
 const qrCodeCanvas = ref(null)
 const browserShareAvailable = ref(true)
 const copyPaymentRequestButtonElement = ref(null)
+const paymentRequestCounter = ref(10)
 
 const props = defineProps([
   'stateId',
@@ -56,6 +57,8 @@ function changeNoteValue(newValue) {
 }
 
 function generateAddress() {
+  paymentRequestCounter.value++
+
   addressValue.value = StateHelper.address()
 
   addressGenerated.value = true
@@ -81,11 +84,13 @@ const bitcoinUrl = computed(() => {
 })
 
 function sharePaymentRequest() {
-  navigator.share({
+  const data = {
     title: 'Payment request for ' + amountValue.value + ' ' + unitValue.value,
     text: messageValue.value,
     url: bitcoinUrl.value
-  })
+  }
+  
+  navigator.share(data)
 }
 
 function renderCodeTimeout() {
@@ -188,7 +193,7 @@ const addressClasses = computed(() => {
 })
 
 const title = computed(() => {
-  return addressGenerated.value ? 'Payment request #12' : 'Request a payment'
+  return addressGenerated.value ? 'Payment request #' + paymentRequestCounter.value : 'Request a payment'
 })
 
 onBeforeMount(() => {
