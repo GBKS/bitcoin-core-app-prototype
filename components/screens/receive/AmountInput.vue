@@ -27,7 +27,7 @@ const placeholder = computed(() => {
 })
 
 function changeValue(event) {
-  emit('change', event.target.value)
+  emit('change', parseFloat(event.target.value))
 }
 
 function toggleUnit() {

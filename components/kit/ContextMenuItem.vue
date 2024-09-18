@@ -18,6 +18,16 @@ const label = computed(() => {
   return result
 })
 
+const classObject = computed(() => {
+  const c = ['context-menu-item', '-body-6', '-body-5-mobile']
+
+  if(props.info.indent) {
+    c.push('-indent')
+  }
+
+  return c.join(' ')
+})
+
 function select() {
   emit('select', props.id)
 }
@@ -25,7 +35,7 @@ function select() {
 
 <template>
   <button 
-    class="context-menu-item -body-6 -body-5-mobile"
+    :class="classObject"
     v-html="label"
     @click="select"
   />
