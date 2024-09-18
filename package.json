@@ -20,6 +20,8 @@
     "lottie-web": "^5.12.2",
     "mitt": "^3.0.1",
     "pinia": "^2.1.7",
+    "qr-code-styling": "^1.6.0-rc.1",
+    "qrcode": "^1.5.4",
     "sass": "^1.69.7",
     "sass-loader": "^13.3.3"
   }

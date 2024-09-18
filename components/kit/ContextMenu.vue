@@ -1,16 +1,18 @@
 <script setup>
 import { useStateStore } from "@/stores/state.js"
 
-const props = defineProps([
-  'options'
-])
-
 const stateStore = useStateStore()
 const active = ref(false)
 const activeId = ref(null)
 const options = ref(null)
 const position = ref(null)
 const ignoreNextDocumentClick = ref(false)
+
+const CONTEXT_MENU_EVENTS = {
+  SHOW: 'show-context-menu',
+  HIDE: 'hide-context-menu',
+  TOGGLE: 'toggle-context-menu'
+}
 
 function selectItem(id) {
   window.emitter.emit('on-select-context-menu-option', id)
@@ -115,9 +117,9 @@ const styleObject = computed(() => {
 })
 
 onMounted(() => {
-  window.emitter.on('show-context-menu', show)
-  window.emitter.on('hide-context-menu', hide)
-  window.emitter.on('toggle-context-menu', toggle)
+  window.emitter.on(CONTEXT_MENU_EVENTS.SHOW, show)
+  window.emitter.on(CONTEXT_MENU_EVENTS.HIDE, hide)
+  window.emitter.on(CONTEXT_MENU_EVENTS.TOGGLE, toggle)
 })
 </script>
 

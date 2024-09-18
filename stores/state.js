@@ -8,6 +8,7 @@ export const useStateStore = defineStore('state', {
       theme: useLocalStorage('theme', null),
       showWalletModal: ref(false),
       showMenu: ref(false),
+      showTooltip: ref(false),
       activeWalletId: ref('savings'),
       balanceDisplayMode: ref('bitcoin'), // bitcoin, satoshi, hide
       wallets: {
@@ -33,7 +34,8 @@ export const useStateStore = defineStore('state', {
           lastOpen: 0
         }
       },
-      transactions: ref(null)
+      transactions: ref(null),
+      paymentRequest: ref(null)
     }
   },
 
