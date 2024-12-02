@@ -134,6 +134,10 @@ const content = computed(() => {
     &.-icon {
       color: var(--primary);
     }
+
+    &:disabled {
+      color: var(--neutral-4);
+    }
   }
 
   &.-free-subtle {
@@ -220,14 +224,14 @@ const content = computed(() => {
   @include container(medium-up) {
     &.-free,
     &.-free-subtle {
-      &:hover {
+      &:not(:disabled):hover {
         background-color: var(--neutral-2);
         color: var(--primary);
       }
     }
 
     &.-outline {
-      &:hover {
+      &:not(:disabled):hover {
         border-color: var(--primary);
         color: var(--primary);
       }
