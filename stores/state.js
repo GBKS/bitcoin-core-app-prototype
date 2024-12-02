@@ -35,7 +35,8 @@ export const useStateStore = defineStore('state', {
         }
       },
       transactions: ref(null),
-      paymentRequest: ref(null)
+      paymentRequest: ref(null),
+      send: ref(null),
     }
   },
 

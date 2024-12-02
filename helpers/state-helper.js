@@ -2,6 +2,8 @@ import { useStateStore } from "@/stores/state.js"
 import Toolbox from '@/helpers/toolbox.js'
 
 export default {
+
+  counter: 0,
   
   init() {
     const state = useStateStore()
@@ -90,6 +92,9 @@ export default {
   },
 
   transaction(timestamp, forcePositive) {
+    this.counter++
+
+    const id = 'transaction_' + this.counter
     const title = this.title()
     const address = this.address()
     const description = Toolbox.formatRelativeDate(Math.round(timestamp/1000)+'', true)    
@@ -97,7 +102,7 @@ export default {
 
     if(amount < 0 && forcePositive) amount *= -1
 
-    return { title, description, amount, address }
+    return { id, title, description, amount, address }
   },
 
   title() {
@@ -162,7 +167,7 @@ export default {
       "Bought a pass for a virtual travel experience.",
       "Donated to a science education initiative.",
       "Purchased a ticket to a virtual history tour.",
-      "Invested in a course on digital marketing.",
+      "Invested in a course on digital privacy.",
       "Bought a subscription to a plant-based meal delivery service.",
       "Contributed to a fund for renewable energy initiatives.",
       "Bought tickets to a virtual wildlife conservation event.",

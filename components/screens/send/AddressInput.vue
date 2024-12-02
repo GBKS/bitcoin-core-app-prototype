@@ -2,7 +2,8 @@
 import StateHelper from '@/helpers/state-helper.js'
 
 const props = defineProps([
-  'address'
+  'address',
+  'editable'
 ])
 
 const emit = defineEmits([
@@ -64,20 +65,28 @@ function clickPaste() {
   emit('change', addressValue.value)
 }
 
+function generateAddress() {
+  addressValue.value = chunkAddress(StateHelper.address())
+
+  emit('change', addressValue.value)
+}
+
 onBeforeMount(() => {
-  addressValue.value = props.address
+  addressValue.value = chunkAddress(props.address)
 })
 </script>
 
 <template>
   <div class="address-input">
     <div class="info">
-      <h4 class="-body-5">Address</h4>
+      <h4 class="-body-5" @click="generateAddress">Address</h4>
       <button
+        v-if="false && editable"
         class="-body-6" 
         @click="clickPaste"
       >Paste</button>
       <button
+        v-if="editable"
         class="-body-6" 
       >Contacts</button>
     </div>
@@ -90,7 +99,7 @@ onBeforeMount(() => {
         placeholder="Enter address..."
         autocomplete="off"
         spellcheck="false"
-        rows="4"
+        :disabled="!editable"
         @input="onAddressInput"
       />
       <p class="-body-5" v-html="styledAddress"></p>
@@ -109,8 +118,6 @@ onBeforeMount(() => {
   .info {
     display: flex;
     flex-direction: column;
-    flex-basis: 110px;
-    flex-shrink: 0;
 
     button {
       padding: 0;
@@ -125,7 +132,6 @@ onBeforeMount(() => {
 
   .input {
     position: relative;
-    flex-grow: 1;
 
     textarea {
       width: 100%;
@@ -140,6 +146,11 @@ onBeforeMount(() => {
       caret-color: var(--neutral-9);
       font-family: monospace;
       letter-spacing: -0.01rem;
+      font-size: 17px;
+
+      &::placeholder {
+        color: var(--neutral-5);
+      }
 
       &:focus-visible {
         outline: none;
@@ -155,12 +166,29 @@ onBeforeMount(() => {
       pointer-events: none;
       color: var(--neutral-7);
       font-family: monospace;
+      font-size: 17px;
 
       ::v-deep(span) {
         &:nth-child(2n) {
           color: var(--neutral-9);
         }
       }
+    }
+  }
+
+  @include container(small) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  @include container(medium-up) {
+    .info {
+      flex-basis: 110px;
+      flex-shrink: 0;
+    }
+    
+    .input {
+      flex-grow: 1;
     }
   }
 }

@@ -1,11 +1,13 @@
 <script setup>
+import { useStateStore } from "@/stores/state.js"
+
 const props = defineProps([
-  'feeRate',
-  'unit'
+  'feeRate'
 ])
 
 const emit = defineEmits(['change'])
 
+const stateStore = useStateStore()
 const feeRateValue = ref(null)
 const hasFocus = ref(false)
 
@@ -14,7 +16,11 @@ watch(() => props.feeRate, (newValue) => {
 })
 
 const placeholder = computed(() => {
-  return props.unit == 'bitcoin' ? '0.00 000 000' : '0'
+  return stateStore.balanceDisplayMode == 'satoshi' ? '0': '0.00 000 000'
+})
+
+const step = computed(() => {
+  return stateStore.balanceDisplayMode == 'satoshi' ? 1: 0.00000001
 })
 
 function changeValue(event) {
@@ -51,14 +57,12 @@ const formattedFee = computed(() => {
   let amount = 50 * props.feeRate
 
   let formattedAmount = amount
-  if(props.unit == 'bitcoin') {
+  if(stateStore.balanceDisplayMode != 'satoshi') {
     formattedAmount = formattedAmount / 100000000
 
     let amountStringLength = (amount + '').length
     if(amount >= 1000) amountStringLength++
     if(amount >= 1000000) amountStringLength++
-
-    console.log('fdsfds', amount, amountStringLength)
 
     // Format amount to 8 decimals with a thin space between the second and third numbers, and another thin space between the fifth and sixth numbers
     formattedAmount = formattedAmount.toFixed(8).replace(/(\d{1,2})(\d{3})(\d{3})/, '$1\u2009$2\u2009$3')
@@ -67,7 +71,7 @@ const formattedFee = computed(() => {
     formattedAmount = '<span class="fee-decimals">' + formattedAmount.slice(0, -amountStringLength) + '</span>' + formattedAmount.slice(-amountStringLength)
   }
 
-  const amountString = formattedAmount + ' ' + (props.unit == 'bitcoin' ? '₿': 'sats')
+  const amountString = formattedAmount + ' ' + (stateStore.balanceDisplayMode == 'satoshi' ? 'sats' : '₿')
 
   return amountString + ', ' + duration.value
 })

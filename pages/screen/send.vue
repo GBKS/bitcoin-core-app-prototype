@@ -6,47 +6,74 @@ import StateHelper from '@/helpers/state-helper.js'
 definePageMeta(transition)
 
 const reviewMode = ref(false)
-const unitValue = ref('sats')
 const optionsVisible = ref(false)
 const optionsElement = ref(null)
-const state = useStateStore()
+const stateStore = useStateStore()
 const currentTransactionIndex = ref(0)
 const transactions = ref([])
 const customFeeEnabled = ref(false)
+const locktimeEnabled = ref(false)
 const feeSpeed = ref('default')
 const customFeeRate = ref(5)
 const replaceByFeeEnabled = ref(false)
+const feeInAmountEnabled = ref(false)
+const coinSelectionEnabled = ref(false)
+const coins = ref([])
 
 const props = defineProps([
   'stateId',
   'state'
 ])
 
-function changeUnit(newValue) {
-  unitValue.value = newValue
-}
+const menuOptions = computed(() => {
+  return {
+    "import-psbt": {
+      icon: 'file',
+      label: 'Import transaction file'
+    },
+    "static-1": 'divider',
+    "fee-in-amount": {
+      label: 'Include fee in amount',
+      toggle: feeInAmountEnabled.value
+    },
+    "replace-by-fee": {
+      label: 'Enable speed up',
+      toggle: replaceByFeeEnabled.value
+    },
+    "custom-fee": {
+      label: 'Custom fee',
+      toggle: customFeeEnabled.value
+    },
+    "static-2": 'divider',
+    "coin-selection": {
+      label: 'Coin selection',
+      toggle: coinSelectionEnabled.value
+    },
+    "locktime": {
+      label: 'Lock transaction until...',
+      toggle: locktimeEnabled.value
+    },
+    "batch": {
+      label: 'Multiple recipients',
+      toggle: transactions.value.length > 1
+    },
+    "static-3": 'divider',
+    "clear": {
+      icon: 'cross',
+      label: 'Clear all'
+    }
+  }
+})
 
 function toggleOptions() {
   optionsVisible.value = !optionsVisible.value
 
-  const menuOptions = {
-    "batch": {
-      label: 'Multiple recipients'
-    },
-    "custom-fee": {
-      label: 'Custom fee'
-    },
-    "replace-by-fee": {
-      icon: replaceByFeeEnabled.value ? 'check' : '',
-      indent: !replaceByFeeEnabled.value,
-      label: 'Replace by fee'
-    }
-  }
-
   window.emitter.emit('toggle-context-menu', {
     id: 'send-options',
-    options: menuOptions,
-    element: optionsElement.value
+    options: menuOptions.value,
+    element: optionsElement.value,
+    desktopPosition: 'below-right-aligned',
+    mobilePosition: 'below-right-aligned'
   })
 }
 
@@ -56,7 +83,12 @@ function onContextMenuOption(data) {
   if(data.menuId == 'send-options') {
     switch(data.optionId) {
       case 'batch':
-        addBlankTransaction()
+        if(transactions.value.length == 1) {
+          addBlankTransaction()
+        } else if(confirm('Are you sure you want to remove all transactions except for the first one?')) {
+          transactions.value = [getBlankTransaction()]
+          currentTransactionIndex.value = 0
+        }
         break
       case 'custom-fee':
         customFeeEnabled.value = !customFeeEnabled.value
@@ -64,16 +96,54 @@ function onContextMenuOption(data) {
       case 'replace-by-fee':
         replaceByFeeEnabled.value = !replaceByFeeEnabled.value
         break
+      case 'locktime':
+        locktimeEnabled.value = !locktimeEnabled.value
+        break
+      case 'fee-in-amount':
+        feeInAmountEnabled.value = !feeInAmountEnabled.value
+        break
+      case 'locktime':
+        locktimeEnabled.value = !locktimeEnabled.value
+        break
+      case 'coin-selection':
+        coinSelectionEnabled.value = !coinSelectionEnabled.value
+        break
+      case 'clear':
+        clearForm()
+        break
     }
   }
 
-  window.emitter.emit('hide-context-menu', { id: 'send-options' })
-  console.log('aa', transactions.value)
+  window.emitter.emit('update-context-menu', {
+    id: 'send-options',
+    options: menuOptions.value,
+    element: optionsElement.value,
+    desktopPosition: 'below-right-aligned',
+    mobilePosition: 'below-right-aligned'
+  })
+
+  // window.emitter.emit('hide-context-menu', { id: 'send-options' })
+}
+
+function clearForm() {
+  transactions.value = [getBlankTransaction()]
+  currentTransactionIndex.value = 0
+
+  reviewMode.value = false
+  optionsVisible.value = false
+  customFeeEnabled.value = false
+  feeSpeed.value = 'default'
+  customFeeRate.value = 5
+  replaceByFeeEnabled.value = false
+  feeInAmountEnabled.value = false
+  coinSelectionEnabled.value = false
+  locktimeEnabled.value = false
+  coins.value = []
 }
 
 function getBlankTransaction() {
   return {
-    amount: 0,
+    amount: null,
     note: '',
     address: ''
   }
@@ -104,7 +174,15 @@ function changeCurrentTransactionIndex(index) {
 }
 
 const title = computed(() => {
-  return reviewMode.value ? 'Review transaction' : 'Enter transaction details'
+  let result = 'Enter transaction details'
+
+  if(props.state.prefilled) {
+    result = 'Payment request'
+  } else if(reviewMode.value) {
+    result = 'Review transaction'
+  }
+
+  return result
 })
 
 const currentTransaction = computed(() => {
@@ -127,19 +205,99 @@ function removeCurrentTransaction() {
   }
 }
 
+function selectFromClipboard(address) {
+  transactions.value[currentTransactionIndex.value] = {
+    address: address,
+    amount: currentTransaction.value.amount,
+    note: currentTransaction.value.note
+  }
+}
+
+function selectFromRequest(request) {
+  console.log('selectFromRequest', request, currentTransaction.value)
+  transactions.value[currentTransactionIndex.value] = {
+    address: request.address,
+    amount: request.amount,
+    note: request.from + ': ' + request.note
+  }
+}
+
+function restoreFromState() {
+  const state = stateStore.send
+
+  if(!state) return
+
+  console.log('restoreFromState', state)
+
+  currentTransactionIndex.value = state.currentTransactionIndex || 0
+  customFeeEnabled.value = state.customFeeEnabled || false
+  locktimeEnabled.value = state.locktimeEnabled || false
+  feeSpeed.value = state.feeSpeed || 'default'
+  customFeeRate.value = state.customFeeRate || 5
+  replaceByFeeEnabled.value = state.replaceByFeeEnabled || false
+  feeInAmountEnabled.value = state.feeInAmountEnabled || false
+  coinSelectionEnabled.value = state.coinSelectionEnabled || false
+  transactions.value = state.transactions || [getBlankTransaction()]
+  coins.value = state.coins || []
+}
+
+function updateState() {
+  const sendData = {
+    currentTransactionIndex: currentTransactionIndex.value,
+    customFeeEnabled: customFeeEnabled.value,
+    locktimeEnabled: locktimeEnabled.value,
+    feeSpeed: feeSpeed.value,
+    customFeeRate: customFeeRate.value,
+    replaceByFeeEnabled: replaceByFeeEnabled.value,
+    feeInAmountEnabled: feeInAmountEnabled.value,
+    coinSelectionEnabled: coinSelectionEnabled.value,
+    transactions: transactions.value,
+    coins: coins.value
+  }
+
+  console.log('updateState', sendData)
+
+  stateStore.send = sendData
+}
+
+const classObject = computed(() => {
+  const c = ['send']
+
+  if(reviewMode.value) {
+    c.push('-review')
+  }
+
+  return c.join(' ')
+})
+
 onBeforeMount(() => {
   window.emitter.on('on-select-context-menu-option', onContextMenuOption)
 
-  addBlankTransaction()
+  restoreFromState()
+
+  if(transactions.value.length == 0) {
+    addBlankTransaction()
+  }
+
+  if(props.state.prefilled) {
+    // currentTransaction.value.amount = 25000
+    // currentTransaction.value.address = StateHelper.address()
+  }
+})
+
+onMounted(() => {
+  window.emitter.emit('hide-context-menu', { id: 'send-options' })
 })
 
 onBeforeUnmount(() => {
+  updateState()
+
   window.emitter.off('on-select-context-menu-option', onContextMenuOption)
 }) 
 </script>
 
 <template>
-  <KitScreen class="send">
+  <KitScreen :class="classObject">
     <template v-if="stateId == 'send' && state">
       <div class="top-mobile">
         <KitTopBar
@@ -160,6 +318,16 @@ onBeforeUnmount(() => {
           </div>
         </div>
 
+        <ScreensSendRequest
+          v-if="state.prefilled"
+          @select="selectFromRequest" 
+        />
+
+        <ScreensSendClipboard
+          v-if="state.clipboard"
+          @select="selectFromClipboard" 
+        />
+
         <ScreensSendPagination
           v-if="transactions.length > 1"
           :activeIndex="currentTransactionIndex"
@@ -173,28 +341,40 @@ onBeforeUnmount(() => {
           :key="currentTransactionIndex"
           :index="currentTransactionIndex"
           :transaction="currentTransaction"
+          :addressEditable="!state.prefilled"
           @change="changeTransaction"
-          @changeUnit="changeUnit"
         />
 
         <ScreensSendTotals
           v-if="transactions.length > 1"
           :transactions="transactions"
-          :unit="unitValue"
+        />
+
+        <ScreensSendCoinSelection
+          v-if="coinSelectionEnabled"
+          :coins="coins"
         />
 
         <ScreensSendFeeInput
           v-if="customFeeEnabled"
           :feeRate="customFeeRate"
-          :unit="unitValue"
           @change="changeFeeRate"
         />
 
         <ScreensSendFeeSelector
           v-if="!customFeeEnabled"
           :feeSpeed="feeSpeed"
-          :unit="unitValue"
           @change="changeFeeSpeed"
+        />
+
+        <ScreensSendTimelockInput
+          v-if="locktimeEnabled"
+        />
+
+        <ScreensSendChecks
+          v-if="replaceByFeeEnabled || feeInAmountEnabled"
+          :replaceByFeeEnabled="replaceByFeeEnabled"
+          :feeInAmountEnabled="feeInAmountEnabled"
         />
 
         <div class="options">
@@ -247,10 +427,13 @@ onBeforeUnmount(() => {
     }
   }
 
+  &.-review {
+    background-color: rgba(var(--blue-rgb), 0.15);
+  }
+
   @include container(small) {
     .form {
       flex-direction: column;
-      align-items: center;
       padding: 15px 15px;
 
       .form-header {

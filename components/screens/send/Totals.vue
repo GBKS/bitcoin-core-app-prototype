@@ -1,15 +1,20 @@
 <script setup>
+import { useStateStore } from "@/stores/state.js"
+
 const props = defineProps([
-  'transactions',
-  'unit'
+  'transactions'
 ])
+
+const stateStore = useStateStore()
 
 const totalAmount = computed(() => {
   const amount = props.transactions.reduce((acc, transaction) => {
     return acc + transaction.amount
   }, 0)
 
-  return amount + ' ' + (props.unit == 'bitcoin' ? '₿' : 'sats')
+  const adjustedAmount = stateStore.balanceDisplayMode == 'satoshi' ? amount : (amount / 100000000).toFixed(8)
+
+  return adjustedAmount + ' ' + (stateStore.balanceDisplayMode == 'satoshi' ? 'sats' : '₿')
 })
 </script>
 
@@ -26,6 +31,8 @@ const totalAmount = computed(() => {
 <style scoped lang="scss">
 
 .totals {
+  margin-top: 20px;
+  
   .row {
     display: flex;
     padding: 10px 0;
