@@ -4,9 +4,11 @@ const props = defineProps([
   'buttonLeftLabel',
   'buttonLeftIcon',
   'buttonLeftTo',
+  'buttonLeftDisabled',
   'buttonRightLabel',
   'buttonRightIcon',
-  'buttonRightTo'
+  'buttonRightTo',
+  'buttonRightDisabled'
 ])
 
 const emit = defineEmits(['leftClick', 'rightClick'])
@@ -28,6 +30,7 @@ function rightClick() {
         :label="buttonLeftLabel"
         :icon="buttonLeftIcon"
         :to="buttonLeftTo"
+        :disabled="buttonLeftDisabled"
         iconPosition="left"
         theme="free"
         @click="leftClick"
@@ -40,6 +43,7 @@ function rightClick() {
         :label="buttonRightLabel"
         :icon="buttonRightIcon"
         :to="buttonRightTo"
+        :disabled="buttonRightDisabled"
         theme="free"
         @click="rightClick"
       />
