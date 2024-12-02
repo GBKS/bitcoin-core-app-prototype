@@ -18,6 +18,7 @@ import StorageSettingsScreen from '@/data/screens/storage-settings.json'
 import DeveloperOptionsScreen from '@/data/screens/developer-options.json'
 import ActivityScreen from '@/data/screens/activity.json'
 import SendScreen from '@/data/screens/send.json'
+import CoinSelectionScreen from '@/data/screens/coin-selection.json'
 import SendReviewScreen from '@/data/screens/send-review.json'
 import ReceiveScreen from '@/data/screens/receive.json'
 import PaymentRequestScreen from '@/data/screens/payment-request.json'
@@ -54,6 +55,7 @@ const Screens = {
   "activity": ActivityScreen,
   "transaction": TransactionScreen,
   "send": SendScreen,
+  "coin-selection": CoinSelectionScreen,
   "send-review": SendReviewScreen,
   "receive": ReceiveScreen,
   "payment-request": PaymentRequestScreen,

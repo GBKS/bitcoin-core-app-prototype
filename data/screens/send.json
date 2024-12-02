@@ -3,7 +3,16 @@
 	"nav": "desktop",
 	"states": {
 		"default": {
-			
+			"name": "Default",
+			"prefilled": false
+		},
+		"link": {
+			"name": "Payment link",
+			"prefilled": true
+		},
+		"clipboard": {
+			"name": "Clipboard",
+			"clipboard": true
 		}
 	}
 }

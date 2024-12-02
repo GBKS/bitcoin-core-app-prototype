@@ -1,13 +1,15 @@
 <script setup>
+import { useStateStore } from "@/stores/state.js"
+
 const props = defineProps([
   'index',
   'transaction',
-  'unit'
+  'unit',
+  'addressEditable'
 ])
 
 const emit = defineEmits([
-  'change',
-  'changeUnit'
+  'change'
 ])
 
 watch(() => props.transaction, (newValue) => {
@@ -16,13 +18,15 @@ watch(() => props.transaction, (newValue) => {
   addressValue.value = newValue.address
 })
 
+const stateStore = useStateStore()
 const amountValue = ref(null)
 const noteValue = ref('')
 const addressValue = ref(null)
 const addressInput = ref(null)
 
 function changeAmountValue(newValue) {
-  amountValue.value = newValue
+  const adjustedAmount = stateStore.balanceDisplayMode == 'satoshi' ? newValue : newValue * 100000000
+  amountValue.value = adjustedAmount
   emitChange()
 }
 
@@ -34,10 +38,6 @@ function changeNoteValue(newValue) {
 function changeAddress(newValue) {
   addressValue.value = newValue
   emitChange()
-}
-
-function changeUnitValue(newValue) {
-  emit('changeUnit', newValue)
 }
 
 function onAddressInput(event) {
@@ -76,20 +76,7 @@ onBeforeMount(() => {
   amountValue.value = props.transaction.amount
   noteValue.value = props.transaction.note
   addressValue.value = props.transaction.address
-
-  console.log('onbeforemount', props.transaction)
 })
-
-// const addressClasses = computed(() => {
-//   const c = ['-body-5']
-//   c.push('-chunks-' + addressChunks.value.length)
-
-//   if(addressGenerated.value) {
-//     c.push('-address-generated')
-//   }
-
-//   return c.join(' ')
-// })
 </script>
 
 <template>
@@ -99,9 +86,8 @@ onBeforeMount(() => {
         :amount="amountValue"
         :unit="unit"
         @change="changeAmountValue"
-        @changeUnit="changeUnitValue"
       />
-      <ScreensReceiveInput
+      <ScreensReceiveNoteInput
         label="Note to self"
         :text="noteValue"
         placeholder="Enter private note..."
@@ -109,6 +95,7 @@ onBeforeMount(() => {
       />
       <ScreensSendAddressInput
         :address="addressValue"
+        :editable="addressEditable"
         @change="changeAddress"
       />
     </div>

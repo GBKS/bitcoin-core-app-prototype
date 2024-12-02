@@ -1,0 +1,8 @@
+{
+	"name": "Coin selection",
+	"states": {
+		"default": {
+			"name": "Default"
+		}
+	}
+}

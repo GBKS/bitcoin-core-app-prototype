@@ -1,29 +1,34 @@
 <script setup>
+import { useStateStore } from "@/stores/state.js"
 import Icons from '@/helpers/icons.js'
 
 const props = defineProps([
   'label',
-  'amount',
-  'unit'
+  'amount'
 ])
 
-const emit = defineEmits(['change', 'changeUnit'])
+const emit = defineEmits(['change'])
 
+const stateStore = useStateStore()
 const amountValue = ref(null)
-const unitValue = ref('bitcoin')
 const hasFocus = ref(false)
 const uniqueId = 'input_' + Math.round(Math.random() * 1000000)
 
 watch(() => props.amount, (newValue) => {
-  amountValue.value = newValue
+  updateAmountValue(newValue)
 })
 
-watch(() => props.unit, (newValue) => {
-  unitValue.value = newValue
+watch(() => stateStore.balanceDisplayMode, (newValue) => {
+  updateAmountValue(props.amount)
 })
+
+function updateAmountValue(newValue) {
+  const adjustedValue = stateStore.balanceDisplayMode == 'satoshi' ? newValue : newValue / 100000000
+  amountValue.value = adjustedValue
+}
 
 const placeholder = computed(() => {
-  return props.unit == 'bitcoin' ? '0.00 000 000' : '0'
+  return stateStore.balanceDisplayMode == 'satoshi' ? '0' : '0.00 000 000'
 })
 
 function changeValue(event) {
@@ -31,12 +36,11 @@ function changeValue(event) {
 }
 
 function toggleUnit() {
-  unitValue.value = unitValue.value == 'bitcoin' ? 'sats' : 'bitcoin'
-  emit('changeUnit', unitValue.value)
+  stateStore.balanceDisplayMode = stateStore.balanceDisplayMode == 'satoshi' ? 'bitcoin' : 'satoshi'
 }
 
 const toggleLabel = computed(() => {
-  return unitValue.value == 'bitcoin' ? '₿' : 'sats'
+  return stateStore.balanceDisplayMode == 'satoshi' ? 'sats' : '₿' 
 })
 
 function setFocus() {
@@ -66,12 +70,11 @@ const classObject = computed(() => {
 })
 
 const step = computed(() => {
-  return unitValue.value == 'bitcoin' ? '0.00000001' : '1'
+  return stateStore.balanceDisplayMode == 'satoshi' ? '1' : '0.00000001'
 })
 
 onBeforeMount(() => {
     amountValue.value = props.amount
-    unitValue.value = props.unit
 })
 </script>
 
@@ -95,10 +98,10 @@ onBeforeMount(() => {
         />
       </div>
       <button
-        class="toggle -body-5"
+        class="toggle"
         @click="toggleUnit"
       >
-        {{ toggleLabel }}
+        <p class="-body-5">{{ toggleLabel }}</p>
         <div v-html="Icons.flip" />
       </button>
     </div>
@@ -117,6 +120,7 @@ onBeforeMount(() => {
       gap: 5px;
       flex-basis: 10px;
       flex-grow: 1;
+      min-width: 0;
 
       label {
         color: var(--neutral-9);
@@ -130,6 +134,9 @@ onBeforeMount(() => {
         padding: 0;
         -moz-appearance: textfield;
         color: var(--neutral-9);
+        box-sizing: border-box;
+        min-width: 0;
+        flex: 1;
 
         &::placeholder {
           color: var(--neutral-5);
@@ -159,6 +166,13 @@ onBeforeMount(() => {
       align-items: center;
       gap: 5px;
       color: var(--neutral-7);
+      flex: 0 0 auto;
+      padding: 3px 9px;
+      border-radius: 5px;
+
+      > * {
+        flex-shrink: 0;
+      }
 
       > div {
         line-height: 0;
@@ -172,6 +186,11 @@ onBeforeMount(() => {
       &:hover {
         color: var(--primary);
         cursor: pointer;
+        background-color: var(--neutral-2);
+
+        p {
+          color: var(--primary);
+        }
       }
     }
 
@@ -180,6 +199,16 @@ onBeforeMount(() => {
         .left label {
             color: var(--neutral-7);
         }
+    }
+
+    @include container(small) {
+      .left {
+        flex-direction: column;
+      }
+    }
+
+    @include container(medium-up) {
+      
     }
 }
 

@@ -7,7 +7,6 @@ import QRCode from "qrcode";
 definePageMeta(transition)
 
 const amountValue = ref(null)
-const unitValue = ref('bitcoin')
 const nameValue = ref('')
 const messageValue = ref('')
 const noteValue = ref('')
@@ -28,12 +27,6 @@ const props = defineProps([
 
 function changeAmountValue(newValue) {
   amountValue.value = newValue
-  saveState()
-  renderCodeTimeout()
-}
-
-function changeUnitValue(newValue) {
-  unitValue.value = newValue
   saveState()
   renderCodeTimeout()
 }
@@ -71,7 +64,6 @@ function generateAddress() {
 function saveState() {
   state.paymentRequest = {
     amount: amountValue.value,
-    unit: unitValue.value,
     name: nameValue.value,
     message: messageValue.value,
     note: noteValue.value,
@@ -126,7 +118,9 @@ function toggleOptions() {
   window.emitter.emit('toggle-context-menu', {
     id: 'receive-options',
     options: menuOptions,
-    element: optionsElement.value
+    element: optionsElement.value,
+    desktopPosition: 'below-right-aligned',
+    mobilePosition: 'below-right-aligned'
   })
 }
 
@@ -245,23 +239,21 @@ onMounted(() => {
           <ScreensReceiveAmountInput
             label="Amount"
             :amount="amountValue"
-            :unit="unitValue"
             @change="changeAmountValue"
-            @changeUnit="changeUnitValue"
           />
-          <ScreensReceiveInput
+          <ScreensReceiveNoteInput
             label="Your name"
             :text="nameValue"
             placeholder="Enter name..."
             @change="changeNameValue"
           />
-          <ScreensReceiveInput
+          <ScreensReceiveNoteInput
             label="Message"
             :text="messageValue"
             placeholder="Enter message..."
             @change="changeMessageValue"
           />
-          <ScreensReceiveInput
+          <ScreensReceiveNoteInput
             label="Note to self"
             :text="noteValue"
             placeholder="Enter private note..."
@@ -452,7 +444,7 @@ onMounted(() => {
     }
   }
 
-  @include container(medium-up) {
+  @include container(medium) {
     .top-mobile {
       display: none;
     }
@@ -474,6 +466,38 @@ onMounted(() => {
 
       .qr-code {
         order: 3;
+        width: 150px;
+        height: 150px;
+      }
+    }
+  }
+
+  @include container(large) {
+    .top-mobile {
+      display: none;
+    }
+
+    .form {
+      position: relative;
+      flex-wrap: wrap;
+      column-gap: 40px;
+      padding: 30px 20px;
+      max-width: 560px;
+
+      .form-header {
+        margin-bottom: 30px;
+      }
+
+      .form-fields {
+        order: 2;
+        flex-basis: 20%;
+        flex-grow: 1;
+      }
+
+      .qr-code {
+        position: absolute;
+        top: 106px;
+        right: -160px;
         width: 150px;
         height: 150px;
       }

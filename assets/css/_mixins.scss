@@ -112,7 +112,6 @@
 
   @if $query == large {
     @container (min-width: 1024px) {
-      border: 10px solid red;
       @content;
     }
   }
