@@ -10,6 +10,7 @@ const props = defineProps([
 
 const emit = defineEmits(['change', 'validate'])
 
+const inputElement = ref(null)
 const valueModel = ref('')
 const hasFocus = ref(false)
 const uniqueId = 'input_' + Math.round(Math.random() * 1000000)
@@ -58,6 +59,8 @@ function setFocus() {
 function removeFocus() {
   hasFocus.value = false
 
+  console.log('removeFocus', inputElement.value.validity)
+
   emit('validate', valueModel.value)
 }
 
@@ -74,12 +77,14 @@ onBeforeMount(() => {
         :for="uniqueId"
       >{{ label }}</label>
       <input
+        ref="inputElement"
         class="-body-5"
         type="text"
         :id="uniqueId"
         :value="valueModel"
         :placeholder="placeholder"
         :disabled="disabled"
+        pattern="^((25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9]):([0-9]{1,5})$"
         @focus="setFocus"
         @blur="removeFocus"
         @change="changeValue"

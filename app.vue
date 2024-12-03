@@ -20,6 +20,7 @@ import ActivityScreen from '@/data/screens/activity.json'
 import SendScreen from '@/data/screens/send.json'
 import CoinSelectionScreen from '@/data/screens/coin-selection.json'
 import SendReviewScreen from '@/data/screens/send-review.json'
+import CoinFlowScreen from '@/data/screens/coin-flow.json'
 import ReceiveScreen from '@/data/screens/receive.json'
 import PaymentRequestScreen from '@/data/screens/payment-request.json'
 
@@ -56,6 +57,7 @@ const Screens = {
   "transaction": TransactionScreen,
   "send": SendScreen,
   "coin-selection": CoinSelectionScreen,
+  "coin-flow": CoinFlowScreen,
   "send-review": SendReviewScreen,
   "receive": ReceiveScreen,
   "payment-request": PaymentRequestScreen,

@@ -94,6 +94,10 @@ export default {
   transaction(timestamp, forcePositive) {
     this.counter++
 
+    if(!timestamp) {
+      timestamp = new Date().getTime() - Math.random()*1000000000
+    }
+
     const id = 'transaction_' + this.counter
     const title = this.title()
     const address = this.address()
