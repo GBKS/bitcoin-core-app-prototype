@@ -1,0 +1,9 @@
+{
+	"name": "Coin flow",
+	"states": {
+		"default": {
+			"name": "Default",
+			"title": "Coin flow"
+		}
+	}
+}
