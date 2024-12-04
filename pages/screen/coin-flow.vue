@@ -51,11 +51,22 @@ const lowestAmount = computed(() => {
 
 const leftBoxes = computed(() => {
   const result = stateStore.send.coins || []
-  return result
+  return result.sort((a, b) => b.amount - a.amount)
+})
+
+const maxColumnBoxCount = computed(() => {
+  return Math.max(leftBoxes.value.length, rightBoxes.value.length)
 })
 
 const rightBoxes = computed(() => {
-  return stateStore.send.transactions || []
+  const result = stateStore.send.transactions || []
+  return result.sort((a, b) => {
+    if(a.type == 'fee') return 1
+    if(b.type == 'fee') return -1
+    if(a.type == 'change') return 1
+    if(b.type == 'change') return -1
+    return b.amount - a.amount
+  })
 })
 
 function elementMounted(id, element) {
@@ -70,7 +81,7 @@ function createDummyData() {
   let counter = Math.random()*3 + 1
   let sendAmount = 0, transaction
   while(--counter >= 0) {
-    transaction = StateHelper.transaction(null, true)
+    transaction = StateHelper.transaction(null, 'receive')
     sendAmount += transaction.amount
     coins.push(transaction)
   }
@@ -81,7 +92,7 @@ function createDummyData() {
   let transactionAmount
   counter = outputCount
   while(--counter >= 0) {
-    transaction = StateHelper.transaction(null, true)
+    transaction = StateHelper.transaction(null, 'send')
 
     if(counter == 0) {
       transactionAmount = sendAmountToDistribute
@@ -142,6 +153,7 @@ onBeforeMount(() => {
             :key="info.id"
             :info="info"
             direction="input"
+            :maxColumnBoxCount="maxColumnBoxCount"
             @mounted="elementMounted"
           />
         </div>
@@ -158,6 +170,7 @@ onBeforeMount(() => {
             :key="info.id"
             :info="info"
             direction="output"
+            :maxColumnBoxCount="maxColumnBoxCount"
             @mounted="elementMounted"
           />
         </div>

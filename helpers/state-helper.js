@@ -72,7 +72,7 @@ export default {
     let balance = 0, transaction
     while(count-- > 0) {
       timestamp -= Math.random()*1000000000
-      transaction = this.transaction(timestamp)
+      transaction = this.transaction(timestamp, 'send')
 
       balance += transaction.amount
 
@@ -81,7 +81,7 @@ export default {
 
     while(balance < 0) {
       timestamp -= Math.random()*1000000000
-      transaction = this.transaction(timestamp, true)
+      transaction = this.transaction(timestamp, 'receive')
 
       balance += transaction.amount
 
@@ -91,25 +91,74 @@ export default {
     return result
   },
 
-  transaction(timestamp, forcePositive) {
+  transaction(timestamp, type) {
     this.counter++
 
     if(!timestamp) {
       timestamp = new Date().getTime() - Math.random()*1000000000
     }
+  
+    let amount = Math.round(Math.random()*1000000)
+
+    if(!type) type = Math.random() > 0.5 ? 'receive' : 'send'
+    if(type == 'send') {
+      amount *= -1
+    }
+
+    let title
+    if(Math.random() > 0.2) {
+      title = amount > 0 ? this.receiveTitle() : this.sendTitle()
+    }
 
     const id = 'transaction_' + this.counter
-    const title = this.title()
     const address = this.address()
-    const description = Toolbox.formatRelativeDate(Math.round(timestamp/1000)+'', true)    
-    let amount = Math.round(Math.random()*1000000 - 500000)
-
-    if(amount < 0 && forcePositive) amount *= -1
+    const description = Toolbox.formatRelativeDate(Math.round(timestamp/1000)+'', true)  
 
     return { id, title, description, amount, address }
   },
 
-  title() {
+  receiveTitle() {
+    const titles= [
+      "🚀 To The Moon Club Membership",
+      "Diamond Hands Society Dues",
+      "Hodl Training Academy Tuition",
+      "Meme Lord Certification Fee",
+      "Professional Doge Whisperer Payment",
+      "Emergency Pizza Fund Deposit",
+      "Ramen-to-Riches Challenge Winnings",
+      "Coffee Addiction Support Group Fee",
+      "Late Night Taco Investment Returns",
+      "International Snack Exchange Payment",
+      "Professional Cat Video Consultant",
+      "Meme Portfolio Management Fee",
+      "Digital Plant Sitting Services",
+      "Professional Procrastination Coach",
+      "Remote High-Five Delivery Service",
+      "Virtual Pet Rock Adoption Fee",
+      "Professional Metaverse Architect",
+      "Digital Dance Move Creator",
+      "Metaverse Real Estate Flip",
+      "Professional Cloud Shape Analysis",
+      "Time Travel Insurance Premium",
+      "Digital Fortune Cookie Writing",
+      "Professional Daydream Consultant",
+      "Quantum Poetry Generator License",
+      "Professional Unicorn Trainer Fee",
+      "Blockchain Meme Archaeologist",
+      "Weather Forecast Rights",
+      "Digital Silence Collection Royalties",
+      "Professional Bubble Wrap Popper",
+      "Chief Vibes Officer Salary"
+    ]
+
+    let result = null
+    if(Math.random() > 0.2) {
+      result = titles[Math.floor(Math.random()*titles.length)]
+    }
+    return result
+  },
+
+  sendTitle() {
     const titles = [
       "Bought groceries at the local market.",
       "Enjoyed a cup of specialty coffee at the neighborhood café.",

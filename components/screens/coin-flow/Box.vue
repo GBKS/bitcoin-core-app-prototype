@@ -3,7 +3,8 @@ import { useStateStore } from "@/stores/state.js"
 
 const props = defineProps([
   'info',
-  'direction'
+  'direction',
+  'maxColumnBoxCount'
 ])
 
 const emit = defineEmits(['mounted'])
@@ -37,12 +38,34 @@ const primary = computed(() => {
 const secondary = computed(() => {
   let result
 
-  if(props.info.title) {
+  if(props.info.title && props.maxColumnBoxCount <= 5) {
     const chunks = props.info.address.match(/.{1,4}/g);
 
     result = chunks[0] + ' ' + chunks[1] + ' ... ' + props.info.address.slice(-4)
   }
 
+  return result
+})
+
+const primaryTooltip = computed(() => {
+  let result
+
+  if(!props.info.title || props.maxColumnBoxCount > 5) {
+    const chunks = props.info.address.match(/.{1,4}/g);
+    result = chunks.join(' ')
+  }
+  
+  return result
+})
+
+const secondaryTooltip = computed(() => {
+  let result
+
+  if(props.info.title) {
+    const chunks = props.info.address.match(/.{1,4}/g);
+    result = chunks.join(' ')
+  }
+  
   return result
 })
 
@@ -53,8 +76,15 @@ onMounted(() => {
 
 <template>
     <div :class="classObject" ref="boxElement">
-      <h5 class="-title-7">{{ primary }}</h5>
-      <p v-if="secondary" class="-body-7">{{ secondary }}</p>
+      <h5
+        class="-title-7"
+        :title="primaryTooltip"
+      >{{ primary }}</h5>
+      <p
+        v-if="secondary"
+        class="-body-7"
+        :title="secondaryTooltip"
+      >{{ secondary }}</p>
       <KitBalance
         class="-body-7"
         :unit="stateStore.balanceDisplayMode"
@@ -113,6 +143,10 @@ onMounted(() => {
 
   p {
     color: var(--neutral-7);
+
+    ::v-deep(.-nz) {
+      color: var(--neutral-5);
+    }
   }
 
   @include container(small) {

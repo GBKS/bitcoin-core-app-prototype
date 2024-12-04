@@ -157,57 +157,6 @@ const paths = computed(() => {
   return result.reverse()
 })
 
-const circles = computed(() => {
-  const result = []
-
-  props.left.forEach(item => {
-    // Filter the element from the props.elements object that has the key element.id 
-    const element = props.elements[item.id]
-
-    // console.log('item', item)
-    // console.log('element', element)
-
-    if(element && result.length == 0) {
-      const canvasWidth = canvasSize.value.width
-      const canvasHeight = canvasSize.value.height
-
-      const x1 = 0
-      const y1 = element.offsetTop + element.offsetHeight / 2
-
-      const x2 = canvasWidth / 2
-      const y2 = canvasHeight / 2
-
-      const curveX1 = canvasWidth / 4
-      const curveY1 = y1
-
-      const curveX2 = canvasWidth / 4
-      const curveY2 = y2
-
-      // result.push({
-      //   x: x1,
-      //   y: y1
-      // })
-
-      // result.push({
-      //   x: x2,
-      //   y: y2
-      // })
-
-      // result.push({
-      //   x: curveX1,
-      //   y: curveY1
-      // })
-
-      // result.push({
-      //   x: curveX2,
-      //   y: curveY2
-      // })
-    }
-  })
-
-  return result
-})
-
 onMounted(() => {
   resizeObserver.observe(canvasElement.value)
 })
