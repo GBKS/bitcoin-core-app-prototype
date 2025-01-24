@@ -9,6 +9,9 @@ export default defineNuxtConfig({
   server: {
     host: '0.0.0.0'
   },
+  devServer: {
+    port: 3012
+  },
   app: {
     head: {
       title: 'Bitcoin Core App Prototype',

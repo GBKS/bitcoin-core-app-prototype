@@ -98,8 +98,8 @@ onMounted(() => {
 
 .coin-flow-box {
   padding: 7px 12px;
-  border: 1px solid rgba(var(--purple-rgb), 0.4);
-  background-color: rgba(var(--purple-rgb), 0.1);
+  border: 1px solid rgba(var(--purple-rgb), 0.2);
+  background-color: rgba(var(--purple-rgb), 0.075);
   border-radius: 5px;
   display: flex;
   flex-direction: column;
@@ -110,16 +110,16 @@ onMounted(() => {
   }
 
   &.-output {
-    border-color: rgba(var(--orange-rgb), 0.4);
-    background-color: rgba(var(--orange-rgb), 0.1);
+    border-color: rgba(var(--orange-rgb), 0.2);
+    background-color: rgba(var(--orange-rgb), 0.075);
 
     h5 {
       color: var(--orange);
     }
 
     &.-change {
-      border-color: rgba(var(--purple-rgb), 0.4);
-      background-color: rgba(var(--purple-rgb), 0.1);
+      border-color: rgba(var(--purple-rgb), 0.2);
+      background-color: rgba(var(--purple-rgb), 0.075);
 
       h5 {
         color: var(--purple);
@@ -127,8 +127,8 @@ onMounted(() => {
     }
 
     &.-fee {
-      border-color: rgba(var(--blue-rgb), 0.4);
-      background-color: rgba(var(--blue-rgb), 0.1);
+      border-color: rgba(var(--blue-rgb), 0.2);
+      background-color: rgba(var(--blue-rgb), 0.075);
 
       h5 {
         color: var(--blue);
