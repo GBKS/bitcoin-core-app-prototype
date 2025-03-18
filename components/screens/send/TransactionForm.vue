@@ -5,17 +5,22 @@ const props = defineProps([
   'index',
   'transaction',
   'unit',
-  'addressEditable'
+  'addressEditable',
+  'showSendMax',
+  'sendMaxEnabled',
+  'remainingBalance'
 ])
 
 const emit = defineEmits([
-  'change'
+  'change',
+  'toggleSendMax'
 ])
 
 watch(() => props.transaction, (newValue) => {
   amountValue.value = newValue.amount
   noteValue.value = newValue.note
   addressValue.value = newValue.address
+  sendMaxValue.value = newValue.sendMax
 })
 
 const stateStore = useStateStore()
@@ -23,9 +28,14 @@ const amountValue = ref(null)
 const noteValue = ref('')
 const addressValue = ref(null)
 const addressInput = ref(null)
+const sendMaxValue = ref(null)
+const amountValidation = ref(null)
+const addressValidation = ref(null)
+const showValidation = ref(false)
 
 function changeAmountValue(newValue) {
   const adjustedAmount = stateStore.balanceDisplayMode == 'satoshi' ? newValue : newValue * 100000000
+  console.log('changeAmountValue', newValue, adjustedAmount)
   amountValue.value = adjustedAmount
   emitChange()
 }
@@ -40,51 +50,70 @@ function changeAddress(newValue) {
   emitChange()
 }
 
-function onAddressInput(event) {
-  const start = this.selectionStart;
-  const end = this.selectionEnd;
-  let value = this.value.replace(/\s/g, '');
-  let formattedValue = '';
-  let cursorOffset = 0;
-
-  for (let i = 0; i < value.length; i++) {
-      if (i > 0 && i % 4 === 0) {
-          formattedValue += ' ';
-          if (i < start) cursorOffset++;
-      }
-      formattedValue += value[i];
-  }
-
-  this.value = formattedValue.trim();
-  
-  // Adjust cursor position
-  addressInput.value.setSelectionRange(start + cursorOffset, end + cursorOffset);
-
-  emitChange()
-}
-
 function emitChange() {
   emit('change', {
     index: props.index,
     amount: amountValue.value,
     note: noteValue.value,
-    address: addressValue.value
+    address: addressValue.value,
+    sendMax: sendMaxValue.value
   })
 }
+
+function toggleSendMax(value) {
+  sendMaxValue.value = value
+  emitChange()
+  // emit('toggleSendMax', {
+  //   index: props.index,
+  //   value
+  // })
+}
+
+function validateAmount(error) {
+  amountValidation.value = error
+}
+
+function validateAddress(error) {
+  addressValidation.value = error
+}
+
+const walletData = computed(() => {
+  return stateStore.wallets[stateStore.activeWalletId]
+})
 
 onBeforeMount(() => {
   amountValue.value = props.transaction.amount
   noteValue.value = props.transaction.note
   addressValue.value = props.transaction.address
+  sendMaxValue.value = props.transaction.sendMax
 })
 </script>
 
 <template>
     <div class="transaction-form">
-      <ScreensReceiveAmountInput
+      <ScreensSendAddressInput
+        :address="addressValue"
+        :editable="addressEditable"
+        @validate="validateAddress"
+        @change="changeAddress"
+      />
+      <ScreensSendMaxAmount
+        v-if="sendMaxEnabled && !showSendMax"
+        :balance="walletData.balance"
+      />
+      <ScreensSendAmountInput
+        v-if="!sendMaxEnabled || showSendMax"
         label="Amount"
-        :amount="amountValue"
+        :amount="sendMaxValue ? remainingBalance : amountValue"
         :unit="unit"
+        :balance="walletData.balance"
+        required="true"
+        :disabled="sendMaxValue"
+        :showSendMax="showSendMax"
+        :sendMaxEnabled="sendMaxValue"
+        :remainingBalance="remainingBalance"
+        @validate="validateAmount"
+        @toggleSendMax="toggleSendMax"
         @change="changeAmountValue"
       />
       <ScreensReceiveNoteInput
@@ -92,11 +121,6 @@ onBeforeMount(() => {
         :text="noteValue"
         placeholder="Enter private note..."
         @change="changeNoteValue"
-      />
-      <ScreensSendAddressInput
-        :address="addressValue"
-        :editable="addressEditable"
-        @change="changeAddress"
       />
     </div>
 </template>

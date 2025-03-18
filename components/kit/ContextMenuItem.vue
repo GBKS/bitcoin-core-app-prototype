@@ -25,13 +25,23 @@ const label = computed(() => {
 const classObject = computed(() => {
   const c = ['context-menu-item', '-body-6', '-body-5-mobile']
 
+  if(props.info.radio !== undefined) {
+    c.push('-radio')
+  }
+
   if(props.info.indent) {
     c.push('-indent')
   } else if(props.info.toggle === true) {
     c.push('-toggle-active')
+  } else if(props.info.radio === true) {
+    c.push('-radio-active')
   }
 
-  return c.join(' ')
+if(props.info.disabled) {
+  c.push('-disabled')
+}
+
+  return c
 })
 
 function select() {
@@ -42,14 +52,20 @@ function select() {
 <template>
   <button 
     :class="classObject"
+    :disabled="info.disabled"
     @click="select"
   >
+    <span
+      v-if="info.radio !== undefined"
+      class="radio"
+    />
     <span
       v-if="info.icon" 
       class="icon"
       v-html="Icons[info.icon]"
     />
-    <span class="label">{{ props.info.label }}</span>
+    <span class="label" v-html="props.info.label" />
+    <span v-if="props.info.secondaryLabel" class="secondary-label" v-html="props.info.secondaryLabel" />
     <span
       v-if="info.toggle !== undefined"
       class="toggle"
@@ -75,9 +91,30 @@ function select() {
     }
   }
 
+  .radio {
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--neutral-6);
+    border-radius: 100px;
+  }
+
   .label {
     flex-grow: 1;
     text-align: left;
+
+    ::v-deep(span) {
+      color: var(--neutral-7);
+    }
+  }
+
+  .secondary-label {
+    color: var(--neutral-8);
+  }
+
+  &.-radio {
+    .label {
+      color: var(--neutral-9);
+    }
   }
 
   ::v-deep(.toggle) {
@@ -118,15 +155,26 @@ function select() {
     }
   }
 
+  &.-radio-active {
+    .radio {
+      background-color: var(--primary);
+      border-color: var(--primary);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+
   @include container(small) {
     
   }
 
   @include container(medium-up) {
     border-radius: var(--corner-radius);
-    cursor: pointer;
 
-    &:hover {
+    &:not(:disabled):hover {
+      cursor: pointer;
       color: var(--neutral-9);
       background-color: var(--neutral-2);
     }

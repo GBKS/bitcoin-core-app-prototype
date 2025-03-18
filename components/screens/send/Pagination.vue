@@ -11,7 +11,7 @@ const emit = defineEmits([
 ])
 
 const title = computed(() => {
-  return `Transaction ${props.activeIndex + 1} of ${props.count}`
+  return `Recipient ${props.activeIndex + 1} of ${props.count}`
 })
 
 function previousTransaction() {

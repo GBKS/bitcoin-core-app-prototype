@@ -1,4 +1,5 @@
 <script setup>
+import { ADDRESS_TYPES, AddressHelper} from '@/helpers/address.js';
 import StateHelper from '@/helpers/state-helper.js'
 
 const props = defineProps([
@@ -7,15 +8,24 @@ const props = defineProps([
 ])
 
 const emit = defineEmits([
-  'change'
+  'change',
+  'validate'
 ])
 
 watch(() => props.address, (newValue) => {
   addressValue.value = newValue
+  // validate()
 })
 
 const addressValue = ref('')
 const addressInput = ref(null)
+const validationError = ref(null)
+
+const addressType = ref(null)
+const addressInfo = ref()
+const validationResult = ref(null)
+const bech32FixableErrors = ref(null)
+const bech32IncorrectCharacters = ref(null)
 
 function onAddressInput(event) {
   const start = addressInput.value.selectionStart;
@@ -60,15 +70,60 @@ const styledAddress = computed(() => {
 })
 
 function clickPaste() {
-  addressValue.value = chunkAddress(StateHelper.address())
+  // addressValue.value = chunkAddress(StateHelper.address())
+  addressValue.value = chunkAddress('bc1qtz5fl2n76wcmfdhxq9svv5q0hpyvkrew0s5kly')
 
   emit('change', addressValue.value)
 }
 
 function generateAddress() {
-  addressValue.value = chunkAddress(StateHelper.address())
+  // addressValue.value = chunkAddress(StateHelper.address())
+  addressValue.value = chunkAddress('bc1qtz5fl2n76wcmfdhxq9svv5q0hpyvkrew0s5kly')
 
   emit('change', addressValue.value)
+}
+
+function onInputBlur() {
+  validate()
+}
+
+function validate() {
+  const address = addressValue.value.replace(/\s/g, '')
+
+  if(addressValue.value === '') {
+    validationError.value = null
+    emit('validate', null)
+    return
+  }
+
+  addressInfo.value = AddressHelper.getAddressInfo(address)
+  validationResult.value = AddressHelper.validateBitcoinAddress(address)
+  addressType.value = AddressHelper.getAddressType(address)
+
+  if(addressType.value === ADDRESS_TYPES.BECH32_INVALID) {
+    bech32FixableErrors.value = AddressHelper.tryFixingBech32Errors(address)
+    bech32IncorrectCharacters.value = AddressHelper.detectIncorrectBech32Characters(address)
+  } else {
+    bech32FixableErrors.value = null
+    bech32IncorrectCharacters.value = null
+  }
+
+  // console.log('validate', address)
+  // console.log('addressInfo', addressInfo.value)
+  // console.log('validationResult', validationResult.value)
+  // console.log('addressType', addressType.value)
+  // console.log('bech32FixableErrors', bech32FixableErrors.value)
+  // console.log('bech32IncorrectCharacters', bech32IncorrectCharacters.value)
+
+  if(!validationResult.value) {
+    validationError.value = addressType.value
+  } else {
+    validationError.value = null
+  }
+
+  console.log('validate', validationError.value, addressValue.value)
+
+  emit('validate', validationError.value)
 }
 
 onBeforeMount(() => {
@@ -79,30 +134,34 @@ onBeforeMount(() => {
 <template>
   <div class="address-input">
     <div class="info">
-      <h4 class="-body-5" @click="generateAddress">Address</h4>
+      <h4 class="-body-5" @click="generateAddress">Send to</h4>
       <button
         v-if="false && editable"
         class="-body-6" 
         @click="clickPaste"
       >Paste</button>
       <button
-        v-if="editable"
+        v-if="false && editable"
         class="-body-6" 
       >Contacts</button>
     </div>
-    <div class="input">
-      <textarea
-        class="-body-5"
-        type="text"
-        v-model="addressValue"
-        ref="addressInput"
-        placeholder="Enter address..."
-        autocomplete="off"
-        spellcheck="false"
-        :disabled="!editable"
-        @input="onAddressInput"
-      />
-      <p class="-body-5" v-html="styledAddress"></p>
+    <div class="right">
+      <div class="input">
+        <textarea
+          class="-body-5"
+          type="text"
+          v-model="addressValue"
+          ref="addressInput"
+          placeholder="Enter address..."
+          autocomplete="off"
+          spellcheck="false"
+          :disabled="!editable"
+          @blur="onInputBlur"
+          @input="onAddressInput"
+        />
+        <p class="-body-5" v-html="styledAddress"></p>
+      </div>
+      <p class="error" v-if="validationError">{{ validationError }}</p>
     </div>
   </div>
 </template>
@@ -130,49 +189,65 @@ onBeforeMount(() => {
     }
   }
 
-  .input {
-    position: relative;
+  .right {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 
-    textarea {
-      width: 100%;
-      form-sizing: normal;
-      appearance: none;
-      background-color: transparent;
-      border-width: 0;
-      resize: none;
-      padding: 1px;
-      color: transparent;
-      // color: var(--neutral-5);
-      caret-color: var(--neutral-9);
-      font-family: monospace;
-      letter-spacing: -0.01rem;
-      font-size: 17px;
+    .input {
+      position: relative;
+      line-height: 0;
 
-      &::placeholder {
-        color: var(--neutral-5);
+      textarea {
+        width: 100%;
+        form-sizing: normal;
+        field-sizing: content;
+        appearance: none;
+        background-color: transparent;
+        border-width: 0;
+        resize: none;
+        padding: 1px;
+        color: transparent;
+        // color: var(--neutral-5);
+        caret-color: var(--neutral-9);
+        font-family: monospace;
+        letter-spacing: -0.01rem;
+        font-size: 17px;
+        line-height: 1.4;
+
+        &::placeholder {
+          color: var(--neutral-5);
+        }
+
+        &:focus-visible {
+          outline: none;
+        }
       }
 
-      &:focus-visible {
-        outline: none;
+      p {
+        position: absolute;
+        padding: 1px;
+        top: 0;
+        left: 0;
+        width: 100%;
+        pointer-events: none;
+        color: var(--neutral-7);
+        font-family: monospace;
+        font-size: 17px;
+
+        ::v-deep(span) {
+          &:nth-child(1),
+          &:nth-child(2),
+          &:nth-last-child(2),
+          &:nth-last-child(1) {
+            color: var(--neutral-9);
+          }
+        }
       }
     }
 
-    p {
-      position: absolute;
-      padding: 1px;
-      top: 0;
-      left: 0;
-      width: 100%;
-      pointer-events: none;
-      color: var(--neutral-7);
-      font-family: monospace;
-      font-size: 17px;
-
-      ::v-deep(span) {
-        &:nth-child(2n) {
-          color: var(--neutral-9);
-        }
-      }
+    .error {
+      color: var(--red);
     }
   }
 

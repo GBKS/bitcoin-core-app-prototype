@@ -8,6 +8,8 @@ definePageMeta(transition)
 const reviewMode = ref(false)
 const optionsVisible = ref(false)
 const optionsElement = ref(null)
+const feeOptionsVisible = ref(false)
+let feeOptionsElement = null
 const stateStore = useStateStore()
 const currentTransactionIndex = ref(0)
 const transactions = ref([])
@@ -17,7 +19,9 @@ const feeSpeed = ref('default')
 const customFeeRate = ref(5)
 const replaceByFeeEnabled = ref(false)
 const feeInAmountEnabled = ref(false)
+const sendMaxEnabled = ref(false)
 const coinSelectionEnabled = ref(false)
+// const formIsValid = ref(false)
 const coins = ref([])
 
 const props = defineProps([
@@ -27,22 +31,13 @@ const props = defineProps([
 
 const menuOptions = computed(() => {
   return {
-    "import-psbt": {
-      icon: 'file',
-      label: 'Import transaction file'
-    },
-    "static-1": 'divider',
-    "fee-in-amount": {
-      label: 'Include fee in amount',
-      toggle: feeInAmountEnabled.value
+    "send-max": {
+      label: 'Send full balance',
+      toggle: sendMaxEnabled.value
     },
     "replace-by-fee": {
       label: 'Enable speed up',
       toggle: replaceByFeeEnabled.value
-    },
-    "custom-fee": {
-      label: 'Custom fee',
-      toggle: customFeeEnabled.value
     },
     "static-2": 'divider',
     "coin-selection": {
@@ -58,9 +53,49 @@ const menuOptions = computed(() => {
       toggle: transactions.value.length > 1
     },
     "static-3": 'divider',
+    "import-psbt": {
+      icon: 'file',
+      label: 'Import transaction file'
+    },
+    "static-4": 'divider',
     "clear": {
       icon: 'cross',
-      label: 'Clear all'
+      label: 'Clear form'
+    }
+  }
+})
+
+const feeOptions = computed(() => {
+  return {
+    "fast": {
+      label: 'Fast <span>(10 - 20 min)</span>',
+      secondaryLabel: '3,000 sats',
+      radio: customFeeEnabled.value ? false : feeSpeed.value == 'fast'
+    },
+    "default": {
+      label: 'Default <span>(20 - 30 min)</span>',
+      secondaryLabel: '2,000 sats',
+      radio: customFeeEnabled.value ? false : feeSpeed.value == 'default'
+    },
+    "slow": {
+      label: 'Slow <span>(30 - 60 min)</span>',
+      secondaryLabel: '1,000 sats',
+      radio: customFeeEnabled.value ? false : feeSpeed.value == 'slow'
+    },
+    "best-privacy": {
+      label: 'Best privacy <span>(30 - 60 min)</span>',
+      secondaryLabel: '2,500 sats',
+      radio: customFeeEnabled.value ? false : feeSpeed.value == 'best-privacy'
+    },
+    "custom-fee": {
+      label: 'Custom',
+      radio: customFeeEnabled.value
+    },
+    "static-1": 'divider',
+    "fee-in-amount": {
+      label: 'Include fee in amount',
+      toggle: feeInAmountEnabled.value || sendMaxEnabled.value,
+      disabled: sendMaxEnabled.value
     }
   }
 })
@@ -102,6 +137,9 @@ function onContextMenuOption(data) {
       case 'fee-in-amount':
         feeInAmountEnabled.value = !feeInAmountEnabled.value
         break
+      case 'send-max':
+        sendMaxEnabled.value = !sendMaxEnabled.value
+        break
       case 'locktime':
         locktimeEnabled.value = !locktimeEnabled.value
         break
@@ -112,18 +150,73 @@ function onContextMenuOption(data) {
         clearForm()
         break
     }
-  }
 
-  window.emitter.emit('update-context-menu', {
-    id: 'send-options',
-    options: menuOptions.value,
-    element: optionsElement.value,
-    desktopPosition: 'below-right-aligned',
-    mobilePosition: 'below-right-aligned'
-  })
+    window.emitter.emit('update-context-menu', {
+      id: 'send-options',
+      options: menuOptions.value,
+      element: optionsElement.value,
+      desktopPosition: 'below-right-aligned',
+      mobilePosition: 'below-right-aligned'
+    })
+  } else if(data.menuId == 'fee-options') {
+    switch(data.optionId) {
+      case 'fast':
+      case 'default':
+      case 'slow':
+      case 'best-privacy':
+        feeSpeed.value = data.optionId
+        customFeeEnabled.value = false
+        break
+      case 'custom-fee':
+        customFeeEnabled.value = !customFeeEnabled.value
+        break
+      case 'replace-by-fee':
+        replaceByFeeEnabled.value = !replaceByFeeEnabled.value
+        break
+      case 'fee-in-amount':
+        feeInAmountEnabled.value = !feeInAmountEnabled.value
+        break
+    }
+
+    window.emitter.emit('update-context-menu', {
+      id: 'fee-options',
+      options: feeOptions.value,
+      element: feeOptionsElement,
+      desktopPosition: 'below-right-aligned',
+      mobilePosition: 'below-right-aligned'
+    })
+  }
 
   // window.emitter.emit('hide-context-menu', { id: 'send-options' })
 }
+
+function toggleFeeOptions(element) {
+  console.log('toggleFeeOptions', element)
+
+  if(element) {
+    feeOptionsElement = element
+  }
+
+  feeOptionsVisible.value = !feeOptionsVisible.value
+
+  window.emitter.emit('toggle-context-menu', {
+    id: 'fee-options',
+    options: feeOptions.value,
+    element: feeOptionsElement,
+    desktopPosition: 'below-right-aligned',
+    mobilePosition: 'below-right-aligned'
+  })
+}
+
+function setFeeToggleElement(element) {
+  feeOptionsElement = element
+}
+
+const formIsValid = computed(() => {
+  return transactions.value.every(transaction => {
+    return transaction.amount && transaction.address
+  })
+})
 
 function clearForm() {
   transactions.value = [getBlankTransaction()]
@@ -153,8 +246,14 @@ function addBlankTransaction() {
   transactions.value.push(getBlankTransaction())
 }
 
-function clickReview() {
-  reviewMode.value = true
+function clickReview(event) {
+  // event.preventDefault()
+  // event.stopPropagation()
+  // return false;
+  // reviewMode.value = true
+
+  // const route = useRoute()
+  // useRouter().push({ path: '/screen/send-review?t=slide-up' })
 }
 
 function clickSend() {
@@ -167,6 +266,16 @@ function changeTransaction(data) {
   transaction.amount = data.amount
   transaction.note = data.note
   transaction.address = data.address
+  transaction.sendMax = data.sendMax
+
+  if(data.sendMax) {
+    // Disable sendMax for all other transactions
+    transactions.value.forEach((t, index) => {
+      if(index != data.index) {
+        t.sendMax = false
+      }
+    })
+  }
 }
 
 function changeCurrentTransactionIndex(index) {
@@ -176,7 +285,7 @@ function changeCurrentTransactionIndex(index) {
 const title = computed(() => {
   let result = 'Enter transaction details'
 
-  if(props.state.prefilled) {
+  if(props.state?.prefilled) {
     result = 'Payment request'
   } else if(reviewMode.value) {
     result = 'Review transaction'
@@ -187,6 +296,39 @@ const title = computed(() => {
 
 const currentTransaction = computed(() => {
   return transactions.value[currentTransactionIndex.value]
+})
+
+const remainingBalance = computed(() => {
+  let balance = stateStore.wallets[stateStore.activeWalletId].balance
+
+  transactions.value.forEach(transaction => {
+    if(transaction.amount) {
+      balance -= transaction.amount
+    }
+  })
+
+  return balance
+})
+
+const amountToSend = computed(() => {
+  let balance = 0
+
+  transactions.value.forEach(transaction => {
+    if(transaction.amount) {
+      balance += transaction.amount
+    }
+  })
+
+  return balance
+})
+
+const transactionSize = computed(() => {
+  let size = 0
+
+  // Fake a transaction size based on amount.
+  if(amountToSend.value > 0) size = Math.min(30, amountToSend.value / 1000)
+
+  return size
 })
 
 function changeFeeRate(newValue) {
@@ -236,6 +378,7 @@ function restoreFromState() {
   customFeeRate.value = state.customFeeRate || 5
   replaceByFeeEnabled.value = state.replaceByFeeEnabled || false
   feeInAmountEnabled.value = state.feeInAmountEnabled || false
+  sendMaxEnabled.value = state.sendMaxEnabled || false
   coinSelectionEnabled.value = state.coinSelectionEnabled || false
   transactions.value = state.transactions || [getBlankTransaction()]
   coins.value = state.coins || []
@@ -250,6 +393,7 @@ function updateState() {
     customFeeRate: customFeeRate.value,
     replaceByFeeEnabled: replaceByFeeEnabled.value,
     feeInAmountEnabled: feeInAmountEnabled.value,
+    sendMaxEnabled: sendMaxEnabled.value,
     coinSelectionEnabled: coinSelectionEnabled.value,
     transactions: transactions.value,
     coins: coins.value
@@ -260,6 +404,14 @@ function updateState() {
   stateStore.send = sendData
 }
 
+function enableSendMax() {
+  sendMaxEnabled.value = !sendMaxEnabled.value
+}
+
+function toggleSendMax(data) {
+  console.log('toggleSendMax', data)
+}
+
 const classObject = computed(() => {
   const c = ['send']
 
@@ -268,6 +420,14 @@ const classObject = computed(() => {
   }
 
   return c.join(' ')
+})
+
+const reviewButtonTo = computed(() => {
+  return reviewMode.value ? '/screen/send-review?t=slide-up' : null
+})
+
+const sendMaxTransactionIndex = computed(() => {
+  return transactions.value.findIndex(t => t.sendMax)
 })
 
 onBeforeMount(() => {
@@ -342,6 +502,11 @@ onBeforeUnmount(() => {
           :index="currentTransactionIndex"
           :transaction="currentTransaction"
           :addressEditable="!state.prefilled"
+          :showSendMax="transactions.length > 1 && sendMaxEnabled"
+          :sendMaxEnabled="sendMaxEnabled"
+          :remainingBalance="remainingBalance"
+          @enableSendMax="enableSendMax"
+          @toggleSendMax="toggleSendMax"
           @change="changeTransaction"
         />
 
@@ -359,12 +524,16 @@ onBeforeUnmount(() => {
           v-if="customFeeEnabled"
           :feeRate="customFeeRate"
           @change="changeFeeRate"
+          @toggleOptions="toggleFeeOptions"
+          @setToggleElement="setFeeToggleElement"
         />
 
         <ScreensSendFeeSelector
           v-if="!customFeeEnabled"
           :feeSpeed="feeSpeed"
-          @change="changeFeeSpeed"
+          :transactionSize="transactionSize"
+          @toggleFeeOptions="toggleFeeOptions"
+          @setToggleElement="setFeeToggleElement"
         />
 
         <ScreensSendTimelockInput
@@ -372,15 +541,18 @@ onBeforeUnmount(() => {
         />
 
         <ScreensSendChecks
-          v-if="replaceByFeeEnabled || feeInAmountEnabled"
+          v-if="replaceByFeeEnabled || feeInAmountEnabled || sendMaxEnabled"
           :replaceByFeeEnabled="replaceByFeeEnabled"
           :feeInAmountEnabled="feeInAmountEnabled"
+          :sendMaxEnabled="sendMaxEnabled"
         />
 
         <div class="options">
           <KitButton
             v-if="!reviewMode"
             label="Review"
+            :disabled="!formIsValid"
+            to="/screen/send-review?t=slide-up"
             @click="clickReview"
           />
           <KitButton

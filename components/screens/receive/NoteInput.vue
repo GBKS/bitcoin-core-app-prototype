@@ -24,7 +24,7 @@ const hasContent = computed(() => {
 })
 
 const classObject = computed(() => {
-  const c = ['receive-input']
+  const c = ['receive-note-input']
 
   if(hasContent.value) {
     c.push('-has-content')
@@ -71,11 +71,11 @@ onBeforeMount(() => {
 
 <style scoped lang="scss">
 
-.receive-input {
+.receive-note-input {
   display: flex;
   align-items: stretch;
   gap: 5px;
-  padding: 10px 0;
+  padding: 13px 0;
 
   label {
     width: 110px;
