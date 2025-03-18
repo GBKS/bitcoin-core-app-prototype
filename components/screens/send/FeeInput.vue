@@ -1,15 +1,21 @@
 <script setup>
 import { useStateStore } from "@/stores/state.js"
+import Icons from '@/helpers/icons.js'
 
 const props = defineProps([
   'feeRate'
 ])
 
-const emit = defineEmits(['change'])
+const emit = defineEmits([
+  'change',
+  'toggleOptions',
+  'setToggleElement'
+])
 
 const stateStore = useStateStore()
 const feeRateValue = ref(null)
 const hasFocus = ref(false)
+const toggleElement = ref(null)
 
 watch(() => props.feeRate, (newValue) => {
   feeRateValue.value = newValue
@@ -81,8 +87,16 @@ const duration = computed(() => {
   return minutes + ' minute' + (minutes == 1 ? '' : 's')
 })
 
+function toggleOptions() {
+  emit('toggleOptions', toggleElement.value)
+}
+
 onBeforeMount(() => {
   feeRateValue.value = props.feeRate
+})
+
+onMounted(() => {
+  emit('setToggleElement', toggleElement.value)
 })
 </script>
  
@@ -104,7 +118,14 @@ onBeforeMount(() => {
         @blur="removeFocus"
         @change="changeValue"
       />
-      <p class="-body-5">sats/vbyte</p>
+      <button
+        class="toggle"
+        ref="toggleElement"
+        @click="toggleOptions"
+      >
+        <p class="-body-5">sats/vbyte</p>
+        <div v-html="Icons.caretDown" />
+      </button>
     </div>
     <div class="fee-display">
       <h4 class="-body-5">Fee</h4>
@@ -121,7 +142,7 @@ onBeforeMount(() => {
 
   .rate-input {
     display: flex;
-    align-items: stretch;
+    align-items: center;
     gap: 5px;
     padding: 10px 0;
     border-top: 1px solid var(--neutral-3);
@@ -153,6 +174,43 @@ onBeforeMount(() => {
 
       &:focus-visible {
           outline: none;
+      }
+    }
+
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex: 0 0 auto;
+      padding: 3px 9px;
+      border-radius: 5px;
+
+      > * {
+        flex-shrink: 0;
+      }
+
+      p {
+        color: var(--neutral-7);
+      }
+
+      > div {
+        line-height: 0;
+        color: var(--primary);
+
+        ::v-deep(svg) {
+          width: 14px;
+          height: 14px;
+        }
+      }
+
+      &:hover {
+        color: var(--primary);
+        cursor: pointer;
+        background-color: var(--neutral-1);
+
+        p {
+          color: var(--primary);
+        }
       }
     }
 

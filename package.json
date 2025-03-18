@@ -17,6 +17,8 @@
   "dependencies": {
     "@pinia/nuxt": "^0.5.1",
     "@vueuse/nuxt": "^10.7.1",
+    "bech32": "^2.0.0",
+    "bitcoin-address-validation": "^3.0.0",
     "lottie-web": "^5.12.2",
     "mitt": "^3.0.1",
     "pinia": "^2.1.7",

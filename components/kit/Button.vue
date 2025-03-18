@@ -225,7 +225,7 @@ const content = computed(() => {
     &.-free,
     &.-free-subtle {
       &:not(:disabled):hover {
-        background-color: var(--neutral-2);
+        background-color: var(--neutral-1);
         color: var(--primary);
       }
     }

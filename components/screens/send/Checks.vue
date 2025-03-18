@@ -3,14 +3,16 @@ import Icons from '@/helpers/icons.js'
 
 const props = defineProps([
   'replaceByFeeEnabled',
-  'feeInAmountEnabled'
+  'feeInAmountEnabled',
+  'sendMaxEnabled'
 ])
 </script>
 
 <template>
   <div class="send-checks">
-    <p v-if="feeInAmountEnabled"><span v-html="Icons.check" />Include fee in amount</p>
+    <p v-if="feeInAmountEnabled"><span v-html="Icons.check" />Fees are included in the amount</p>
     <p v-if="replaceByFeeEnabled"><span v-html="Icons.check" />Speed up enabled</p>
+    <p v-if="sendMaxEnabled && !feeInAmountEnabled"><span v-html="Icons.check" />Fees are included in the amount</p>
   </div>
 </template>
 

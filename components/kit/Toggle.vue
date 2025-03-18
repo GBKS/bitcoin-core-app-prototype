@@ -3,7 +3,8 @@ const props = defineProps([
   'active',
   'label',
   'size',
-  'disabled'
+  'disabled',
+  'tag'
 ])
 
 const classObject = computed(() => {
@@ -16,10 +17,15 @@ const classObject = computed(() => {
 
   return c.join(' ')
 })
+
+const componentTag = computed(() => {
+  return props.tag || 'button'
+})
 </script>
 
 <template>
-  <button
+  <component
+    :is="componentTag"
     :class="classObject"
     :disabled="disabled"
     :aria-label="label"
@@ -54,6 +60,25 @@ const classObject = computed(() => {
 
     &:after {
       transform: translateX(10px);
+    }
+  }
+
+  &.-tiny {
+    width: 40px;
+    height: 24px;
+
+    &:after {
+      top: 4px;
+      left: 4px;
+      width: 16px;
+      height: 16px;
+      box-shadow: 0 5px 10px 0 rgba(black, 0.25)
+    }
+
+    &.-active {
+      &:after {
+        transform: translateX(17px);
+      }
     }
   }
 

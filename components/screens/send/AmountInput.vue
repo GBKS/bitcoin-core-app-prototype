@@ -7,12 +7,15 @@ const props = defineProps([
   'amount',
   'balance',
   'required',
-  'disabled'
+  'disabled',
+  'showSendMax',
+  'sendMaxEnabled',
+  'remainingBalance'
 ])
 
 const emit = defineEmits([
   'change',
-  'enableSendMax',
+  'toggleSendMax',
   'validate'
 ])
 
@@ -31,8 +34,22 @@ watch(() => stateStore.balanceDisplayMode, (newValue) => {
 })
 
 function updateAmountValue(newValue) {
-  const adjustedValue = stateStore.balanceDisplayMode == 'satoshi' ? newValue : newValue / 100000000
+  let adjustedValue = newValue
+
+  if(stateStore.balanceDisplayMode !== 'satoshi') {
+    adjustedValue = trimEndChar((newValue / 100000000).toFixed(8), '0')
+  }
+  console.log('updateAmountValue', newValue, adjustedValue)
   amountValue.value = adjustedValue
+}
+
+function trimEndChar(str, charToTrim) {
+  // Escape special regex characters
+  const escapedChar = charToTrim.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // Create regex that matches one or more of the char at the end
+  const regex = new RegExp(`${escapedChar}+$`);
+  // Replace matches with empty string
+  return str.replace(regex, '');
 }
 
 const placeholder = computed(() => {
@@ -79,17 +96,21 @@ const hasContent = computed(() => {
 })
 
 const classObject = computed(() => {
-  const c = ['receive-amount-input']
+  const c = ['send-amount-input']
 
     if(hasContent.value) {
-    c.push('-has-content')
+      c.push('-has-content')
     }
 
     if(hasFocus.value) {
-    c.push('-has-focus')
+      c.push('-has-focus')
     }
 
-  return c.join(' ')
+    if(props.disabled) {
+      c.push('-disabled')
+    }
+
+  return c
 })
 
 const step = computed(() => {
@@ -97,7 +118,11 @@ const step = computed(() => {
 })
 
 function sendMax() {
-  emit('enableSendMax')
+  emit('toggleSendMax', true)
+}
+
+function toggleSendMax() {
+  emit('toggleSendMax', !props.sendMaxEnabled)
 }
 
 onBeforeMount(() => {
@@ -112,6 +137,7 @@ onBeforeMount(() => {
           <label
               class="-body-5"
               :for="uniqueId"
+              :disabled="disabled"
           >{{ label }}</label>
           <input
               class="-body-5"
@@ -135,6 +161,18 @@ onBeforeMount(() => {
           <div v-html="Icons.flip" />
         </button>
       </div>
+      <div class="send-max" v-if="showSendMax">
+        <button
+          class="-body-6"
+          @click="toggleSendMax"
+        >
+          <KitToggle
+            size="tiny" 
+            tag="span" 
+            :active="sendMaxEnabled"
+          /> Use remaining balance
+        </button>
+      </div>
       <div class="error" v-if="error">
         <span class="icon" v-html="Icons.alert" />
         <template v-if="error == 'insufficient-funds'">
@@ -155,20 +193,32 @@ onBeforeMount(() => {
 
 <style scoped lang="scss">
 
-.receive-amount-input {
+.send-amount-input {
     padding: 10px 0;
     display: flex;
     flex-direction: column;
     gap: 5px;
 
+    &:not(.-disabled) {
+      .content {
+        .left {
+          label {
+            &:hover {
+              input {
+                color: var(--primary);
+              }
+            }
+          }
+        }
+      }
+    }
+
     .content {
       display: flex;
       gap: 5px;
 
-
       .left {
         display: flex;
-        align-items: center;
         gap: 5px;
         flex-basis: 10px;
         flex-grow: 1;
@@ -204,11 +254,9 @@ onBeforeMount(() => {
           &:focus-visible {
               outline: none;
           }
-        }
 
-        &:hover {
-          input {
-            color: var(--primary);
+          &:disabled {
+            color: var(--neutral-7);
           }
         }
       }
@@ -238,10 +286,27 @@ onBeforeMount(() => {
         &:hover {
           color: var(--primary);
           cursor: pointer;
-          background-color: var(--neutral-2);
+          background-color: var(--neutral-1);
 
           p {
             color: var(--primary);
+          }
+        }
+      }
+    }
+
+    .send-max {
+      padding-top: 5px;
+
+      button {
+        color: var(--neutral-7);
+
+        ::v-deep(> span) {
+          display: inline-block;
+          vertical-align: middle;
+
+          &:first-child {
+            margin-right: 8px;
           }
         }
       }
@@ -307,7 +372,19 @@ onBeforeMount(() => {
     }
 
     @include container(medium-up) {
-      
+      .content {
+        .left {
+          align-items: center;
+        }
+      }
+
+      .error {
+        padding-left: 110px;
+      }
+
+      .send-max {
+        padding-left: 115px;
+      }
     }
 }
 

@@ -3,43 +3,21 @@ import { useStateStore } from "@/stores/state.js"
 import Icons from '@/helpers/icons.js'
 
 const props = defineProps([
-  'feeSpeed'
+  'feeSpeed',
+  'transactionSize'
 ])
 
 const emit = defineEmits([
-  'change'
+  'change',
+  'toggleFeeOptions',
+  'setToggleElement'
 ])
 
 const stateStore = useStateStore()
+const toggleElement = ref(null)
 
-function previousFeeSpeed() {
-  let newFeeSpeed = 'default'
-
-  switch(props.feeSpeed) {
-    case 'fast':
-      newFeeSpeed = 'default'
-      break
-    case 'default':
-      newFeeSpeed = 'slow'
-      break
-  }
-
-  emit('change', newFeeSpeed)
-}
-
-function nextFeeSpeed() {
-  let newFeeSpeed = 'default'
-
-  switch(props.feeSpeed) {
-    case 'default':
-      newFeeSpeed = 'fast'
-      break
-    case 'fast':
-      newFeeSpeed = 'slow'
-      break
-  }
-
-  emit('change', newFeeSpeed)
+function toggleOptions() {
+  emit('toggleFeeOptions', toggleElement.value)
 }
 
 const formattedFee = computed(() => {
@@ -53,41 +31,72 @@ const formattedFee = computed(() => {
       break
   }
 
+  amount *= props.transactionSize
+
   let formattedAmount = amount
   if(stateStore.balanceDisplayMode != 'satoshi') {
     formattedAmount = formattedAmount / 100000000
 
-    let amountStringLength = (amount + '').length
-    if(amount >= 1000) amountStringLength++
-    if(amount >= 1000000) amountStringLength++
+    // console.log('formattedAmount', amount, formattedAmount)
 
-    // Format amount to 8 decimals with a thin space between the second and third numbers, and another thin space between the fifth and sixth numbers
-    formattedAmount = formattedAmount.toFixed(8).replace(/(\d{1,2})(\d{3})(\d{3})/, '$1\u2009$2\u2009$3')
+    if(amount == 0) {
+      formattedAmount = '<span class="fee-decimals">' + formattedAmount.toFixed(8).replace(/(\d{1,2})(\d{3})(\d{3})/, '$1\u2009$2\u2009$3') + '</span>'
+    } else {
+      let amountStringLength = (amount + '').length
+      if(amount >= 1000) amountStringLength++
+      if(amount >= 1000000) amountStringLength++
 
-    // Wrap the last 3 characters in a span with a class to style them differently
-    formattedAmount = '<span class="fee-decimals">' + formattedAmount.slice(0, -amountStringLength) + '</span>' + formattedAmount.slice(-amountStringLength)
+      // Format amount to 8 decimals with a thin space between the second and third numbers, and another thin space between the fifth and sixth numbers
+      formattedAmount = formattedAmount.toFixed(8).replace(/(\d{1,2})(\d{3})(\d{3})/, '$1\u2009$2\u2009$3')
+
+      // Wrap the last 3 characters in a span with a class to style them differently
+      formattedAmount = '<span class="fee-decimals">' + formattedAmount.slice(0, -amountStringLength) + '</span>' + formattedAmount.slice(-amountStringLength)
+    }
   }
 
   const amountString = formattedAmount + ' ' + (stateStore.balanceDisplayMode != 'satoshi' ? '₿' : 'sats')
 
-  return amountString + ', ' + duration.value
+  return amountString
 })
 
 const formattedFeeSpeed = computed(() => {
-  return props.feeSpeed == 'default' ? 'Default' : props.feeSpeed.charAt(0).toUpperCase() + props.feeSpeed.slice(1)
+  let result = 'Default'
+
+  switch(props.feeSpeed) {
+    case 'fast':
+      result = 'Fast'
+      break
+    case 'slow':
+      result = 'Slow'
+      break
+    case 'best-privacy':
+      result = 'Privacy'
+      break
+  }
+
+  result += ' (' + duration.value + ')'
+
+  return result
 })
 
 const duration = computed(() => {
   let result = '~1 hour'
   switch(props.feeSpeed) {
     case 'fast':
-      result = '~30 minutes'
+      result = '~30 mins'
       break
     case 'slow':
       result = '~3 hours'
       break
+    case 'best-privacy':
+      result = '~2 hours'
+      break
   }
   return result
+})
+
+onMounted(() => {
+  emit('setToggleElement', toggleElement.value)
 })
 </script>
 
@@ -97,10 +106,11 @@ const duration = computed(() => {
     <p class="-body-5" v-html="formattedFee" />
     <button
       class="toggle"
-      @click="nextFeeSpeed"
+      ref="toggleElement"
+      @click="toggleOptions"
     >
       <p class="-body-5">{{ formattedFeeSpeed }}</p>
-      <div v-html="Icons.flip" />
+      <div v-html="Icons.caretDown" />
     </button>
   </div>
 </template>
@@ -108,8 +118,9 @@ const duration = computed(() => {
 <style scoped lang="scss">
 
 .fee-selector {
-  padding: 15px 0;
+  padding: 10px 0;
   display: flex;
+
   align-items: center;
   border-top: 1px solid var(--neutral-3);
 
@@ -137,7 +148,6 @@ const duration = computed(() => {
     display: flex;
     align-items: center;
     gap: 5px;
-    color: var(--neutral-7);
     flex: 0 0 auto;
     padding: 3px 9px;
     border-radius: 5px;
@@ -146,19 +156,24 @@ const duration = computed(() => {
       flex-shrink: 0;
     }
 
+    p {
+      color: var(--neutral-7);
+    }
+
     > div {
       line-height: 0;
+      color: var(--primary);
 
       ::v-deep(svg) {
-        width: 18px;
-        height: 18px;
+        width: 14px;
+        height: 14px;
       }
     }
 
     &:hover {
       color: var(--primary);
       cursor: pointer;
-      background-color: var(--neutral-2);
+      background-color: var(--neutral-1);
 
       p {
         color: var(--primary);

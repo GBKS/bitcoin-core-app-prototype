@@ -6,7 +6,8 @@ const props = defineProps([
   'locale',
   'hidden',
   'size', // small, medium, big
-  'theme' // default, light dark
+  'theme', // default, light dark
+  'tag' // p
 ])
 
 const content = computed(() => {
@@ -82,6 +83,10 @@ const content = computed(() => {
   return result
 })
 
+const componentType = computed(() => {
+  return props.tag || 'p'
+})
+
 const classObject = computed(() => {
   const c = [
     'balance',
@@ -96,8 +101,9 @@ const classObject = computed(() => {
 </script>
 
 <template>
-  <p
+  <component
     :class="classObject"
+    :is="componentType"
     v-html="content"
   />
 </template>

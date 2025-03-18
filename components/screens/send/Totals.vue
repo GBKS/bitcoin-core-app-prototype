@@ -16,6 +16,18 @@ const totalAmount = computed(() => {
 
   return adjustedAmount + ' ' + (stateStore.balanceDisplayMode == 'satoshi' ? 'sats' : '₿')
 })
+
+const sendMaxEnabled = computed(() => {
+  return props.transactions.some(transaction => transaction.sendMax)
+})
+
+const walletData = computed(() => {
+  return stateStore.wallets[stateStore.activeWalletId]
+})
+
+const label = computed(() => {
+  return sendMaxEnabled ? (walletData.value.balance + ' (Full balance)') : totalAmount
+})
 </script>
 
 <template>
@@ -23,7 +35,7 @@ const totalAmount = computed(() => {
     <h4 class="-title-5">Total</h4>
     <div class="row">
       <h5 class="-body-5">Amount</h5>
-      <p class="-body-5">{{ totalAmount }}</p>
+      <p class="-body-5">{{ label }}</p>
     </div>
   </div>
 </template>
