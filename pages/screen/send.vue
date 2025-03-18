@@ -82,11 +82,11 @@ const feeOptions = computed(() => {
       secondaryLabel: '1,000 sats',
       radio: customFeeEnabled.value ? false : feeSpeed.value == 'slow'
     },
-    "best-privacy": {
-      label: 'Best privacy <span>(30 - 60 min)</span>',
-      secondaryLabel: '2,500 sats',
-      radio: customFeeEnabled.value ? false : feeSpeed.value == 'best-privacy'
-    },
+    // "best-privacy": {
+    //   label: 'Best privacy <span>(30 - 60 min)</span>',
+    //   secondaryLabel: '2,500 sats',
+    //   radio: customFeeEnabled.value ? false : feeSpeed.value == 'best-privacy'
+    // },
     "custom-fee": {
       label: 'Custom',
       radio: customFeeEnabled.value
