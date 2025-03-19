@@ -29,8 +29,8 @@ const noteValue = ref('')
 const addressValue = ref(null)
 const addressInput = ref(null)
 const sendMaxValue = ref(null)
-const amountValidation = ref(null)
-const addressValidation = ref(null)
+const amountValidation = ref({ value: null, isValid: false, error: null })
+const addressValidation = ref({ value: null, isValid: false, error: null })
 const showValidation = ref(false)
 
 function changeAmountValue(newValue) {
@@ -46,17 +46,20 @@ function changeNoteValue(newValue) {
 }
 
 function changeAddress(newValue) {
-  addressValue.value = newValue
+  addressValue.value = newValue.split(' ').join('')
   emitChange()
 }
 
 function emitChange() {
+  console.log('TransactionForm emitChange', addressValidation.value, amountValidation.value)
   emit('change', {
     index: props.index,
     amount: amountValue.value,
     note: noteValue.value,
     address: addressValue.value,
-    sendMax: sendMaxValue.value
+    sendMax: sendMaxValue.value,
+    addressValid: addressValidation.value.isValid,
+    amountValid: amountValidation.value.isValid
   })
 }
 
@@ -69,12 +72,18 @@ function toggleSendMax(value) {
   // })
 }
 
-function validateAmount(error) {
-  amountValidation.value = error
+function validateAmount(validation) {
+  console.log('TransactionForm validateAmount', validation)
+  amountValidation.value = validation
+
+  emitChange()
 }
 
-function validateAddress(error) {
-  addressValidation.value = error
+function validateAddress(validation) {
+  console.log('TransactionForm validateAddress', validation)
+  addressValidation.value = validation
+
+  emitChange()
 }
 
 const walletData = computed(() => {

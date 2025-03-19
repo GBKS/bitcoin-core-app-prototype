@@ -175,6 +175,41 @@ const classObject = computed(() => {
     }
   }
 
+  &.-neutral {
+    &.-bitcoin {
+      ::v-deep(.fraction) {
+        > .char {
+          &:nth-child(4),
+          &:nth-child(7) { padding-left: 0.3em; }
+        }
+      }
+
+      &.-positive {
+        color: var(--neutral-9);
+
+        ::v-deep(.fraction) {
+          .char {
+            &.-nz {
+              color: var(--neutral-7);
+            }
+          }
+        }
+      }
+
+      &.-negative {
+        color: var(--neutral-9);
+
+        ::v-deep(.fraction) {
+          .char {
+            &.-nz {
+              color: var(--neutral-7);
+            }
+          }
+        }
+      }
+    }
+  }
+
   &.-light {
     
   }

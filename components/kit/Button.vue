@@ -34,6 +34,7 @@ const classObject = computed(() => {
   }
 
   if(props.active) c.push('-active')
+  if(props.disabled) c.push('-disabled')
 
   let result = c.join(' ')
 
@@ -105,7 +106,7 @@ const content = computed(() => {
   box-sizing: border-box;
   text-decoration: none;
 
-  &:not(:disabled) {
+  &:not(.-disabled) {
     cursor: pointer;
   }
 
@@ -117,8 +118,9 @@ const content = computed(() => {
   &.-filled {
     background-color: var(--primary);
 
-    &:disabled {
+    &.-disabled {
       background-color: var(--neutral-4);
+      color: rgba(255, 255, 255, .25);
     }
   }
 

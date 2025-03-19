@@ -20,6 +20,22 @@ function toggleOptions() {
   emit('toggleFeeOptions', toggleElement.value)
 }
 
+const feeAmount = computed(() => {
+  let amount = 500
+  switch(props.feeSpeed) {
+    case 'fast':
+      amount = 1000
+      break
+    case 'slow':
+      amount = 250
+      break
+  }
+
+  amount *= props.transactionSize
+
+  return amount
+})
+
 const formattedFee = computed(() => {
   let amount = 500
   switch(props.feeSpeed) {
@@ -69,9 +85,6 @@ const formattedFeeSpeed = computed(() => {
     case 'slow':
       result = 'Slow'
       break
-    case 'best-privacy':
-      result = 'Privacy'
-      break
   }
 
   result += ' (' + duration.value + ')'
@@ -88,9 +101,6 @@ const duration = computed(() => {
     case 'slow':
       result = '~3 hours'
       break
-    case 'best-privacy':
-      result = '~2 hours'
-      break
   }
   return result
 })
@@ -103,7 +113,12 @@ onMounted(() => {
 <template>
   <div class="fee-selector">
     <h4 class="-body-5">Fee</h4>
-    <p class="-body-5" v-html="formattedFee" />
+    <KitBalance
+      class="-body-5"
+      :amount="feeAmount"
+      :unit="stateStore.balanceDisplayMode"
+      theme="neutral"
+    />
     <button
       class="toggle"
       ref="toggleElement"
@@ -132,11 +147,12 @@ onMounted(() => {
     &:first-of-type {
       flex-basis: 10%;
       flex-grow: 1;
-      color: var(--neutral-9);
+      // color: var(--neutral-9);
+      text-align: left;
 
-      ::v-deep(span) {
-        color: var(--neutral-7);
-      }
+      // ::v-deep(span) {
+      //   color: var(--neutral-7);
+      // }
     }
 
     &:nth-of-type(2) {

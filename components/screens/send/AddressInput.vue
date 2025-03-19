@@ -1,4 +1,26 @@
 <script setup>
+/**
+
+AddressInput component is used to input a Bitcoin address. It provides validation and formatting of the address.
+
+Props:
+  - address: The address to be displayed in the input field
+  - editable: Whether the input field is editable or not
+
+Emits:
+  - change: When the address is changed
+  - validate: When the address is validated
+
+Usage:
+  <AddressInput
+    :address="address"
+    :editable="editable"
+    @change="onAddressChange"
+    @validate="onAddressValidate"
+  />
+
+**/
+
 import { ADDRESS_TYPES, AddressHelper} from '@/helpers/address.js';
 import StateHelper from '@/helpers/state-helper.js'
 
@@ -73,6 +95,7 @@ function clickPaste() {
   // addressValue.value = chunkAddress(StateHelper.address())
   addressValue.value = chunkAddress('bc1qtz5fl2n76wcmfdhxq9svv5q0hpyvkrew0s5kly')
 
+  validate()
   emit('change', addressValue.value)
 }
 
@@ -80,6 +103,7 @@ function generateAddress() {
   // addressValue.value = chunkAddress(StateHelper.address())
   addressValue.value = chunkAddress('bc1qtz5fl2n76wcmfdhxq9svv5q0hpyvkrew0s5kly')
 
+  validate()
   emit('change', addressValue.value)
 }
 
@@ -89,41 +113,57 @@ function onInputBlur() {
 
 function validate() {
   const address = addressValue.value.replace(/\s/g, '')
+  let newValidationError = validationError.value
+
+  console.log('AddressInput.validate', address)
+
+  const result = {
+    value: address,
+    isValid: true,
+    error: null
+  }
 
   if(addressValue.value === '') {
-    validationError.value = null
-    emit('validate', null)
-    return
-  }
+    newValidationError = 'empty'
 
-  addressInfo.value = AddressHelper.getAddressInfo(address)
-  validationResult.value = AddressHelper.validateBitcoinAddress(address)
-  addressType.value = AddressHelper.getAddressType(address)
-
-  if(addressType.value === ADDRESS_TYPES.BECH32_INVALID) {
-    bech32FixableErrors.value = AddressHelper.tryFixingBech32Errors(address)
-    bech32IncorrectCharacters.value = AddressHelper.detectIncorrectBech32Characters(address)
+    result.isValid = false
+    result.error = 'empty'
   } else {
-    bech32FixableErrors.value = null
-    bech32IncorrectCharacters.value = null
+    addressInfo.value = AddressHelper.getAddressInfo(address)
+    validationResult.value = AddressHelper.validateBitcoinAddress(address)
+    addressType.value = AddressHelper.getAddressType(address)
+
+    if(addressType.value === ADDRESS_TYPES.BECH32_INVALID) {
+      bech32FixableErrors.value = AddressHelper.tryFixingBech32Errors(address)
+      bech32IncorrectCharacters.value = AddressHelper.detectIncorrectBech32Characters(address)
+    } else {
+      bech32FixableErrors.value = null
+      bech32IncorrectCharacters.value = null
+    }
+
+    // console.log('validate', address)
+    // console.log('addressInfo', addressInfo.value)
+    // console.log('validationResult', validationResult.value)
+    // console.log('addressType', addressType.value)
+    // console.log('bech32FixableErrors', bech32FixableErrors.value)
+    // console.log('bech32IncorrectCharacters', bech32IncorrectCharacters.value)
+
+    if(!validationResult.value) {
+      newValidationError = addressType.value
+
+      result.isValid = false
+      result.error = addressType.value
+
+    } else {
+      newValidationError = null
+    }
+
+    console.log('AddressInput.validate', validationError.value, addressValue.value)
   }
 
-  // console.log('validate', address)
-  // console.log('addressInfo', addressInfo.value)
-  // console.log('validationResult', validationResult.value)
-  // console.log('addressType', addressType.value)
-  // console.log('bech32FixableErrors', bech32FixableErrors.value)
-  // console.log('bech32IncorrectCharacters', bech32IncorrectCharacters.value)
+  validationError.value = newValidationError
 
-  if(!validationResult.value) {
-    validationError.value = addressType.value
-  } else {
-    validationError.value = null
-  }
-
-  console.log('validate', validationError.value, addressValue.value)
-
-  emit('validate', validationError.value)
+  emit('validate', result)
 }
 
 onBeforeMount(() => {

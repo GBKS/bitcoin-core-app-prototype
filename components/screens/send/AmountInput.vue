@@ -36,10 +36,10 @@ watch(() => stateStore.balanceDisplayMode, (newValue) => {
 function updateAmountValue(newValue) {
   let adjustedValue = newValue
 
-  if(stateStore.balanceDisplayMode !== 'satoshi') {
+  if(stateStore.balanceDisplayMode !== 'satoshi' && newValue !== 0) {
     adjustedValue = trimEndChar((newValue / 100000000).toFixed(8), '0')
   }
-  console.log('updateAmountValue', newValue, adjustedValue)
+  // console.log('updateAmountValue', newValue, adjustedValue)
   amountValue.value = adjustedValue
 }
 
@@ -57,7 +57,7 @@ const placeholder = computed(() => {
 })
 
 function changeValue(event) {
-  console.log('changeValue', event.target.value, parseFloat(event.target.value))
+  // console.log('changeValue', event.target.value, parseFloat(event.target.value))
   emit('change', parseFloat(event.target.value))
 }
 
@@ -80,15 +80,28 @@ function removeFocus() {
 }
 
 function validate() {
+  const result = {
+    value: props.balance,
+    isValid: true,
+    error: null
+  }
+
+  let newError = error.value
+
   if(props.balance) {
     if(amountValue.value > props.balance) {
-      error.value = 'insufficient-funds'
+      newError = 'insufficient-funds'
+
+      result.isValid = false
+      result.error = 'insufficient-funds'
     } else {
-      error.value = null
+      newError = null
     }
   }
 
-  emit('validate', error.value)
+  error.value = newError
+
+  emit('validate', result)
 }
 
 const hasContent = computed(() => {

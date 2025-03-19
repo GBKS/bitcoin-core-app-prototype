@@ -209,7 +209,7 @@ onMounted(() => {
   border-radius: var(--corner-radius);
 
   .divider {
-    background-color: var(--neutral-4);
+    background-color: var(--neutral-3);
     height: 1px;
     margin-left: 10px;
     margin-right: 10px;

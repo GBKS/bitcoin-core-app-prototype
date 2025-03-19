@@ -8,13 +8,17 @@ const props = defineProps([
 const stateStore = useStateStore()
 
 const totalAmount = computed(() => {
-  const amount = props.transactions.reduce((acc, transaction) => {
-    return acc + transaction.amount
-  }, 0)
+  let amount
 
-  const adjustedAmount = stateStore.balanceDisplayMode == 'satoshi' ? amount : (amount / 100000000).toFixed(8)
-
-  return adjustedAmount + ' ' + (stateStore.balanceDisplayMode == 'satoshi' ? 'sats' : '₿')
+  if(sendMaxEnabled.value) {
+    amount = walletData.value.balance
+  } else {
+    amount = props.transactions.reduce((acc, transaction) => {
+      return acc + transaction.amount
+    }, 0)
+  }
+  
+  return amount
 })
 
 const sendMaxEnabled = computed(() => {
@@ -26,7 +30,13 @@ const walletData = computed(() => {
 })
 
 const label = computed(() => {
-  return sendMaxEnabled ? (walletData.value.balance + ' (Full balance)') : totalAmount
+  let result = null
+
+  if(sendMaxEnabled.value) {
+    result = 'Full balance'
+  }
+
+  return result
 })
 </script>
 
@@ -35,7 +45,13 @@ const label = computed(() => {
     <h4 class="-title-5">Total</h4>
     <div class="row">
       <h5 class="-body-5">Amount</h5>
-      <p class="-body-5">{{ label }}</p>
+      <KitBalance
+        class="-body-5"
+        :amount="totalAmount"
+        :unit="stateStore.balanceDisplayMode"
+        theme="neutral"
+      />
+      <p v-if="label" class="-body-5" v-html="label" />
     </div>
   </div>
 </template>
@@ -62,6 +78,16 @@ const label = computed(() => {
 
     p {
       color: var(--neutral-9);
+
+      &:first-of-type {
+        flex-basis: 10%;
+        flex-grow: 1;
+        text-align: left;
+      }
+
+      &:nth-of-type(2) {
+        color: var(--neutral-7);
+      }
     }
   }
 }

@@ -82,11 +82,6 @@ const feeOptions = computed(() => {
       secondaryLabel: '1,000 sats',
       radio: customFeeEnabled.value ? false : feeSpeed.value == 'slow'
     },
-    // "best-privacy": {
-    //   label: 'Best privacy <span>(30 - 60 min)</span>',
-    //   secondaryLabel: '2,500 sats',
-    //   radio: customFeeEnabled.value ? false : feeSpeed.value == 'best-privacy'
-    // },
     "custom-fee": {
       label: 'Custom',
       radio: customFeeEnabled.value
@@ -113,7 +108,7 @@ function toggleOptions() {
 }
 
 function onContextMenuOption(data) {
-  console.log('onContextMenuOption', data)
+  // console.log('onContextMenuOption', data)
 
   if(data.menuId == 'send-options') {
     switch(data.optionId) {
@@ -163,7 +158,6 @@ function onContextMenuOption(data) {
       case 'fast':
       case 'default':
       case 'slow':
-      case 'best-privacy':
         feeSpeed.value = data.optionId
         customFeeEnabled.value = false
         break
@@ -213,9 +207,22 @@ function setFeeToggleElement(element) {
 }
 
 const formIsValid = computed(() => {
-  return transactions.value.every(transaction => {
-    return transaction.amount && transaction.address
+  let result = true
+
+  console.log('Send.formIsValid', transactions.value)
+
+  transactions.value.every(transaction => {
+    console.log('transaction', transaction, transaction.amount, !!transaction.amount, transaction.address)
+    if(!transaction.amountValid || !transaction.addressValid) {
+      result = false
+      return false
+    }
+    return true
   })
+
+  console.log('formIsValid', result)
+
+  return result
 })
 
 function clearForm() {
@@ -238,7 +245,9 @@ function getBlankTransaction() {
   return {
     amount: null,
     note: '',
-    address: ''
+    address: '',
+    amountValid: false,
+    addressValid: false
   }
 }
 
@@ -267,6 +276,8 @@ function changeTransaction(data) {
   transaction.note = data.note
   transaction.address = data.address
   transaction.sendMax = data.sendMax
+  transaction.amountValid = data.amountValid
+  transaction.addressValid = data.addressValid
 
   if(data.sendMax) {
     // Disable sendMax for all other transactions
