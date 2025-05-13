@@ -5,9 +5,9 @@ const stateStore = useStateStore()
 </script>
 
 <template>
-  <div class="top">
+  <div class="nav-desktop-top">
     <div class="left">
-      <NavDesktopWallet />
+      <NavDesktopWallet :loading="stateStore.walletIsLoading" />
     </div>
     <NavDesktopTabs v-if="stateStore.activeWalletId" />
     <div class="right">
@@ -24,7 +24,7 @@ const stateStore = useStateStore()
 
 <style scoped lang="scss">
 
-.top {
+.nav-desktop-top {
   display: flex;
   gap: 5px;
   align-items: stretch;
@@ -33,6 +33,7 @@ const stateStore = useStateStore()
   height: 60px;
   padding-right: 15px;
   width: 100%;
+  flex-shrink: 0;
 
   .left,
   .right {

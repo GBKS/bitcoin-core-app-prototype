@@ -10,7 +10,7 @@ const props = defineProps([
 const stateStore = useStateStore()
 
 const classObject = computed(() => {
-  const c = ['wallet']
+  const c = ['nav-mobile-wallet']
 
   if(stateStore.showWalletModal) {
     c.push('-modal-active')
@@ -65,18 +65,22 @@ const walletData = computed(() => {
       <p class="-title-4">{{ walletData.name }}</p>
     </div>
     <KitBalance
+      v-if="!stateStore.walletIsLoading"
       class="balance -body-3"
       :amount="walletData.balance"
       :unit="stateStore.balanceDisplayMode"
       theme="dark"
       @click="toggleBalanceMode"
     />
+    <NavMobileWalletSkeleton
+      v-if="stateStore.walletIsLoading"
+    />
   </div>
 </template>
 
 <style scoped lang="scss">
 
-.wallet {
+.nav-mobile-wallet {
   display: flex;
   flex-direction: column;
   gap: 2px;

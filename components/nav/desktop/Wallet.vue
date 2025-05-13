@@ -3,17 +3,24 @@ import { useStateStore } from "@/stores/state.js"
 
 import Icons from '@/helpers/icons.js'
 
+const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false
+  }
+})
+
 const activeWalletElement = ref(null)
 const stateStore = useStateStore()
 
 const classObject = computed(() => {
-  const c = []
+  const c = ['nav-desktop-wallet']
 
-  if(stateStore.showWalletModal) {
-    c.push('-active')
+  if(props.loading) {
+    c.push('-loading')
   }
 
-  return c.join(' ')
+  return c
 })
 
 const icon = computed(() => {
@@ -55,7 +62,7 @@ const hasWallets = computed(() => {
 </script>
 
 <template>
-  <div class="nav-desktop-wallet">
+  <div :class="classObject">
     <KitButton
       v-if="!stateStore.activeWalletId && !hasWallets"
       class="add-wallet"
@@ -81,6 +88,7 @@ const hasWallets = computed(() => {
     
     <NavDesktopActiveWallet 
       v-if="stateStore.activeWalletId && hasWallets"
+      :loading="loading"
     />
   </div>
 </template>

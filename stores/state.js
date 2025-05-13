@@ -10,6 +10,7 @@ export const useStateStore = defineStore('state', {
       showMenu: ref(false),
       showTooltip: ref(false),
       activeWalletId: ref('savings'),
+      walletIsLoading: ref(false),
       balanceDisplayMode: ref('bitcoin'), // bitcoin, satoshi, hide
       wallets: {
         savings: {
@@ -43,5 +44,6 @@ export const useStateStore = defineStore('state', {
   hydrate(state, initialState) {
     state.showNav = useLocalStorage('showNav', true)
     state.theme = useLocalStorage('theme', null)
+    state.walletIsLoading = false
   }
 })

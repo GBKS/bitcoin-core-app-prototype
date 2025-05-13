@@ -2,10 +2,27 @@
 import { useStateStore } from "@/stores/state.js"
 import Icons from '@/helpers/icons.js'
 
+const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false
+  }
+})
+
 const stateStore = useStateStore()
 
 const canvas = ref(null)
 const emit = defineEmits(['select'])
+
+const classObject = computed(() => {
+  const c = ['nav-desktop-active-wallet']
+
+  if(props.loading) {
+    c.push('-loading')
+  }
+
+  return c
+})
 
 const icon = computed(() => {
   return Icons[walletData.value.icon]
@@ -44,7 +61,7 @@ function select(event) {
 
 <template>
   <button
-    class="wallet"
+    :class="classObject"
     ref="canvas"
     @click="select"
   >
@@ -52,7 +69,7 @@ function select(event) {
       class="icon"
       v-html="icon"
     />
-    <div class="copy">
+    <div class="copy" v-if="!loading">
       <p class="-title-7">{{ walletData.name }}</p>
       <KitBalance
         class="-body-5"
@@ -61,15 +78,19 @@ function select(event) {
         theme="dark"
       />
     </div>
+    <NavDesktopWalletSkeleton
+      v-if="loading"
+    />
   </button>
 </template>
 
 <style scoped lang="scss">
 
-.wallet {
+.nav-desktop-active-wallet {
   display: flex;
   align-items: center;
   cursor: pointer;
+  gap: 5px;
   padding: 0 10px 0 5px;
   transition: all 150ms $ease;
   text-align: left;
@@ -80,6 +101,7 @@ function select(event) {
     align-items: center;
     width: 35px;
     height: 35px;
+    flex-shrink: 0;
     color: var(--neutral-7);
 
     ::v-deep(svg) {
