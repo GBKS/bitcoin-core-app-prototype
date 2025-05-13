@@ -9,14 +9,14 @@ const props = defineProps([
   'state'
 ])
 
+const stateStore = useStateStore()
+
 watch(
   () => props.state,
   (newValue) => {
     stateStore.walletIsLoading = newValue.loading
   }
 )
-
-const stateStore = useStateStore()
 
 const balanceContent = computed(() => {
   return props.state.title
