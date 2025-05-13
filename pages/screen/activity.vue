@@ -9,6 +9,13 @@ const props = defineProps([
   'state'
 ])
 
+watch(
+  () => props.state,
+  (newValue) => {
+    stateStore.walletIsLoading = newValue.loading
+  }
+)
+
 const stateStore = useStateStore()
 
 const balanceContent = computed(() => {
@@ -46,12 +53,23 @@ function toggleWalletModal() {
 const hasWallets = computed(() => {
   return Object.keys(wallets.value).length > 0
 })
+
+onMounted(() => {
+  if(props.state.loading === true) {
+    stateStore.walletIsLoading = true
+  }
+})
+
+onBeforeUnmount(() => {
+  if(props.state.loading === true) {
+    stateStore.walletIsLoading = false
+  }
+})
 </script>
 
 <template>
   <KitScreen :class="classObject">
     <template v-if="stateId == 'activity'">
-      <div class="cover" @click="toggleWalletModal" v-if="false" />
       <div class="top-mobile">
         <NavMobileBlockClock />
         <NavMobileWallet />
@@ -70,18 +88,19 @@ const hasWallets = computed(() => {
           label="Send"
           to="/screen/send?t=slide-up"
         />
-        <div class="list-header" v-if="!state.empty">
+        <div class="list-header">
           <h5 class="-title-5">Activity</h5>
           <KitButton
             icon="search"
             theme="free"
+            :disabled="state.empty || state.loading"
           />
         </div>
         <p 
           v-if="stateStore.activeWalletId && state.empty"
           class="empty-note -body-5"
         >Your transactions will show up here once you start sending and receiving.</p>
-        <div class="list -dividers" v-if="!state.empty">
+        <div class="list -dividers" v-if="!(state.empty || state.loading)">
           <KitTransactionItem
             v-for="(item, index) in transactions"
             :key="index"
@@ -119,10 +138,12 @@ const hasWallets = computed(() => {
           />
         </div>
       </template>
+      <template v-if="state.loading"> 
+        <ScreensActivitySkeleton />
+      </template>
     </template>
   </KitScreen>
 </template>
-
 
 <style scoped lang="scss">
 
@@ -169,8 +190,8 @@ const hasWallets = computed(() => {
   }
 
   p.empty-note {
-    text-align: center;
-    padding: 40px 20px;
+    padding: 10px 20px;
+    max-width: 640px;
   }
 
   .no-wallets,
@@ -179,6 +200,10 @@ const hasWallets = computed(() => {
     flex-direction: column;
     align-items: center;
     padding: 40px 20px;
+  }
+
+  .activity-skeleton {
+    padding-top: 20px;
   }
 
   @include container(small) {

@@ -10,6 +10,10 @@
 		"empty": {
 			"name": "Empty",
 			"empty": true
+		},
+		"loading": {
+			"name": "Loading",
+			"loading": true
 		}
 	}
 }
