@@ -38,8 +38,16 @@ function updateAmountValue(newValue) {
 
   if(stateStore.balanceDisplayMode !== 'satoshi' && newValue !== 0) {
     adjustedValue = trimEndChar((newValue / 100000000).toFixed(8), '0')
+
+    if(adjustedValue.endsWith('.')) {
+      adjustedValue = adjustedValue.slice(0, -1) // Remove trailing dot if it exists
+    }
+
+    if(adjustedValue === '0') {
+      adjustedValue = ''
+    }
   }
-  // console.log('updateAmountValue', newValue, adjustedValue)
+
   amountValue.value = adjustedValue
 }
 
@@ -57,7 +65,7 @@ const placeholder = computed(() => {
 })
 
 function changeValue(event) {
-  // console.log('changeValue', event.target.value, parseFloat(event.target.value))
+  console.log('changeValue', event.target.value, parseFloat(event.target.value))
   emit('change', parseFloat(event.target.value))
 }
 
@@ -80,6 +88,13 @@ function removeFocus() {
 }
 
 function validate() {
+  let amount = amountValue.value
+  if(stateStore.balanceDisplayMode !== 'satoshi' && amount !== null) {
+    amount = parseFloat(amount) * 100000000
+  } else {
+    amount = parseFloat(amount)
+  }
+
   const result = {
     value: props.balance,
     isValid: true,
@@ -89,7 +104,7 @@ function validate() {
   let newError = error.value
 
   if(props.balance) {
-    if(amountValue.value > props.balance) {
+    if(amount > props.balance) {
       newError = 'insufficient-funds'
 
       result.isValid = false
@@ -98,6 +113,8 @@ function validate() {
       newError = null
     }
   }
+
+  // console.log('validate', amount, props.balance, newError)
 
   error.value = newError
 
@@ -111,17 +128,17 @@ const hasContent = computed(() => {
 const classObject = computed(() => {
   const c = ['send-amount-input']
 
-    if(hasContent.value) {
-      c.push('-has-content')
-    }
+  if(hasContent.value) {
+    c.push('-has-content')
+  }
 
-    if(hasFocus.value) {
-      c.push('-has-focus')
-    }
+  if(hasFocus.value) {
+    c.push('-has-focus')
+  }
 
-    if(props.disabled) {
-      c.push('-disabled')
-    }
+  if(props.disabled) {
+    c.push('-disabled')
+  }
 
   return c
 })
@@ -139,7 +156,7 @@ function toggleSendMax() {
 }
 
 onBeforeMount(() => {
-    amountValue.value = props.amount
+  updateAmountValue(props.amount)
 })
 </script>
 

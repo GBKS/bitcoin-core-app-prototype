@@ -209,10 +209,10 @@ function setFeeToggleElement(element) {
 const formIsValid = computed(() => {
   let result = true
 
-  console.log('Send.formIsValid', transactions.value)
+  // console.log('Send.formIsValid', transactions.value)
 
   transactions.value.every(transaction => {
-    console.log('transaction', transaction, transaction.amount, !!transaction.amount, transaction.address)
+    // console.log('transaction', transaction, transaction.amount, !!transaction.amount, transaction.address)
     if(!transaction.amountValid || !transaction.addressValid) {
       result = false
       return false
@@ -220,7 +220,7 @@ const formIsValid = computed(() => {
     return true
   })
 
-  console.log('formIsValid', result)
+  // console.log('formIsValid', result)
 
   return result
 })

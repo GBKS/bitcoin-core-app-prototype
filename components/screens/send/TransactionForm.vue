@@ -51,7 +51,7 @@ function changeAddress(newValue) {
 }
 
 function emitChange() {
-  console.log('TransactionForm emitChange', addressValidation.value, amountValidation.value)
+  // console.log('TransactionForm emitChange', addressValidation.value, amountValidation.value)
   emit('change', {
     index: props.index,
     amount: amountValue.value,
@@ -73,14 +73,14 @@ function toggleSendMax(value) {
 }
 
 function validateAmount(validation) {
-  console.log('TransactionForm validateAmount', validation)
+  // console.log('TransactionForm validateAmount', validation)
   amountValidation.value = validation
 
   emitChange()
 }
 
 function validateAddress(validation) {
-  console.log('TransactionForm validateAddress', validation)
+  // console.log('TransactionForm validateAddress', validation)
   addressValidation.value = validation
 
   emitChange()

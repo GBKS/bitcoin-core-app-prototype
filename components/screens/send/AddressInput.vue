@@ -35,7 +35,8 @@ const emit = defineEmits([
 ])
 
 watch(() => props.address, (newValue) => {
-  addressValue.value = newValue
+  applyFormattedAddress(newValue)
+  // console.log('AddressInput watch address', newValue)
   // validate()
 })
 
@@ -49,10 +50,10 @@ const validationResult = ref(null)
 const bech32FixableErrors = ref(null)
 const bech32IncorrectCharacters = ref(null)
 
-function onAddressInput(event) {
+function applyFormattedAddress(address) {
   const start = addressInput.value.selectionStart;
   const end = addressInput.value.selectionEnd;
-  let value = event.target.value.replace(/\s/g, '');
+  let value = address.replace(/\s/g, '');
   let formattedValue = '';
   let cursorOffset = 0;
 
@@ -64,10 +65,19 @@ function onAddressInput(event) {
       formattedValue += value[i];
   }
 
-  addressValue.value = formattedValue.trim();
-  
-  // Adjust cursor position
-  event.target.setSelectionRange(start + cursorOffset, end + cursorOffset)
+  const newValue = formattedValue.trim();
+
+  if(newValue !== addressValue.value) {
+    addressValue.value = formattedValue.trim();
+    
+    addressInput.value.setSelectionRange(start + cursorOffset, end + cursorOffset)
+  }
+}
+
+function onAddressInput(event) {
+  // console.log('AddressInput.onAddressInput', event.target.value)
+
+  applyFormattedAddress(event.target.value)
 
   emit('change', addressValue.value)
 }
@@ -158,7 +168,7 @@ function validate() {
       newValidationError = null
     }
 
-    console.log('AddressInput.validate', validationError.value, addressValue.value)
+    // console.log('AddressInput.validate', validationError.value, addressValue.value)
   }
 
   validationError.value = newValidationError
@@ -195,6 +205,7 @@ onBeforeMount(() => {
           placeholder="Enter address..."
           autocomplete="off"
           spellcheck="false"
+          applyFormattedAddress="72"
           :disabled="!editable"
           @blur="onInputBlur"
           @input="onAddressInput"
