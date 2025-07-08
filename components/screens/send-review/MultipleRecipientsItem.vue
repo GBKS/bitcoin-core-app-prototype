@@ -84,7 +84,7 @@ function toggle() {
     cursor: pointer;
 
     p {
-      &.-short {
+      &:not(.-long) {
         color: var(--neutral-9);
       }
 

@@ -38,7 +38,10 @@ function toggleDummyData() {
   if(transactions.value.length > 1) {
     transactions.value = [getDummyTransaction()]
   } else {
-    transactions.value.push(getDummyTransaction())
+    let counter = Math.random() * 3 + 1
+    while(counter-- > 0) {
+      transactions.value.push(getDummyTransaction())
+    }
   }
 }
 </script>
@@ -51,7 +54,7 @@ function toggleDummyData() {
     />
     <template v-if="stateId == 'send-review' && state">
       <Transition mode="out-in" name="fade">
-        <div class="content" v-if="!isSent">
+        <div class="content-wrap" v-if="!isSent">
           <div class="info">
             <h3 @click="toggleDummyData">Review transaction</h3>
             <p v-if="transactions?.length > 1">There are {{ transactions.length }} recipients.</p>
@@ -90,7 +93,7 @@ function toggleDummyData() {
 <style scoped lang="scss">
 
 .send-review {
-  .content {
+  .content-wrap {
     width: 100%;
     max-width: 560px;
 
@@ -108,11 +111,20 @@ function toggleDummyData() {
     }
 
     .bottom {
-      flex-direction: row;
       max-width: 600px;
+    }
+  }
 
-      ::v-deep(> *) {
+  @include container(small) {
+    .content-wrap {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+
+      .bottom {
         flex-grow: 1;
+        flex-direction: column;
+        justify-content: flex-end;
       }
     }
   }

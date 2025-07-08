@@ -616,7 +616,7 @@ function toggleDummyData() {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    padding: 0 10px;
+    // padding: 0 10px;
   }
 
   .form {
@@ -648,10 +648,17 @@ function toggleDummyData() {
   @include container(small) {
     .form {
       flex-direction: column;
-      padding: 15px 15px;
+      padding: 15px 20px 0;
+      flex-grow: 1;
 
       .form-header {
         margin-bottom: 15px;
+      }
+
+      > .options {
+        flex-grow: 1;
+        justify-content: flex-end;
+        padding-bottom: var(--screen-padding-bottom);
       }
     }
   }
