@@ -1,6 +1,7 @@
 <script setup>
 import transition from '@/helpers/transition.js'
 import { useStateStore } from "@/stores/state.js"
+import StateHelper from '@/helpers/state-helper.js'
 
 definePageMeta(transition)
 
@@ -19,32 +20,59 @@ function send() {
 
 onMounted(() => {
   const state = stateStore.send
-  console.log('balls', state)
   if(state && state.transactions) {
     transactions.value = state.transactions
+  } else {
+    transactions.value = [getDummyTransaction()]
   }
 })
+
+function getDummyTransaction() {
+  const transaction = StateHelper.transaction(null, 'send')
+  transaction.note = transaction.title
+  return transaction
+}
+
+// For testing, switches between single recipient and multiple recipients
+function toggleDummyData() {
+  if(transactions.value.length > 1) {
+    transactions.value = [getDummyTransaction()]
+  } else {
+    transactions.value.push(getDummyTransaction())
+  }
+}
 </script>
 
 <template>
   <KitScreen class="send-review">
+    <KitTopBar
+      buttonLeftLabel="Edit"
+      buttonLeftTo="/screen/send?t=slide-down"
+    />
     <template v-if="stateId == 'send-review' && state">
       <Transition mode="out-in" name="fade">
         <div class="content" v-if="!isSent">
           <div class="info">
-            <h3>Review transaction</h3>
-            <ScreensSendReviewSingleTransaction
-              v-for="(transaction, index) in transactions"
-              :key="index"
-              :info="transaction"
+            <h3 @click="toggleDummyData">Review transaction</h3>
+            <p v-if="transactions?.length > 1">There are {{ transactions.length }} recipients.</p>
+
+            <template v-if="transactions && transactions.length == 1">
+              <ScreensSendReviewSingleRecipient
+                :info="transactions[0]"
+              />
+            </template>
+
+            <template v-if="transactions && transactions.length > 1">
+              <ScreensSendReviewMultipleRecipients
+                :info="transactions"
+              />
+            </template>
+
+            <ScreensSendChecks
+              :visualPreview="true"
             />
           </div>
           <div class="bottom">
-            <KitButton
-              label="Edit"
-              theme="outline"
-              to="/screen/send?t=slide-down"
-            />
             <KitButton
               label="Send"
               @click="send"
@@ -62,29 +90,30 @@ onMounted(() => {
 <style scoped lang="scss">
 
 .send-review {
-  h1 {
-    text-align: center;
-    padding: 50px 0px;
-    color: var(--neutral-5);
-  } 
-
-  .info {
-    margin-top: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
+  .content {
     width: 100%;
-    max-width: 600px;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
+    max-width: 560px;
 
-  .bottom {
-    flex-direction: row;
-    max-width: 600px;
+    .info {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      width: 100%;
+      max-width: 600px;
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-bottom: 10px;
+    }
 
-    ::v-deep(> *) {
-      flex-grow: 1;
+    .bottom {
+      flex-direction: row;
+      max-width: 600px;
+
+      ::v-deep(> *) {
+        flex-grow: 1;
+      }
     }
   }
 }

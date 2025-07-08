@@ -2,14 +2,22 @@
 import Icons from '@/helpers/icons.js'
 
 const props = defineProps([
+  'visualPreview',
   'replaceByFeeEnabled',
   'feeInAmountEnabled',
-  'sendMaxEnabled'
+  'sendMaxEnabled',
+  'showTopBorder'
 ])
+
+const classObject = computed(() => ({
+  'send-checks': true,
+  '-top-border': props.showTopBorder
+}))
 </script>
 
 <template>
-  <div class="send-checks">
+  <div :class="classObject">
+    <NuxtLink v-if="visualPreview" to="/screen/coin-flow?t=slide-up"><span v-html="Icons.flip" />Visual preview</NuxtLink>
     <p v-if="feeInAmountEnabled"><span v-html="Icons.check" />Fees are included in the amount</p>
     <p v-if="replaceByFeeEnabled"><span v-html="Icons.check" />Speed up enabled</p>
     <p v-if="sendMaxEnabled && !feeInAmountEnabled"><span v-html="Icons.check" />Fees are included in the amount</p>
@@ -22,9 +30,8 @@ const props = defineProps([
   display: flex;
   flex-direction: column;
   gap: 3px;
-  padding: 15px 0;
-  border-top: 1px solid var(--neutral-3);
 
+  a,
   p {
     span {
       margin-right: 8px;
@@ -36,6 +43,30 @@ const props = defineProps([
         transform: translateY(-1px);
       }
     }
+  }
+
+  a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+
+    span {
+      ::v-deep(svg) {
+        width: 18px;
+        height: 18px;
+        vertical-align: middle;
+        transform: translateY(-1px);
+      }
+    }
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &.-top-border {
+    padding: 15px 0;
+    border-top: 1px solid var(--neutral-3);
   }
 }
 

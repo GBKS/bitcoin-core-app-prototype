@@ -56,12 +56,13 @@ onBeforeMount(() => {
       class="-body-5"
       :for="uniqueId"
     >{{ label }}</label>
-    <input
+    <textarea
       class="-body-5"
       type="text"
       :id="uniqueId"
       :value="textValue"
       :placeholder="placeholder"
+      maxlength="100"
       @focus="setFocus"
       @blur="removeFocus"
       @change="changeValue"
@@ -83,13 +84,18 @@ onBeforeMount(() => {
     transition: all 150ms $ease;
   }
 
-  input {
+  textarea {
     appearance: none;
     border-width: 0;
     background-color: transparent;
     padding: 0;
     color: var(--neutral-9);
     transition: all 150ms $ease;
+    flex-grow: 1;
+    form-sizing: normal;
+    field-sizing: content;
+    resize: none;
+    flex-basis: 30%;
     flex-grow: 1;
 
     &::placeholder {

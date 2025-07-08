@@ -23,6 +23,7 @@ const sendMaxEnabled = ref(false)
 const coinSelectionEnabled = ref(false)
 // const formIsValid = ref(false)
 const coins = ref([])
+const renderCounter = ref(0) // Sometimes need to force re-rendering of the form
 
 const props = defineProps([
   'stateId',
@@ -464,7 +465,36 @@ onBeforeUnmount(() => {
   updateState()
 
   window.emitter.off('on-select-context-menu-option', onContextMenuOption)
-}) 
+})
+
+// For testing, switches between blank form, single recipient and multiple recipients
+function toggleDummyData() {
+  if(transactions.value.length > 1) {
+    // Replace all transactions with a single blank one
+    currentTransactionIndex.value = 0
+    transactions.value = [getBlankTransaction()]
+    renderCounter.value++
+  } else {
+    // If the current transaction has no address or amount, fill those in
+    if(!currentTransaction.value.address || !currentTransaction.value.amount) {
+      currentTransaction.value.address = 'bc1qtz5fl2n76wcmfdhxq9svv5q0hpyvkrew0s5kly'
+      currentTransaction.value.amount = 10000
+      currentTransaction.value.note = StateHelper.sendTitle()
+      currentTransaction.value.amountValid = true
+      currentTransaction.value.addressValid = true
+      renderCounter.value++
+    } else {
+      // Otherwise, add a new complete transaction
+      transactions.value.push({
+        address: 'bc1qexampleaddress1234567890abcdefg',
+        amount: 10000,
+        note: StateHelper.sendTitle(),
+        amountValid: true,
+        addressValid: true
+      })
+    }
+  }
+}
 </script>
 
 <template>
@@ -479,7 +509,7 @@ onBeforeUnmount(() => {
 
       <div class="form">
         <div class="form-header">
-          <h5 class="-title-4">{{ title }}</h5>
+          <h5 class="-title-4" @click="toggleDummyData">{{ title }}</h5>
           <div class="options" ref="optionsElement">
             <KitButton
               icon="ellipsis"
@@ -509,7 +539,7 @@ onBeforeUnmount(() => {
         />
 
         <ScreensSendTransactionForm
-          :key="currentTransactionIndex"
+          :key="currentTransactionIndex+'_'+renderCounter"
           :index="currentTransactionIndex"
           :transaction="currentTransaction"
           :addressEditable="!state.prefilled"
@@ -556,6 +586,7 @@ onBeforeUnmount(() => {
           :replaceByFeeEnabled="replaceByFeeEnabled"
           :feeInAmountEnabled="feeInAmountEnabled"
           :sendMaxEnabled="sendMaxEnabled"
+          :topBorder="true"
         />
 
         <div class="options">

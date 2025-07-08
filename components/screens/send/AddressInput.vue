@@ -176,6 +176,10 @@ function validate() {
   emit('validate', result)
 }
 
+const showValidationError = computed(() => {
+  return validationError.value !== null && validationError.value !== 'empty'
+})
+
 onBeforeMount(() => {
   addressValue.value = chunkAddress(props.address)
 })
@@ -212,7 +216,7 @@ onBeforeMount(() => {
         />
         <p class="-body-5" v-html="styledAddress"></p>
       </div>
-      <p class="error" v-if="validationError">{{ validationError }}</p>
+      <p class="error" v-if="showValidationError">{{ validationError }}</p>
     </div>
   </div>
 </template>
@@ -261,10 +265,11 @@ onBeforeMount(() => {
         color: transparent;
         // color: var(--neutral-5);
         caret-color: var(--neutral-9);
-        font-family: monospace;
+        // font-family: monospace;
         letter-spacing: -0.01rem;
         font-size: 17px;
         line-height: 1.4;
+        font-variant-numeric: tabular-nums slashed-zero;
 
         &::placeholder {
           color: var(--neutral-5);
@@ -283,7 +288,8 @@ onBeforeMount(() => {
         width: 100%;
         pointer-events: none;
         color: var(--neutral-7);
-        font-family: monospace;
+        // font-family: monospace;
+        font-variant-numeric: tabular-nums slashed-zero;
         font-size: 17px;
 
         ::v-deep(span) {

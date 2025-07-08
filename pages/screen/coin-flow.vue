@@ -131,48 +131,50 @@ onBeforeMount(() => {
   <KitScreen class="coin-flow">
     <template v-if="stateId == 'coin-flow' && state">
       <KitTopBar
-        buttonLeftIcon="caretLeft"
-        buttonLeftTo="/screen/send?t=slide-right"
-        title="Coin flow"
+        buttonRightLabel="Done"
+        buttonRightTo="/screen/send-review?t=slide-down"
+        title="Transaction preview"
       />
-      <div class="labels">
-        <h4 class="-title-5">Received from</h4>
-        <KitButton
-          class="-primary"
-          label="Randomize"
-          theme="free"
-          size="small"
-          @click="createDummyData"
-        />
-        <h4 class="-title-5">Sending to</h4>
-      </div>
-      <div class="boxes">
-        <div class="left">
-          <ScreensCoinFlowBox
-            v-for="(info, index) in leftBoxes"
-            :key="info.id"
-            :info="info"
-            direction="input"
-            :maxColumnBoxCount="maxColumnBoxCount"
-            @mounted="elementMounted"
+      <div class="content-wrap">
+        <div class="labels">
+          <h4 class="-title-5">Received from</h4>
+          <KitButton
+            class="-primary"
+            label="Randomize"
+            theme="free"
+            size="small"
+            @click="createDummyData"
           />
+          <h4 class="-title-5">Sending to</h4>
         </div>
-        <ScreensCoinFlowGraph
-          :left="leftBoxes"
-          :right="rightBoxes"
-          :elements="elements"
-          :largestAmount="largestAmount"
-          :lowestAmount="lowestAmount"
-        />
-        <div class="left">
-          <ScreensCoinFlowBox
-            v-for="(info, index) in rightBoxes"
-            :key="info.id"
-            :info="info"
-            direction="output"
-            :maxColumnBoxCount="maxColumnBoxCount"
-            @mounted="elementMounted"
+        <div class="boxes">
+          <div class="left">
+            <ScreensCoinFlowBox
+              v-for="(info, index) in leftBoxes"
+              :key="info.id"
+              :info="info"
+              direction="input"
+              :maxColumnBoxCount="maxColumnBoxCount"
+              @mounted="elementMounted"
+            />
+          </div>
+          <ScreensCoinFlowGraph
+            :left="leftBoxes"
+            :right="rightBoxes"
+            :elements="elements"
+            :largestAmount="largestAmount"
+            :lowestAmount="lowestAmount"
           />
+          <div class="left">
+            <ScreensCoinFlowBox
+              v-for="(info, index) in rightBoxes"
+              :key="info.id"
+              :info="info"
+              direction="output"
+              :maxColumnBoxCount="maxColumnBoxCount"
+              @mounted="elementMounted"
+            />
+          </div>
         </div>
       </div>
     </template>
@@ -187,10 +189,13 @@ onBeforeMount(() => {
   align-items: stretch;
   justify-content: stretch;
   flex-grow: 1;
-  width: 100%;
-  max-width: 640px;
-  padding-left: 20px;
-  padding-right: 20px;
+
+  .content-wrap {
+    width: 100%;
+    max-width: 640px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 
   ::v-deep(.content) {
     gap: 30px;
