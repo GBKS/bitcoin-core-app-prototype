@@ -17,6 +17,7 @@ const selectionMode = ref('mode-all')
 const sortingMode = ref('sorting-date')
 const groupByAddressEnabled = ref(false)
 const showLockedCoins = ref(false)
+const baseAmount = Math.random() * 1000000 + 1000000
 
 const transactions = computed(() => {
   return stateStore.transactions[stateStore.activeWalletId].filter(item => item.amount > 0)
@@ -29,7 +30,7 @@ const classObject = computed(() => {
 })
 
 const amountToSelect = computed(() => {
-  let result = 25000
+  let result = baseAmount
   
   if(stateStore.send?.transactions?.length > 0) {
     result = 0
@@ -41,6 +42,22 @@ const amountToSelect = computed(() => {
   return result
 })
 
+const selectedAmount = computed(() => {
+  let result = 0
+
+  transactions.value?.forEach(item => {
+    if(selected.value?.includes(item.id)) {
+      result += item.amount
+    }
+  })
+
+  return result
+})
+
+const remainingAmount = computed(() => {
+  return amountToSelect.value - selectedAmount.value
+})
+
 function toggleItem(id) {
   const index = selected.value.indexOf(id)
   if(index > -1) {
@@ -49,7 +66,9 @@ function toggleItem(id) {
     selected.value.push(id)
   }
 
-  stateStore.send.coins = selected.value
+  if(stateStore.send) {
+    stateStore.send.coins = selected.value
+  }
 }
 
 const menuOptions = computed(() => {
@@ -191,6 +210,7 @@ onBeforeUnmount(() => {
           :key="item.id"
           :info="item"
           :active="selected.includes(item.id)"
+          :remainingAmount="remainingAmount"
           @toggle="toggleItem"
         />
       </div>

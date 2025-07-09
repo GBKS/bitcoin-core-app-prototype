@@ -17,7 +17,7 @@ const classObject = computed(() => ({
 
 <template>
   <div :class="classObject">
-    <NuxtLink v-if="visualPreview" to="/screen/coin-flow?t=slide-up"><span v-html="Icons.flip" />Visual preview</NuxtLink>
+    <NuxtLink v-if="visualPreview" to="/screen/coin-flow?t=slide-up"><span v-html="Icons.mixed" />Visual preview</NuxtLink>
     <p v-if="feeInAmountEnabled"><span v-html="Icons.check" />Fees are included in the amount</p>
     <p v-if="replaceByFeeEnabled"><span v-html="Icons.check" />Speed up enabled</p>
     <p v-if="sendMaxEnabled && !feeInAmountEnabled"><span v-html="Icons.check" />Fees are included in the amount</p>

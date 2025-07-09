@@ -13,7 +13,10 @@
 .total-header {
   padding-top: 20px;
   padding-bottom: 10px;
-  border-bottom: 1px solid var(--neutral-4);
+
+  ::v-deep(+ *) {
+    border-top-color: var(--neutral-6) !important;
+  }
 }
 
 </style>

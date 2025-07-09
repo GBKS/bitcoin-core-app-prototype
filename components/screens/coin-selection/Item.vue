@@ -5,7 +5,8 @@ import Icons from '@/helpers/icons.js'
 
 const props = defineProps([
   'info',
-  'active'
+  'active',
+  'remainingAmount'
 ])
 
 const stateStore = useStateStore()
@@ -35,6 +36,19 @@ const formattedDate = computed(() => {
   return Toolbox.formatRelativeDate(Math.round(props.info.timestamp/1000)+'', true)
 })
 
+const percentageStyle = computed(() => {
+  const percentage = Math.min(1, props.info.amount/Math.abs(props.remainingAmount)) * 100
+  return { width: percentage + '%' }
+})
+
+const tintPercentageStyle = computed(() => {
+  const percentage = Math.min(1, props.info.amount/Math.abs(props.remainingAmount)) * 100
+  return {
+    width: percentage + '%',
+    opacity: percentage/100
+  }
+})
+
 function toggle() {
   emit('toggle', props.info.id)
 }
@@ -58,6 +72,10 @@ function onLinkClick(event) {
     >
       <p class="-note -body-6">{{ secondary }}</p>
       <p class="-date -body-6">{{ formattedDate }}</p>
+      <div class="percentage">
+        <div class="bar" :style="percentageStyle" />
+        <div class="bar" :style="tintPercentageStyle" />
+      </div>
       <KitBalance
         class="-body-6"
         :unit="stateStore.balanceDisplayMode"
@@ -108,6 +126,26 @@ function onLinkClick(event) {
       &.-date {
         color: var(--neutral-7);
       }
+    }
+  }
+
+  .percentage {
+    width: 25px;
+    height: 8px;
+    border-radius: 3px;
+    background-color: var(--neutral-4);
+    position: relative;
+    overflow: hidden;
+
+    .bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      transition: width 150ms $ease;
+
+      &:first-child { background-color: var(--neutral-9); }
+      &:nth-child(2) { background-color: var(--green); }
     }
   }
 
@@ -166,6 +204,14 @@ function onLinkClick(event) {
       background-color: var(--neutral-9);
     }
 
+    .percentage {
+      background-color: var(--neutral-9);
+
+      .bar {
+        opacity: 0 !important;
+      }
+    }
+
     &:hover {
       .toggle {
         // background-color: var(--primary);
@@ -191,15 +237,18 @@ function onLinkClick(event) {
     display: flex;
 
     .center {
-
       p {
-        &:nth-child(2) {
-          // flex-grow: 1;
+        &.-date {
         }
       }
 
-      .balance {
+      .percentage {
         margin-left: auto;
+      }
+
+      .balance {
+        min-width: 110px;
+        text-align: right;
       }
     }
   }
