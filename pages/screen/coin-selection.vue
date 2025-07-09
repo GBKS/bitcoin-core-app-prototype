@@ -15,7 +15,7 @@ const optionsVisible = ref(false)
 const optionsElement = ref(null)
 const selectionMode = ref('mode-all')
 const sortingMode = ref('sorting-date')
-const groupByAddressEnabled = ref(!false)
+const groupByAddressEnabled = ref(false)
 const showLockedCoins = ref(false)
 const baseAmount = Math.random() * 1000000 + 1000000
 
@@ -237,6 +237,7 @@ onBeforeUnmount(() => {
         :transactions="transactions"
         :selected="selected"
         :amountToSelect="amountToSelect"
+        :baseAmount="baseAmount"
       />
       <div class="items -solo" v-if="!groupByAddressEnabled">
         <ScreensCoinSelectionItem

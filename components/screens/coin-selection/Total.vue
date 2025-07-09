@@ -5,7 +5,8 @@ import Icons from '@/helpers/icons.js'
 const props = defineProps([
   'transactions',
   'selected',
-  'amountToSelect'
+  'amountToSelect',
+  'baseAmount'
 ])
 
 const stateStore = useStateStore()
@@ -33,7 +34,7 @@ const selectedAmount = computed(() => {
 })
 
 const amountToSend = computed(() => {
-  let result = 125000
+  let result = props.baseAmount
 
   return result
 })
