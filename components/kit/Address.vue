@@ -61,7 +61,8 @@ const componentType = computed(() => {
 
 p.address {
   color: var(--neutral-7);
-  font-family: monospace;
+  // font-family: monospace;
+  font-variant-numeric: tabular-nums slashed-zero;
   text-wrap: balance;
 
   ::v-deep(span) {

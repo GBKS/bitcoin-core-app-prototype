@@ -1,9 +1,13 @@
 {
 	"name": "Send review",
-	"nav": "desktop",
 	"states": {
 		"default": {
-			
+			"name": "One recipient",
+			"recipients": 1
+		},
+		"multiple-recipients": {
+			"name": "Multiple recipients",
+			"recipients": 2
 		}
 	}
 }

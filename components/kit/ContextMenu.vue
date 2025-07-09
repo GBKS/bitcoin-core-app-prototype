@@ -183,6 +183,12 @@ onMounted(() => {
             v-if="item == 'divider'"
             class="divider"
           />
+          <KitContextMenuHeader
+            v-else-if="item.type == 'header'"
+            :key="'header_'+id"
+            :id="'header_'+id"
+            :info="item"
+          />
           <KitContextMenuItem
             v-else
             :key="id"

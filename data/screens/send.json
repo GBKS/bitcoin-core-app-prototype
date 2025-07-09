@@ -6,6 +6,14 @@
 			"name": "Default",
 			"prefilled": false
 		},
+		"one-recipient": {
+			"name": "One recipient",
+			"recipients": 1
+		},
+		"multiple-recipients": {
+			"name": "Multiple recipients",
+			"recipients": 2
+		},
 		"link": {
 			"name": "Payment link",
 			"prefilled": true

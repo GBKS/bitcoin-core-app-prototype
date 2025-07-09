@@ -32,8 +32,8 @@ const resizeObserver = new ResizeObserver((entries) => {
 
 function updateCanvasSize() {
   canvasSize.value = {
-    width: canvasElement.value.offsetWidth,
-    height: canvasElement.value.offsetHeight
+    width: canvasElement.value?.offsetWidth,
+    height: canvasElement.value?.offsetHeight
   }
 }
 
@@ -189,13 +189,6 @@ onMounted(() => {
           :d="item.path"
           :class="item.className"
           :stroke-width="item.strokeWidth"
-        />
-        <circle
-          v-for="(item, index) in circles"
-          :key="index"
-          :cx="item.x"
-          :cy="item.y"
-          r="5" 
         />
       </svg>
     </div>

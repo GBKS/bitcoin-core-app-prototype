@@ -45,7 +45,7 @@ function pressUse() {
   display: flex;
   gap: 5px;
   padding: 15px;
-  border-top: 1px solid var(--neutral-3);
+  // border-top: 1px solid var(--neutral-3);
   background-color: rgba(var(--blue-rgb), 0.1);
   border-radius: 15px;
 

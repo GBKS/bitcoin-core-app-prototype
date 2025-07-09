@@ -23,11 +23,17 @@ const sendMaxEnabled = ref(false)
 const coinSelectionEnabled = ref(false)
 // const formIsValid = ref(false)
 const coins = ref([])
+const renderCounter = ref(0) // Sometimes need to force re-rendering of the form
 
 const props = defineProps([
   'stateId',
+  'subStateId',
   'state'
 ])
+
+watch(() => props.subStateId, (newValue, oldValue) => {
+  updateSubState()
+})
 
 const menuOptions = computed(() => {
   return {
@@ -251,6 +257,16 @@ function getBlankTransaction() {
   }
 }
 
+function getDummyTransaction() {
+  return {
+    address: StateHelper.address(),
+    amount: StateHelper.amount(),
+    note: StateHelper.sendTitle(),
+    amountValid: true,
+    addressValid: true
+  }
+}
+
 function addBlankTransaction() {
   transactions.value.push(getBlankTransaction())
 }
@@ -294,7 +310,7 @@ function changeCurrentTransactionIndex(index) {
 }
 
 const title = computed(() => {
-  let result = 'Enter transaction details'
+  let result = 'Send bitcoin'
 
   if(props.state?.prefilled) {
     result = 'Payment request'
@@ -433,6 +449,10 @@ const classObject = computed(() => {
   return c.join(' ')
 })
 
+const reviewLink = computed(() => {
+  return '/screen/send-review?t=slide-up' + (transactions.value.length > 1 ? '&state=multiple-recipients' : '')
+})
+
 const reviewButtonTo = computed(() => {
   return reviewMode.value ? '/screen/send-review?t=slide-up' : null
 })
@@ -444,16 +464,15 @@ const sendMaxTransactionIndex = computed(() => {
 onBeforeMount(() => {
   window.emitter.on('on-select-context-menu-option', onContextMenuOption)
 
+  console.log('onBeforeMount', props.subStateId)
+
   restoreFromState()
 
   if(transactions.value.length == 0) {
     addBlankTransaction()
   }
 
-  if(props.state.prefilled) {
-    // currentTransaction.value.amount = 25000
-    // currentTransaction.value.address = StateHelper.address()
-  }
+  updateSubState()
 })
 
 onMounted(() => {
@@ -464,7 +483,24 @@ onBeforeUnmount(() => {
   updateState()
 
   window.emitter.off('on-select-context-menu-option', onContextMenuOption)
-}) 
+})
+
+function updateSubState() {
+  if(props.state.recipients == 1) {
+    currentTransactionIndex.value = 0
+    transactions.value = [getDummyTransaction()]
+  } else if(props.state.recipients == 2) {
+    transactions.value = []
+
+    let counter = Math.random() * 4 + 1
+    while(counter-- > 0) {
+      transactions.value.push(getDummyTransaction())
+    }
+  } else {
+    currentTransactionIndex.value = 0
+    transactions.value = [getBlankTransaction()]
+  }
+}
 </script>
 
 <template>
@@ -509,7 +545,7 @@ onBeforeUnmount(() => {
         />
 
         <ScreensSendTransactionForm
-          :key="currentTransactionIndex"
+          :key="currentTransactionIndex+'_'+renderCounter"
           :index="currentTransactionIndex"
           :transaction="currentTransaction"
           :addressEditable="!state.prefilled"
@@ -521,7 +557,7 @@ onBeforeUnmount(() => {
           @change="changeTransaction"
         />
 
-        <ScreensSendTotals
+        <ScreensSendTotalHeader
           v-if="transactions.length > 1"
           :transactions="transactions"
         />
@@ -547,6 +583,11 @@ onBeforeUnmount(() => {
           @setToggleElement="setFeeToggleElement"
         />
 
+        <ScreensSendTotalAmount
+          v-if="transactions.length > 1"
+          :transactions="transactions"
+        />
+
         <ScreensSendTimelockInput
           v-if="locktimeEnabled"
         />
@@ -556,6 +597,7 @@ onBeforeUnmount(() => {
           :replaceByFeeEnabled="replaceByFeeEnabled"
           :feeInAmountEnabled="feeInAmountEnabled"
           :sendMaxEnabled="sendMaxEnabled"
+          :topBorder="true"
         />
 
         <div class="options">
@@ -563,7 +605,7 @@ onBeforeUnmount(() => {
             v-if="!reviewMode"
             label="Review"
             :disabled="!formIsValid"
-            to="/screen/send-review?t=slide-up"
+            :to="reviewLink"
             @click="clickReview"
           />
           <KitButton
@@ -585,7 +627,7 @@ onBeforeUnmount(() => {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    padding: 0 10px;
+    // padding: 0 10px;
   }
 
   .form {
@@ -617,10 +659,17 @@ onBeforeUnmount(() => {
   @include container(small) {
     .form {
       flex-direction: column;
-      padding: 15px 15px;
+      padding: 15px 20px 0;
+      flex-grow: 1;
 
       .form-header {
         margin-bottom: 15px;
+      }
+
+      > .options {
+        flex-grow: 1;
+        justify-content: flex-end;
+        padding-bottom: var(--screen-padding-bottom);
       }
     }
   }
