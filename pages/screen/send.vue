@@ -27,8 +27,13 @@ const renderCounter = ref(0) // Sometimes need to force re-rendering of the form
 
 const props = defineProps([
   'stateId',
+  'subStateId',
   'state'
 ])
+
+watch(() => props.subStateId, (newValue, oldValue) => {
+  updateSubState()
+})
 
 const menuOptions = computed(() => {
   return {
@@ -252,6 +257,16 @@ function getBlankTransaction() {
   }
 }
 
+function getDummyTransaction() {
+  return {
+    address: StateHelper.address(),
+    amount: StateHelper.amount(),
+    note: StateHelper.sendTitle(),
+    amountValid: true,
+    addressValid: true
+  }
+}
+
 function addBlankTransaction() {
   transactions.value.push(getBlankTransaction())
 }
@@ -295,7 +310,7 @@ function changeCurrentTransactionIndex(index) {
 }
 
 const title = computed(() => {
-  let result = 'Enter transaction details'
+  let result = 'Send bitcoin'
 
   if(props.state?.prefilled) {
     result = 'Payment request'
@@ -434,6 +449,10 @@ const classObject = computed(() => {
   return c.join(' ')
 })
 
+const reviewLink = computed(() => {
+  return '/screen/send-review?t=slide-up' + (transactions.value.length > 1 ? '&state=multiple-recipients' : '')
+})
+
 const reviewButtonTo = computed(() => {
   return reviewMode.value ? '/screen/send-review?t=slide-up' : null
 })
@@ -445,16 +464,15 @@ const sendMaxTransactionIndex = computed(() => {
 onBeforeMount(() => {
   window.emitter.on('on-select-context-menu-option', onContextMenuOption)
 
+  console.log('onBeforeMount', props.subStateId)
+
   restoreFromState()
 
   if(transactions.value.length == 0) {
     addBlankTransaction()
   }
 
-  if(props.state.prefilled) {
-    // currentTransaction.value.amount = 25000
-    // currentTransaction.value.address = StateHelper.address()
-  }
+  updateSubState()
 })
 
 onMounted(() => {
@@ -467,32 +485,20 @@ onBeforeUnmount(() => {
   window.emitter.off('on-select-context-menu-option', onContextMenuOption)
 })
 
-// For testing, switches between blank form, single recipient and multiple recipients
-function toggleDummyData() {
-  if(transactions.value.length > 1) {
-    // Replace all transactions with a single blank one
+function updateSubState() {
+  if(props.state.recipients == 1) {
+    currentTransactionIndex.value = 0
+    transactions.value = [getDummyTransaction()]
+  } else if(props.state.recipients == 2) {
+    transactions.value = []
+
+    let counter = Math.random() * 4 + 1
+    while(counter-- > 0) {
+      transactions.value.push(getDummyTransaction())
+    }
+  } else {
     currentTransactionIndex.value = 0
     transactions.value = [getBlankTransaction()]
-    renderCounter.value++
-  } else {
-    // If the current transaction has no address or amount, fill those in
-    if(!currentTransaction.value.address || !currentTransaction.value.amount) {
-      currentTransaction.value.address = 'bc1qtz5fl2n76wcmfdhxq9svv5q0hpyvkrew0s5kly'
-      currentTransaction.value.amount = 10000
-      currentTransaction.value.note = StateHelper.sendTitle()
-      currentTransaction.value.amountValid = true
-      currentTransaction.value.addressValid = true
-      renderCounter.value++
-    } else {
-      // Otherwise, add a new complete transaction
-      transactions.value.push({
-        address: 'bc1qexampleaddress1234567890abcdefg',
-        amount: 10000,
-        note: StateHelper.sendTitle(),
-        amountValid: true,
-        addressValid: true
-      })
-    }
   }
 }
 </script>
@@ -509,7 +515,7 @@ function toggleDummyData() {
 
       <div class="form">
         <div class="form-header">
-          <h5 class="-title-4" @click="toggleDummyData">{{ title }}</h5>
+          <h5 class="-title-4">{{ title }}</h5>
           <div class="options" ref="optionsElement">
             <KitButton
               icon="ellipsis"
@@ -551,7 +557,7 @@ function toggleDummyData() {
           @change="changeTransaction"
         />
 
-        <ScreensSendTotals
+        <ScreensSendTotalHeader
           v-if="transactions.length > 1"
           :transactions="transactions"
         />
@@ -577,6 +583,11 @@ function toggleDummyData() {
           @setToggleElement="setFeeToggleElement"
         />
 
+        <ScreensSendTotalAmount
+          v-if="transactions.length > 1"
+          :transactions="transactions"
+        />
+
         <ScreensSendTimelockInput
           v-if="locktimeEnabled"
         />
@@ -594,7 +605,7 @@ function toggleDummyData() {
             v-if="!reviewMode"
             label="Review"
             :disabled="!formIsValid"
-            to="/screen/send-review?t=slide-up"
+            :to="reviewLink"
             @click="clickReview"
           />
           <KitButton

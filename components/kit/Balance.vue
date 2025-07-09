@@ -7,7 +7,8 @@ const props = defineProps([
   'hidden',
   'size', // small, medium, big
   'theme', // default, light dark
-  'tag' // p
+  'tag', // p
+  'monospace'
 ])
 
 const content = computed(() => {
@@ -96,6 +97,8 @@ const classObject = computed(() => {
     '-'+(props.amount < 0 ? 'negative' : 'positive')
   ]
 
+  if(props.monospace) { c.push('-monospace') }
+
   return c.join(' ')
 })
 </script>
@@ -114,6 +117,10 @@ const classObject = computed(() => {
   text-align: center;
   color: var(--neutral-9);
   letter-spacing: -0.025em;
+
+  &.-monospace {
+    font-variant-numeric: tabular-nums slashed-zero;
+  }
 
   &.-bitcoin {
     ::v-deep(.fraction) {

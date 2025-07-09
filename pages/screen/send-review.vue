@@ -7,12 +7,17 @@ definePageMeta(transition)
 
 const props = defineProps([
   'stateId',
+  'subStateId',
   'state'
 ])
 
 const stateStore = useStateStore()
 const transactions = ref(null)
 const isSent = ref(false)
+
+watch(() => props.subStateId, (newValue, oldValue) => {
+  updateSubState()
+})
 
 function send() {
   isSent.value = true
@@ -23,7 +28,7 @@ onMounted(() => {
   if(state && state.transactions) {
     transactions.value = state.transactions
   } else {
-    transactions.value = [getDummyTransaction()]
+    updateSubState()
   }
 })
 
@@ -33,16 +38,19 @@ function getDummyTransaction() {
   return transaction
 }
 
-// For testing, switches between single recipient and multiple recipients
-function toggleDummyData() {
-  if(transactions.value.length > 1) {
+function updateSubState() {
+  if(props.state.recipients == 1) {
     transactions.value = [getDummyTransaction()]
-  } else {
-    let counter = Math.random() * 3 + 1
+  } else if(props.state.recipients == 2) {
+    if(!transactions.value) transactions.value = []
+
+    let counter = Math.random() * 4 + 1
     while(counter-- > 0) {
       transactions.value.push(getDummyTransaction())
     }
   }
+
+  console.log('Updated transactions:', props.state, transactions.value)
 }
 </script>
 
@@ -56,7 +64,7 @@ function toggleDummyData() {
       <Transition mode="out-in" name="fade">
         <div class="content-wrap" v-if="!isSent">
           <div class="info">
-            <h3 @click="toggleDummyData">Review transaction</h3>
+            <h3>Review transaction</h3>
             <p v-if="transactions?.length > 1">There are {{ transactions.length }} recipients.</p>
 
             <template v-if="transactions && transactions.length == 1">

@@ -166,7 +166,6 @@ onBeforeUnmount(() => {
 <template>
   <KitScreen :class="classObject">
     <KitTopBar
-      title="Select coins"
       buttonRightLabel="Done"
       buttonRightTo="/screen/send?t=slide-down"
     />
@@ -201,6 +200,15 @@ onBeforeUnmount(() => {
 <style scoped lang="scss">
 .coin-selection {
   .wrap {
+    width: 100%;
+    max-width: 640px;
+    padding-left: 20px;
+    padding-right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+
     .header {
       display: flex;
       justify-content: space-between;
@@ -214,9 +222,6 @@ onBeforeUnmount(() => {
       align-items: stretch;
       flex-grow: 1;
       width: 100%;
-      max-width: 640px;
-      padding-left: 20px;
-      padding-right: 20px;
 
       > * {
         & + * {

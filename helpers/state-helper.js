@@ -114,7 +114,11 @@ export default {
     const address = this.address()
     const description = Toolbox.formatRelativeDate(Math.round(timestamp/1000)+'', true)  
 
-    return { id, title, description, amount, address }
+    return { id, title, description, amount, address, timestamp }
+  },
+
+  amount() {
+    return Math.round(Math.random()*1000000) + 100
   },
 
   receiveTitle() {

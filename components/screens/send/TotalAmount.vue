@@ -41,53 +41,47 @@ const label = computed(() => {
 </script>
 
 <template>
-  <div class="totals">
-    <h4 class="-title-5">Total</h4>
-    <div class="row">
-      <h5 class="-body-5">Amount</h5>
-      <KitBalance
-        class="-body-5"
-        :amount="totalAmount"
-        :unit="stateStore.balanceDisplayMode"
-        theme="neutral"
-      />
-      <p v-if="label" class="-body-5" v-html="label" />
-    </div>
+  <div class="total-amount">
+    <h5 class="-body-5">Total Amount</h5>
+    <KitBalance
+      class="-body-5"
+      :amount="totalAmount"
+      :unit="stateStore.balanceDisplayMode"
+      theme="neutral"
+    />
+    <p v-if="label" class="-body-5" v-html="label" />
   </div>
 </template>
 
 <style scoped lang="scss">
 
-.totals {
-  margin-top: 20px;
-  
-  .row {
-    display: flex;
-    padding: 10px 0;
-    border-top: 1px solid var(--neutral-2);
+.total-amount {
+  display: flex;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-top: 1px solid var(--neutral-4);
+
+  &:first-of-type {
+    margin-top: 10px;
+    border-top-color: var(--neutral-4);
+  }
+
+  h5 {
+    color: var(--neutral-9);
+    width: 120px;
+  }
+
+  p {
+    color: var(--neutral-9);
 
     &:first-of-type {
-      margin-top: 10px;
-      border-top-color: var(--neutral-4);
+      flex-basis: 10%;
+      flex-grow: 1;
+      text-align: left;
     }
 
-    h5 {
-      color: var(--neutral-9);
-      width: 120px;
-    }
-
-    p {
-      color: var(--neutral-9);
-
-      &:first-of-type {
-        flex-basis: 10%;
-        flex-grow: 1;
-        text-align: left;
-      }
-
-      &:nth-of-type(2) {
-        color: var(--neutral-7);
-      }
+    &:nth-of-type(2) {
+      color: var(--neutral-7);
     }
   }
 }

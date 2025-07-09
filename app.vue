@@ -305,6 +305,7 @@ const showPage = computed(() => {
           <NuxtPage
             v-if="showPage"
             :stateId="activeProtoNavId"
+            :subStateId="activeContentStateId"
             :state="preparedContentState"
             :screenSize="screenSize"
           />

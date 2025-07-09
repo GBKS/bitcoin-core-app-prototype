@@ -39,7 +39,7 @@ const amountToSend = computed(() => {
 })
 
 const feeAmount = computed(() => {
-  let result = 375
+  let result = 127 + props.selected.length * 75
 
   return result
 })
@@ -63,7 +63,7 @@ const remainingAmount = computed(() => {
 <template>
     <div :class="classObject">
       <div class="header" @click="expanded = !expanded">
-        <div class="arrow" v-html="expanded ? Icons.caretDown : Icons.caretUp" />
+        <div class="arrow" v-html="expanded ? Icons.caretDown : Icons.caretRight" />
         <h2 v-if="remainingAmount > 0" class="-body-6">Remaining amount</h2>
         <div class="over-amount" v-if="remainingAmount < 0">
           <div v-html="Icons.check" />
@@ -75,6 +75,7 @@ const remainingAmount = computed(() => {
           :unit="stateStore.balanceDisplayMode"
           :amount="remainingAmount"
           theme="neutral"
+          :monospace="true"
         />
       </div>
       <div v-if="expanded" class="items">
@@ -85,6 +86,7 @@ const remainingAmount = computed(() => {
             :unit="stateStore.balanceDisplayMode"
             :amount="amountToSend"
             theme="neutral"
+            :monospace="true"
           />
         </div>
         <div class="-selected">
@@ -94,6 +96,7 @@ const remainingAmount = computed(() => {
             :unit="stateStore.balanceDisplayMode"
             :amount="feeAmount"
             theme="neutral"
+            :monospace="true"
           />
         </div>
         <div class="-selected">
@@ -103,6 +106,7 @@ const remainingAmount = computed(() => {
             :unit="stateStore.balanceDisplayMode"
             :amount="totalAmount"
             theme="neutral"
+            :monospace="true"
           />
         </div>
         <div class="-selected">
@@ -112,6 +116,7 @@ const remainingAmount = computed(() => {
             :unit="stateStore.balanceDisplayMode"
             :amount="selectedAmount"
             theme="neutral"
+            :monospace="true"
           />
         </div>
       </div>
@@ -125,8 +130,22 @@ const remainingAmount = computed(() => {
   align-items: stretch;
   width: 100%;
   padding: 0 15px 0 10px;
-  background-color: var(--neutral-2);
+  // background-color: var(--neutral-2);
   border-radius: 10px;
+  position: relative;
+
+  &:before {
+    display: block;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--neutral-2);
+    border-radius: 10px;
+    opacity: 1;
+  }
 
   .header {
     display: flex;
@@ -134,6 +153,7 @@ const remainingAmount = computed(() => {
     gap: 10px;
     padding: 10px 0 10px 5px;;
     cursor: pointer;
+    position: relative;
 
     .arrow {
       line-height: 0;
@@ -189,7 +209,8 @@ const remainingAmount = computed(() => {
     gap: 5px;
     width: 100%;
     border-top: 1px solid var(--neutral-4);
-    padding: 10px 10px 10px 0;
+    padding: 10px 0 10px 0;
+    position: relative;
 
     & > * {
       display: flex;
@@ -214,6 +235,11 @@ const remainingAmount = computed(() => {
         color: var(--green);
       }
     }
+
+    &:before {
+      background-color: var(--green);
+      opacity: 0.1;
+    }
   }
 
   @include container(small) {
@@ -221,7 +247,7 @@ const remainingAmount = computed(() => {
   }
 
   @include container(medium-up) {
-    
+    padding-right: 35px;
   }
 }
 </style>

@@ -20,7 +20,7 @@ function changeValue(event) {
 }
 
 const hasContent = computed(() => {
-  return textValue.value.length > 0
+  return textValue.value?.length > 0
 })
 
 const classObject = computed(() => {
@@ -110,7 +110,7 @@ onBeforeMount(() => {
   &.-has-content,
   &.-has-focus {
     label {
-      color: var(--neutral-7);
+      // color: var(--neutral-7);
     }
   }
 
