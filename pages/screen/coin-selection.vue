@@ -15,12 +15,31 @@ const optionsVisible = ref(false)
 const optionsElement = ref(null)
 const selectionMode = ref('mode-all')
 const sortingMode = ref('sorting-date')
-const groupByAddressEnabled = ref(false)
+const groupByAddressEnabled = ref(!false)
 const showLockedCoins = ref(false)
 const baseAmount = Math.random() * 1000000 + 1000000
 
 const transactions = computed(() => {
   return stateStore.transactions[stateStore.activeWalletId].filter(item => item.amount > 0)
+})
+
+const groupedTransactions = computed(() => {
+  // Group transactions by address
+  const groups = {}
+  transactions.value.forEach(item => {
+    const address = item.address || 'unknown'
+    if(!groups[address]) {
+      groups[address] = {
+        id: address,
+        address: address,
+        amount: 0,
+        transactions: []
+      }
+    }
+    groups[address].amount += item.amount
+    groups[address].transactions.push(item)
+  })
+  return groups
 })
 
 const classObject = computed(() => {
@@ -71,28 +90,43 @@ function toggleItem(id) {
   }
 }
 
+function toggleItems(ids, active) {
+  ids.forEach(id => {
+    const index = selected.value.indexOf(id)
+    if(active) {
+      if(index === -1) {
+        selected.value.push(id)
+      }
+    } else {
+      if(index > -1) {
+        selected.value.splice(index, 1)
+      }
+    }
+  })
+}
+
 const menuOptions = computed(() => {
   return {
-    "mode-header": {
-      type: 'header',
-      title: 'Mode',
-    },
-    "mode-all": {
-      label: 'Send full balance',
-      icon: selectionMode.value == 'mode-all' ? 'check' : null,
-      indent: selectionMode.value !== 'mode-all'
-    },
-    "mode-fee": {
-      label: 'Lowest fee',
-      icon: selectionMode.value == 'mode-fee' ? 'check' : null,
-      indent: selectionMode.value !== 'mode-fee'
-    },
-    "mode-privacy": {
-      label: 'Best privacy',
-      icon: selectionMode.value == 'mode-privacy' ? 'check' : null,
-      indent: selectionMode.value !== 'mode-privacy'
-    },
-    "static-1": 'divider',
+    // "mode-header": {
+    //   type: 'header',
+    //   title: 'Mode',
+    // },
+    // "mode-all": {
+    //   label: 'Send full balance',
+    //   icon: selectionMode.value == 'mode-all' ? 'check' : null,
+    //   indent: selectionMode.value !== 'mode-all'
+    // },
+    // "mode-fee": {
+    //   label: 'Lowest fee',
+    //   icon: selectionMode.value == 'mode-fee' ? 'check' : null,
+    //   indent: selectionMode.value !== 'mode-fee'
+    // },
+    // "mode-privacy": {
+    //   label: 'Best privacy',
+    //   icon: selectionMode.value == 'mode-privacy' ? 'check' : null,
+    //   indent: selectionMode.value !== 'mode-privacy'
+    // },
+    // "static-1": 'divider',
     "mode-sorting": {
       type: 'header',
       title: 'Sorting',
@@ -204,7 +238,7 @@ onBeforeUnmount(() => {
         :selected="selected"
         :amountToSelect="amountToSelect"
       />
-      <div class="items">
+      <div class="items -solo" v-if="!groupByAddressEnabled">
         <ScreensCoinSelectionItem
           v-for="item in transactions"
           :key="item.id"
@@ -212,6 +246,17 @@ onBeforeUnmount(() => {
           :active="selected.includes(item.id)"
           :remainingAmount="remainingAmount"
           @toggle="toggleItem"
+        />
+      </div>
+      <div class="items -groupd" v-if="groupByAddressEnabled">
+        <ScreensCoinSelectionGroup
+          v-for="item in groupedTransactions"
+          :key="item.id"
+          :info="item"
+          :selected="selected"
+          :remainingAmount="remainingAmount"
+          @toggleItem="toggleItem"
+          @toggleItems="toggleItems"
         />
       </div>
     </div>
@@ -243,9 +288,11 @@ onBeforeUnmount(() => {
       flex-grow: 1;
       width: 100%;
 
-      > * {
-        & + * {
-          border-top: 1px solid var(--neutral-4);
+      &.-solo {
+        > * {
+          & + * {
+            border-top: 1px solid var(--neutral-4);
+          }
         }
       }
     }

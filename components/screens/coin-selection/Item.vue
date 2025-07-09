@@ -72,16 +72,18 @@ function onLinkClick(event) {
     >
       <p class="-note -body-6">{{ secondary }}</p>
       <p class="-date -body-6">{{ formattedDate }}</p>
-      <div class="percentage">
-        <div class="bar" :style="percentageStyle" />
-        <div class="bar" :style="tintPercentageStyle" />
+      <div class="amount">
+        <div class="percentage">
+          <div class="bar" :style="percentageStyle" />
+          <div class="bar" :style="tintPercentageStyle" />
+        </div>
+        <KitBalance
+          class="-body-6"
+          :unit="stateStore.balanceDisplayMode"
+          :amount="props.info.amount"
+          theme="neutral"
+        />
       </div>
-      <KitBalance
-        class="-body-6"
-        :unit="stateStore.balanceDisplayMode"
-        :amount="props.info.amount"
-        theme="neutral"
-      />
     </div>
     <KitButton
       class="link"
@@ -126,6 +128,12 @@ function onLinkClick(event) {
       &.-date {
         color: var(--neutral-7);
       }
+    }
+
+    .amount {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
   }
 
@@ -230,6 +238,17 @@ function onLinkClick(event) {
           order: 3;
         }
       }
+
+      .amount {
+        .balance {
+          min-width: 110px;
+          text-align: right;
+        }
+
+        .percentage {
+          order: 2;
+        }
+      }
     }
   }
 
@@ -242,7 +261,7 @@ function onLinkClick(event) {
         }
       }
 
-      .percentage {
+      .amount {
         margin-left: auto;
       }
 
